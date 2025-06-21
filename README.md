@@ -43,7 +43,6 @@
 
 ### v4.0 (2025 Q1)
 
-- **重构为 B/S 架构**
 - **实现前后端分离**
 - **WebSocket 实时日志传输**
 - **极速响应**（<100ms 操作延迟）
@@ -113,7 +112,7 @@ npm start
 ### 打包单文件exe步骤
 
 ```bash
-npm run build
+npm run build:win
 
 ```
 
@@ -144,5 +143,4 @@ npm run build
 | -------- | --------------------- |
 | 前端     | Vue3 + Element Plus   |
 | 后端     | NodeJs + Express + WebSocket   |
-| 缓存     | fs                    |
-| 错误处理 | 多级别 try-catch 处理 |
+
