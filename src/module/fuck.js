@@ -38,8 +38,8 @@ module.exports = async function fuck(profileId, id, cookie) {
     $('script').remove()
     $('style').remove()
     const text = $('body').text().replace(/\s+/g, ' ').trim()
-    console.log(text);
-
+    
+  
     if (text.includes('403')) {
       return 'overtime'
     } else if (text.includes('冲突')) {

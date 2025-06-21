@@ -1,13 +1,8 @@
 const fuck = require('./fuck')
 const zyyo_delay = require('./tool')
-module.exports = async function meanwhile(
-  config,
-  profileId,
-  lessonIds,
-  cookie,
-) {
-  let newlessonDatas = lessonIds
-  for (const [index, lessonId] of lessonIds.entries()) {
+module.exports = async function meanwhile(config) {
+  let newlessonDatas = config.lessonIds
+  for (const [index, lessonId] of newlessonDatas.entries()) {
     if (lessonId.状态 === 'notfound' || lessonId.状态 === 'success') {
       continue
     }
@@ -16,8 +11,8 @@ module.exports = async function meanwhile(
 
     config.logger.zyyotable(newlessonDatas)
 
-    const result = await fuck(profileId, lessonId.id, cookie)
-    if (index < lessonIds.length - 1) {
+    const result = await fuck(config.profileId, lessonId.id, config.cookie)
+    if (index < newlessonDatas.length - 1) {
       await zyyo_delay(config.delay)
     }
     newlessonDatas[index].状态 = result

@@ -2,10 +2,10 @@
 
 const visit = require('./visit')
 
-module.exports = async function getProfileId(config, cookie) {
+module.exports = async function getProfileId(config) {
   try {
     if (config.profileId == '') {
-      let result = await visit('/eams/stdElectCourse.action', cookie)
+      let result = await visit('/eams/stdElectCourse.action', config.cookie)
       if (!result) {
         throw new Error('初始页面失败')
       }
@@ -24,15 +24,15 @@ module.exports = async function getProfileId(config, cookie) {
         config.logger.zyyo('课程id信息缓存保存成功')
 
         config.logger.zyyostep(3)
-
-        return profileId
+        config.profileId = profileId
+        return config
       } else {
         throw new Error('未找到 profileId，请检查轮次')
       }
     } else {
       config.logger.zyyo('profileId缓存读取成功')
       config.logger.zyyostep(3)
-      return config.profileId
+      return config
     }
   } catch (error) {
     throw error

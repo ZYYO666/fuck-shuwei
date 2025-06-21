@@ -1,12 +1,12 @@
 const fuck = require('./fuck')
-const zyyo_delay = require('./tool')
 
-module.exports = async function bingfa(config, profileId, lessonIds, cookie) {
-  let newlessonDatas = lessonIds
+
+module.exports = async function bingfa(config) {
+  let newlessonDatas = config.lessonIds
 
 
   await Promise.all(
-    lessonIds.map(async (lesson, index) => {
+    newlessonDatas.map(async (lesson, index) => {
       if (lesson.状态 === 'notfound' || lesson.状态 === 'success') {
         return
       }
@@ -17,7 +17,7 @@ module.exports = async function bingfa(config, profileId, lessonIds, cookie) {
 
       try {
 
-        const result = await fuck(profileId, lesson.id, cookie)
+        const result = await fuck(config.profileId, lesson.id, config.cookie)
 
         newlessonDatas[index].状态 = result
         config.logger.zyyotable(newlessonDatas)

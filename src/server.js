@@ -154,9 +154,13 @@ function updateTable() {
   const formattedClients = formatClients(clients);
 
 
-  console.log(`WebSocket连接: ws://localhost:8080`)
-  console.log(`静态文件服务器已启动: http://localhost:${3000}`)
+  console.log(`WebSocket端口: 8080`)
+  console.log(`静态服务器: http://localhost:${3000}`)
+
+
   console.table(formattedClients);
+
+  console.log(`浏览器打开上面的链接`)
 }
 
 setInterval(() => {

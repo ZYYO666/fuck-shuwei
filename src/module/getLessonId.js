@@ -1,9 +1,9 @@
-module.exports = function getLessonId(config, allLesson) {
+module.exports = function getLessonId(config) {
   try {
     const lessonNumbers = config.lessons
     const result = lessonNumbers.map((no) => {
       const trimmedNo = no.value.trim()
-      const match = allLesson.find((l) => l.no === trimmedNo)
+      const match = config.lessonJSONs.find((l) => l.no === trimmedNo)
 
       if (!match) {
         return {
@@ -32,7 +32,8 @@ module.exports = function getLessonId(config, allLesson) {
       config.logger.zyyotable(result)
       config.logger.zyyostep(6)
       config.logger.zyyo(`课程信息查找完毕:`, result.length + '个')
-      return result
+      config.lessonIds=result
+      return config
     } else {
       config.logger.zyyotable(result)
       throw new Error('没有可用课程，检查课程序号')

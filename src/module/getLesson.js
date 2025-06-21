@@ -1,13 +1,13 @@
 
 const visit = require('./visit')
 
-module.exports = async function getLesson(config, profileId, cookie) {
+module.exports = async function getLesson(config) {
   try {
     let lessonDatas = config.lessonDatas
     if (lessonDatas == '') {
       const result = await visit(
-        '/eams/stdElectCourse!data.action?profileId=' + profileId,
-        cookie,
+        '/eams/stdElectCourse!data.action?profileId=' + config.profileId,
+        config.cookie,
       )
 
       config.logger.lessonDatas(result)
@@ -23,7 +23,8 @@ module.exports = async function getLesson(config, profileId, cookie) {
     if (match && match[1]) {
       const lessonJSONs = new Function(`return ${match[1]};`)()
       config.logger.zyyostep(5)
-      return lessonJSONs
+      config.lessonJSONs = lessonJSONs
+      return config
     } else {
       throw new Error('未找到有效的 lessonJSONs 对象,尝试删除Cache')
     }

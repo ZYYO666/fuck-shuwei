@@ -7,32 +7,35 @@ const getLesson = require('./module/getLesson')
 const getLessonId = require('./module/getLessonId')
 const getProfileId = require('./module/getProfileId')
 const getCookie = require('./module/getCookie')
-const zyyo_delay = require('./module/tool')
+
 
 const startMainProcess = async (config, retryCount = 0) => {
+
   try {
+
     configure(config.url, config.delay)
 
-    config.logger.zyyostep(1) //标志程序开始，千万别删，不然前端有个逆天bug浪费我半个小时
+    config.logger.zyyostep(1) 
 
-    const cookie = await getCookie(config)
+    config = await getCookie(config)
 
-    const profileId = await getProfileId(config, cookie)
+    config = await getProfileId(config)
 
-    const init = await initSelection(config, profileId, cookie)
 
-    const lessons = await getLesson(config, profileId, cookie)
 
-    const lessonIds = getLessonId(config, lessons)
+    const init = await initSelection(config)
+
+
+    config = await getLesson(config)
+
+    config = getLessonId(config)
 
     if (config.selectionModel == 2) {
-      const res = await meanwhile(config, profileId, lessonIds, cookie)
+      await meanwhile(config)
     } else {
-      const res = await bingfa(config, profileId, lessonIds, cookie)
+      await bingfa(config)
     }
   } catch (error) {
-    //登陆过期重试
-    //接受来自于响应拦截器抛出的异常，并且重试
     if (error.message.includes('登录过期') && retryCount < 3) {
       config.logger.zyyo('登录过期，尝试重新执行流程...')
       config.logger.zyyostep(1)

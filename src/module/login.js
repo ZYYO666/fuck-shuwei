@@ -5,6 +5,7 @@ const qs = require('querystring')
 const CryptoJS = require('crypto-js')
 const zyyo_delay = require('./tool')
 
+
 module.exports = async function login(config) {
   const axios = getInstance()
   async function getLoginSalt() {
@@ -68,7 +69,7 @@ module.exports = async function login(config) {
       return salt.cookie
     } if (text.includes('验证码不正确')) {
       throw new Error("我勒个痘，验证码不正确，我还没开发。")
-      
+
     } else {
       throw new Error("帐号或密码错误")
     }

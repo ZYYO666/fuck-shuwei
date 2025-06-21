@@ -5,7 +5,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  
+
 }
 
 .el-tabs__item,
@@ -116,8 +116,20 @@ body {
   height: 100%;
   flex-direction: column;
   display: flex;
+
+  height: 70%;
+
 }
 
+.el-tabs--top {
+  flex-direction: column-reverse;
+  height: 100%;
+}
+.el-tabs__content {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+}
 .config-content {
   flex: 1;
   overflow-y: auto;

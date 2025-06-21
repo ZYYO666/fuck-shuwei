@@ -62,7 +62,7 @@
             <el-form-item label="">
               <div class="lessonList">
                 <div v-for="(lesson, index) in form.lessons" :key="lesson.id" class="lesson-item">
-                  <el-input v-model="lesson.value" placeholder="课程ID格式：xxx.xxx.xxx" clearable
+                  <el-input v-model="lesson.value" placeholder="课程序号（不是课程代码）" clearable
                     @input="validateLesson(lesson)">
                     <template #append>
                       <el-button @click="removeLesson(index)" :disabled="isProcessing"><svg t="1743098108722"
@@ -116,7 +116,7 @@
             <div class="about-me">
               本自动化脚本用于模拟选课过程
               <br />
-              如果需要多个客户端选课，可以新开一个浏览器，或者在当前浏览器的无痕模式
+              如果需要多个客户端选课，可以新开一个浏览器，或者在当前浏览器的无痕模式再次打开当前页面
               <br />
               仅做学习js用途，请勿用于真实的选课行为。
               <br />
@@ -133,10 +133,23 @@
               本脚本仅供学习交流使用，请勿用于非法用途。
               <br />
               本脚本仅供学习交流使用，请勿用于非法用途。
+              <br /> <br />
+              开源地址：https://github.com/ZYYO666/fuck-shuwei
             </div>
           </el-tab-pane>
         </el-tabs>
 
+        <el-form-item style="
+              margin-top: 30px;
+              position: absolute;
+              bottom: 30px;
+              right: 180px;
+              display: flex;
+              align-items: center;
+            ">
+          <span style="margin-right: 10px;">循环执行</span>
+          <el-switch v-model="loopEnabled" active-text="开" inactive-text="关" />
+        </el-form-item>
         <el-form-item style="
               margin-top: 30px;
               position: absolute;
@@ -162,7 +175,7 @@
           <el-step title="映射课程"></el-step>
         </el-steps>
         <div class="log-data">
-          <el-progress :percentage="activestep/5*100"></el-progress>
+          <el-progress :percentage="activestep/6*100"></el-progress>
           <el-skeleton :rows="4" animated :loading="activestep==0">
             <template #default>
               <template v-for="log in logs" :key="log.timestamp">
@@ -267,6 +280,8 @@
         const ws = ref(null)
         const connectionStatus = ref('未连接')
         const reconnectTimer = ref(null)
+        const loopEnabled = ref(false)
+        let loopTimer = null
 
         const getStatusName = (name) => {
           if (name == 'loading') {
@@ -289,7 +304,7 @@
             return '选课不开放'
           } else if (name == 'selected') {
             return '选课成功'
-          }  else {
+          } else {
             return name
           }
         }
@@ -365,6 +380,10 @@
           if (reconnectTimer.value) {
             clearInterval(reconnectTimer.value)
             reconnectTimer.value = null
+          }
+          if (loopTimer) {
+            clearTimeout(loopTimer)
+            loopTimer = null
           }
         })
 
@@ -443,6 +462,12 @@
                   type: 'success',
                   duration: 3000,
                 })
+                // 如果循环开关开启，1秒后自动再次执行
+                if (loopEnabled.value) {
+                  loopTimer = setTimeout(() => {
+                    startProcess()
+                  }, 1000)
+                }
                 return
               }
 
@@ -473,6 +498,10 @@
           }
         }
         const startProcess = async () => {
+          if (loopTimer) {
+            clearTimeout(loopTimer)
+            loopTimer = null
+          }
           // 检查WebSocket连接状态
           if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
             ElNotification({
@@ -530,6 +559,7 @@
           activestep,
           table,
           startReconnectTimer,
+          loopEnabled,
         }
       },
     })
