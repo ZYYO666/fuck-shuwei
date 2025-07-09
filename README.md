@@ -1,4 +1,4 @@
-# 一个综合树维教务系统的选课排课客户端基于nodejs
+# 一个综合树维教务系统的选课排课客户端脚本基于nodejs
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)  
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -27,6 +27,8 @@ xxx假意与我合作欺骗感情，未经允许将项目剽窃版权全部改�
 ## 📖 项目概览
 
 基于 Node.js 构建的智能选课系统解决方案，提供 WebUI 界面和高效缓存机制，支持多轮次选课操作。
+main分支 正在开发的版本（未经测试）
+master 经过稳定测试的老版本
 
 
 ## 🛠️ 版本演进
