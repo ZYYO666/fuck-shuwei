@@ -1,4 +1,4 @@
-# 树维教务选课系统自动化工具
+# 一个综合树维教务系统的选课排课客户端基于nodejs
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)  
 ![License](https://img.shields.io/badge/license-MIT-blue)
