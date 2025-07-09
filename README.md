@@ -1,4 +1,5 @@
 # 一个综合树维教务系统的选课排课客户端脚本基于nodejs
+main分支处于开发中不可用状态，请前往master分支获取稳定的版本
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)  
 ![License](https://img.shields.io/badge/license-MIT-blue)
