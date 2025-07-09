@@ -1,6 +1,7 @@
 **/node_modules
 **/Cache
 **/dist
+.DS_Store
 **/.DS_Store
 **/.idea
 **/.vscode
