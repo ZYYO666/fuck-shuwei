@@ -10,11 +10,11 @@ module.exports = async function fuckLesson(config) {
         continue
       }
       newlessonDatas[index].状态 = 'loading'
-      config.logger.zyyotable(newlessonDatas)
+      config.logger.sendData('table', newlessonDatas)
       const result = await fuck(config.profileId, lessonId.id, config.cookie)
 
       newlessonDatas[index].状态 = result
-      config.logger.zyyotable(newlessonDatas)
+      config.logger.sendData('table', newlessonDatas)
     }
   } else {
 
@@ -24,16 +24,16 @@ module.exports = async function fuckLesson(config) {
           return
         }
         newlessonDatas[index].状态 = 'loading'
-        config.logger.zyyotable(newlessonDatas)
+        config.logger.sendData('table', newlessonDatas)
         try {
           const result = await fuck(config.profileId, lesson.id, config.cookie)
           newlessonDatas[index].状态 = result
-          config.logger.zyyotable(newlessonDatas)
+          config.logger.sendData('table', newlessonDatas)
         } catch (error) {
 
           newlessonDatas[index].状态 = 'error'
-          config.logger.zyyoerror(`处理课程 ${lesson.id} 时出错:`, error)
-          config.logger.zyyotable(newlessonDatas)
+          config.logger.sendData('error', [`处理课程 ${lesson.id} 时出错:`, error].join(' '))
+          config.logger.sendData('table', newlessonDatas)
         }
       }),
     )

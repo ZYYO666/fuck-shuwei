@@ -6,11 +6,11 @@ const getLessonId = require('./getLessonId')
 const startMainProcess = async (config) => {
   try {
     config = await base.startBaseProcess(config)
-    config.logger.zyyostep(6)
+    config.logger.sendData('step', 6)
     config = getLessonId(config)
     await fuckLesson(config)
   } catch (error) {
-    config.logger.zyyoerror('程序错误:', error.message)
+    config.logger.sendData('error', ['程序错误:', error.message].join(' '))
   }
 }
 

@@ -4,7 +4,7 @@ module.exports = async function getProfileId(config) {
   try {
 
     if (config.profileId !== '') {
-      config.logger.zyyo('profileId缓存读取成功')
+      config.logger.sendData('log', 'profileId缓存读取成功')
   
       return config
     }
@@ -27,8 +27,8 @@ module.exports = async function getProfileId(config) {
     }
 
     config.logger.sendData('cache', { key: 'profileId', value: profileId })
-    config.logger.zyyo('提取到 profileId:', profileId)
-    config.logger.zyyo('课程id信息缓存保存成功')
+    config.logger.sendData('log', ['提取到 profileId:', profileId].join(' '))
+    config.logger.sendData('log', '课程id信息缓存保存成功')
 
     config.profileId = profileId
 

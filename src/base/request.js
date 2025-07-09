@@ -4,16 +4,14 @@ const cheerio = require('cheerio')
 
 let configuredInstance = null
 
-function configure(url, delay) {  // 添加 delay 参数
+function configure(url, delay) {
   if (configuredInstance) {
-    // 实例已存在时不重复创建
   }
 
   const instance = axios.create({
     baseURL: url,
   })
 
-  // 延迟函数封装
   const delayResponse = (response) => {
     return new Promise(resolve => {
       setTimeout(() => resolve(response), delay)
@@ -41,20 +39,17 @@ function configure(url, delay) {  // 添加 delay 参数
         const loginText = text.includes('过期') || text.includes('登录')
 
         if (loginText) {
-          // 登录过期错误延迟返回
+
           return delayError(new Error('检测到登录过期...'))
         }
 
-        // 正常响应延迟返回
         return delayResponse(response)
       } catch (error) {
-        // 解析错误延迟返回
         return delayError(error)
       }
     },
     (error) => {
       let errMsg = '请求失败，请稍后重试';
-
       if (error.code === 'ECONNABORTED') {
         errMsg = '请求超时，请检查网络';
       } else if (error.response) {
@@ -69,8 +64,6 @@ function configure(url, delay) {  // 添加 delay 参数
       } else if (error.request) {
         errMsg = '网络错误，请检查地址是否正确';
       }
-
-      // 所有错误类型都延迟返回
       return delayError(new Error(errMsg));
     }
   )

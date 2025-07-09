@@ -1,11 +1,11 @@
-const { visit } = require('./tool')
+const { visit, getLessonJSONs } = require('./tool')
 
 module.exports = async function getLesson(config) {
   try {
     let lessonDatas = config.lessonDatas
 
     if (lessonDatas !== '') {
-      config.logger.zyyo('本地课程信息缓存已存在')
+      config.logger.sendData('log', '本地课程信息缓存已存在')
     } else {
       const result = await visit(
         '/eams/stdElectCourse!data.action?profileId=' + config.profileId,
@@ -17,15 +17,11 @@ module.exports = async function getLesson(config) {
       config.logger.sendData('cache', { key: 'lessonDatas', value: result })
       lessonDatas = result
     }
-    try {
-      const lessonJSONs = new Function(`${lessonDatas}; return lessonJSONs`)()
+    const lessonJSONs = getLessonJSONs(lessonDatas)
 
-   
-      config.lessonJSONs = lessonJSONs
-      return config
-    } catch (error) {
-      throw new Error('未找到有效的 lessonJSONs 对象')
-    }
+    config.lessonJSONs = lessonJSONs
+
+    return config
 
   } catch (error) {
     throw error

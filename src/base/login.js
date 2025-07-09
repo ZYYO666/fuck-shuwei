@@ -26,13 +26,13 @@ module.exports = async function login(config) {
       const saltMatch = response.data.match(saltPattern)
 
       if (saltMatch && saltMatch[1]) {
-        config.logger.zyyo('获取到的 salt:', saltMatch[1])
+        config.logger.sendData('log', ['获取到的 salt:', saltMatch[1]].join(' '))
         return { salt: saltMatch[1], cookie: loginCookie }
       } else {
         throw new Error('未找到 salt，请检查页面内容')
       }
     } catch (error) {
-      config.logger.zyyo('获取 salt 失败:', error.message)
+      config.logger.sendData('log', ['获取 salt 失败:', error.message].join(' '))
       throw error
     }
   }
@@ -65,13 +65,13 @@ module.exports = async function login(config) {
     $('style').remove()
     const text = $('body').text().replace(/\s+/g, ' ').trim()
     if (text.includes('免听申请')) {
-      config.logger.zyyo('登录成功， Cookie 已更新。')
+      config.logger.sendData('log', '登录成功， Cookie 已更新。')
       return salt.cookie
     } if (text.includes('验证码不正确')) {
       throw new Error("我勒个痘，验证码不正确，我还没开发，我们学校不需要验证码嘻嘻嘻。")
 
     } else {
-      config.logger.zyyo(text)
+      config.logger.sendData('log', text)
       throw new Error("帐号或密码错误")
     }
   } catch (error) {

@@ -79,7 +79,7 @@
                         <div class="hero-title">
                             <span class="title-main">智能选课</span>
                             <span class="title-sub">控制中心</span>
-                </div>
+                        </div>
                         <div class="hero-subtitle">让选课变得简单而优雅</div>
                         <div class="hero-stats">
                             <div class="hero-stat">
@@ -280,7 +280,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 其他页面保持原有卡片结构 -->
             <div v-else class="main-card">
                 <div class="main-card-content">
@@ -387,7 +387,7 @@
                                                 :loading="isProcessing && logs.length === 0">
                                                 <template #default>
                                                     <template v-for="log in logs" :key="log.timestamp">
-                                                        <div v-if="log.type == 'log' || log.type == 'error' || log.type == 'good'"
+                                                        <div v-if="log.type === 'log' || log.type === 'error' || log.type === 'good'"
                                                             class="log-entry" :class="log.type">
                                                             <span class="log-time">[{{ log.runtime }}]</span>
                                                             <span class="message">{{ log.data }}</span>
@@ -556,7 +556,7 @@
                                                 :loading="isProcessing && scheduleLogs.length === 0">
                                                 <template #default>
                                                     <template v-for="log in scheduleLogs" :key="log.timestamp">
-                                                        <div v-if="log.type == 'log' || log.type == 'error' || log.type == 'good'"
+                                                        <div v-if="log.type === 'log' || log.type === 'error' || log.type === 'good'"
                                                             class="log-entry" :class="log.type">
                                                             <span class="log-time">[{{ log.runtime }}]</span>
                                                             <span class="message">{{ log.data }}</span>
@@ -925,7 +925,7 @@
                                 <div class="decoration-line line-1"></div>
                                 <div class="decoration-line line-2"></div>
                             </div>
-                            
+
                             <div class="about-header">
                                 <div class="about-logo">
                                     <div class="logo-container">
@@ -939,7 +939,7 @@
                                     <span class="version-text">v1.0.0</span>
                                 </div>
                             </div>
-                            
+
                             <div class="about-stats">
                                 <div class="stat-item">
                                     <div class="stat-icon">
@@ -969,7 +969,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="about-info-card">
                                 <div class="info-card-header">
                                     <i class="el-icon-user"></i>
@@ -997,7 +997,8 @@
                                     <el-col :span="12">
                                         <div class="about-info-item">
                                             <span class="info-label">开源地址：</span>
-                                            <a href="https://github.com/ZYYO666/fuck-shuwei" target="_blank" class="info-link">
+                                            <a href="https://github.com/ZYYO666/fuck-shuwei" target="_blank"
+                                                class="info-link">
                                                 <i class="el-icon-link"></i> GitHub
                                             </a>
                                         </div>
@@ -1018,7 +1019,7 @@
                                     </el-col>
                                 </el-row>
                             </div>
-                            
+
                             <div class="about-tech">
                                 <div class="about-tech-header">
                                     <i class="el-icon-s-platform"></i>
@@ -1051,7 +1052,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="about-features">
                                 <div class="about-features-header">
                                     <i class="el-icon-s-opportunity"></i>
@@ -1096,7 +1097,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="about-thanks">
                                 <div class="about-thanks-header">
                                     <i class="el-icon-s-comment"></i>
@@ -1378,7 +1379,7 @@
 
                         ws.value.onmessage = (event) => {
                             const { type, data } = JSON.parse(event.data);
-                            // 统一处理缓存数据
+                            // 处理缓存同步
                             if (type === 'cache' && data && data.key) {
                                 const cacheSetters = {
                                     cookie: v => form.cookie = v,
@@ -1390,21 +1391,17 @@
                                     return;
                                 }
                             }
-
                             if (type === 'fuckEnded') {
                                 isProcessing.value = false;
                                 ElNotification.success({ title: '执行完成', message: '选课流程已结束', duration: 3000 });
                                 if (loopEnabled.value) {
-                                    setTimeout(() => {
-                                        startProcess();
-                                    }, 2000);
+                                    setTimeout(() => { startProcess(); }, 2000);
                                 }
                                 if (activeTab.value === 'course') {
                                     courseTab.value = 'result';
                                 }
                                 return;
                             }
-
                             if (type === 'fuckStarted') {
                                 isProcessing.value = true;
                                 if (activeTab.value === 'course') {
@@ -1412,7 +1409,6 @@
                                 }
                                 return;
                             }
-
                             if (type === 'scheduleEnded') {
                                 isProcessing.value = false;
                                 ElNotification.success({ title: '执行完成', message: '排课流程已结束', duration: 3000 });
@@ -1421,7 +1417,6 @@
                                 }
                                 return;
                             }
-
                             if (type === 'scheduleStarted') {
                                 isProcessing.value = true;
                                 if (activeTab.value === 'schedule') {
@@ -1429,87 +1424,58 @@
                                 }
                                 return;
                             }
-
-                            // 处理缓存数据
                             if (type === 'lessonCache') {
                                 try {
                                     lessonCacheData.value = Array.isArray(data) ? data : [];
-                                    ElNotification.success({
-                                        title: '缓存更新',
-                                        message: `成功获取 ${lessonCacheData.value.length} 条课程数据`
-                                    });
+                                    ElNotification.success({ title: '缓存更新', message: `成功获取 ${lessonCacheData.value.length} 条课程数据` });
                                 } catch (error) {
-                                    ElNotification.error({
-                                        title: '数据解析错误',
-                                        message: error.message
-                                    });
+                                    ElNotification.error({ title: '数据解析错误', message: error.message });
                                 }
                                 return;
                             }
-
-                            // 根据当前激活的tab决定日志添加到哪个数组
+                            // 日志与进度、表格处理
                             if (activeTab.value === 'schedule') {
-                                scheduleLogs.value.push({
-                                    type,
-                                    data,
-                                    runtime: getRuntime(),
-                                    timestamp: Date.now()
-                                });
-
+                                if (type === 'log' || type === 'error' || type === 'good') {
+                                    scheduleLogs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                }
                                 if (type === 'table') {
                                     scheduleTable.data = data;
                                 }
-
                                 if (type === 'step') {
                                     scheduleActiveStep.value = data;
                                     if (data >= 6) {
                                         scheduleTab.value = 'result';
                                     }
                                 }
-
-                                // 滚动到底部
                                 nextTick(() => {
                                     if (scheduleLogContainer.value) {
                                         scheduleLogContainer.value.scrollTop = scheduleLogContainer.value.scrollHeight;
                                     }
                                 });
-                            } else if (activeTab.value === 'course') {
-                                logs.value.push({
-                                    type,
-                                    data,
-                                    runtime: getRuntime(),
-                                    timestamp: Date.now()
-                                });
-
+                                if (type === 'log' || type === 'error' || type === 'good') {
+                                    logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                }
                                 if (type === 'table') {
                                     table.data = data;
                                 }
-
                                 if (type === 'step') {
                                     activestep.value = data;
                                     if (data >= 6) {
                                         courseTab.value = 'result';
                                     }
                                 }
-
-                                // 滚动到底部
                                 nextTick(() => {
                                     if (logContainer.value) {
                                         logContainer.value.scrollTop = logContainer.value.scrollHeight;
                                     }
                                 });
                             } else {
-                                logs.value.push({
-                                    type,
-                                    data,
-                                    runtime: getRuntime(),
-                                    timestamp: Date.now()
-                                });
-
+                                if (type === 'log' || type === 'error' || type === 'good') {
+                                    logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                }
                                 if (type === 'table') {
                                     table.data = data;
                                 }
-
                                 if (type === 'step') {
                                     activestep.value = data;
                                 }

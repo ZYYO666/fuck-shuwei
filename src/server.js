@@ -26,31 +26,6 @@ wss.on('connection', (ws) => {
   })
 
   const logger = {
-    zyyo: (...args) => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type: 'log', data: args.join(' ') }))
-      }
-    },
-    zyyoerror: (...args) => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type: 'error', data: args.join(' ') }))
-      }
-    },
-    zyyogood: (...args) => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type: 'good', data: args.join(' ') }))
-      }
-    },
-    zyyotable: (obj) => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type: 'table', data: obj }))
-      }
-    },
-    zyyostep: (num) => {
-      if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type: 'step', data: num }))
-      }
-    },
     sendData: (type, data) => {
       if (ws.readyState === ws.OPEN) {
         ws.send(JSON.stringify({ type, data }))
@@ -62,9 +37,9 @@ wss.on('connection', (ws) => {
   ws.on('message', async (data) => {
     try {
       const message = JSON.parse(data)
-      logger.zyyogood('收到启动请求')
+      logger.sendData('good', '收到启动请求')
       if (clients.get(clientId).status === 'running') {
-        logger.zyyogood('已经有运行的实例了, 请稍后再试')
+        logger.sendData('good', '已经有运行的实例了, 请稍后再试')
         return
       }
       if (message.type === 'fuckStart') {
@@ -84,7 +59,7 @@ wss.on('connection', (ws) => {
         await startScheduleProcess(message.config)
       }
     } catch (error) {
-      logger.zyyoerror('消息处理错误:', error)
+      logger.sendData('error', ['消息处理错误:', error].join(' '))
       console.log(error);
 
     } finally {

@@ -6,7 +6,7 @@ module.exports = async function getCookie(config) {
 
     if (config.cookie == '') {
 
-      config.logger.zyyo('Cookie缓存不存在，开始登陆获取.......')
+      config.logger.sendData('log', 'Cookie缓存不存在，开始登陆获取.......')
       const newCookie = await login(config)
 
 
@@ -18,7 +18,7 @@ module.exports = async function getCookie(config) {
 
       return config
     } else {
-      config.logger.zyyo('登录缓存读取成功')
+      config.logger.sendData('log', '登录缓存读取成功')
 
       return config
     }

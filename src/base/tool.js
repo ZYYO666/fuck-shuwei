@@ -1,70 +1,77 @@
 
 const { getInstance } = require('./request')
-// 主要功能：提供课表相关的工具函数，包括数组合并、课表初始化、冲突检测、撤销操作、文件读取等
+
 const fs = require('fs')
 
-// 读取文件内容
-function getFile(filePath) {
+ function getLessonJSONs(lessonDatas) {
   try {
-    return fs.readFileSync(filePath, 'utf8') // 以utf8编码读取文件
-  } catch (err) {
-    throw err // 读取失败抛出异常
+    return new Function(`${lessonDatas} return lessonJSONs`)()
+  } catch (error) {
+    throw new Error('未找到有效的 lessonJSONs 对象')
   }
 }
 
-// 合并两个二维数组（课表），有课则为1
+function getFile(filePath) {
+  try {
+    return fs.readFileSync(filePath, 'utf8')
+  } catch (err) {
+    throw err
+  }
+}
+
+
 function mergeArrays(arr1, arr2) {
   if (arr1.length !== arr2.length || arr1[0]?.length !== arr2[0]?.length) {
     throw new Error('数组结构不相同')
   }
   return arr1.map(
-    (row, i) => row.map((cell, j) => (cell || arr2[i][j] ? 1 : 0)), // 有课则为1
+    (row, i) => row.map((cell, j) => (cell || arr2[i][j] ? 1 : 0)),
   )
 }
 
-// 创建空课表（16周*91节），如有已选课表则先填充
+
 function createEmptySchedule(yixuanData) {
   const weeks = 16
   const slots = 91
   let schedule = []
   for (let w = 0; w < weeks; w++) {
-    schedule.push(new Array(slots).fill(0)) // 每周91节初始化为0
+    schedule.push(new Array(slots).fill(0))
   }
   // 如果启用已选课表，先填充
   if (yixuanData) {
     for (const item of yixuanData) {
       if (item.formatDatas) {
         for (const format of item.formatDatas) {
-          schedule = mergeArrays(schedule, format) // 合并已选课表
+          schedule = mergeArrays(schedule, format)
         }
       }
     }
   }
   return schedule
 }
-// 检查当前排课方式是否与已有课表冲突
+
+
 function isConflict(schedule, lessonFormat) {
   for (let w = 0; w < 16; w++) {
     for (let s = 0; s < 91; s++) {
       if (lessonFormat[w][s] && schedule[w][s]) {
-        return true // 有冲突
+        return true
       }
     }
   }
-  return false // 无冲突
+  return false
 }
 
-// 回溯撤销排课
+
 function removeArrays(schedule, lessonFormat) {
   for (let w = 0; w < 16; w++) {
     for (let s = 0; s < 91; s++) {
       if (lessonFormat[w][s]) {
-        schedule[w][s] = 0 // 撤销该节课
+        schedule[w][s] = 0
       }
     }
   }
   return schedule
-  // 注意：不撤销yixuanData部分，因为它是初始已选
 }
 async function visit(href, cookie) {
   const axios = getInstance()
@@ -90,10 +97,11 @@ function zyyo_delay(zyyo_ms) {
 module.exports = {
   visit,
   zyyo_delay,
-  mergeArrays, // 合并课表
-  createEmptySchedule, // 创建空课表
-  isConflict, // 检查冲突
-  mergeArrays, // 合并课表（重复导出）
-  removeArrays, // 撤销课表
-  getFile, // 读取文件
+  mergeArrays,
+  createEmptySchedule,
+  isConflict,
+  mergeArrays,
+  removeArrays,
+  getFile,
+  getLessonJSONs,
 }

@@ -5,12 +5,10 @@ module.exports = async function initSelection(config) {
 
   try {
     const res = await visit(initUrl, config.cookie)
-
     if (!res) {
       throw new Error('选课初始化失败')
     }
-    config.logger.zyyo('选课初始化成功')
-
+    config.logger.sendData('log', '选课初始化成功')
   } catch (error) {
     throw error
   }
