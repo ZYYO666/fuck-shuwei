@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能选课控制台</title>
+
+    <link rel="stylesheet" href="./static/elementui.css">
+    <link rel="stylesheet" href="./static/style.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <!-- 全新极简侧边栏 -->
+        <nav class="sidebar-new">
+            <!-- 侧边栏标题 -->
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">智能选课客户端</h2>
+            </div>
+            <div class="sidebar-menu">
+                <ul class="sidebar-menu-list">
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='dashboard'}"
+                        @click="handleMenuSelect('dashboard')">
+                        <i class="el-icon-s-home"></i>
+                        <span>控制面板</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='config'}"
+                        @click="handleMenuSelect('config')">
+                        <i class="el-icon-setting"></i>
+                        <span>基础配置</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='course'}"
+                        @click="handleMenuSelect('course')">
+                        <i class="el-icon-s-management"></i>
+                        <span>课程序号</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='schedule'}"
+                        @click="handleMenuSelect('schedule')">
+                        <i class="el-icon-date"></i>
+                        <span>智能排课</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='cache'}"
+                        @click="handleMenuSelect('cache')">
+                        <i class="el-icon-cpu"></i>
+                        <span>缓存配置</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='lessonCache'}"
+                        @click="handleMenuSelect('lessonCache')">
+                        <i class="el-icon-document"></i>
+                        <span>课程缓存</span>
+                    </li>
+                    <li class="sidebar-menu-item" :class="{active: activeTab==='about'}"
+                        @click="handleMenuSelect('about')">
+                        <i class="el-icon-info"></i>
+                        <span>关于系统</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="sidebar-conn-status-only">
+                <div class="sidebar-conn-status">
+                    <span class="sidebar-conn-dot" :class="{
+                            connected: connectionStatus==='已连接',
+                            connecting: connectionStatus==='连接中...'||connectionStatus==='连接出错',
+                            error: connectionStatus==='断开'||connectionStatus==='连接失败'
+                          }"></span>
+                    <span>{{ connectionStatus }}</span>
+                </div>
+            </div>
+        </nav>
+        <!-- 主内容区统一卡片包裹 -->
+        <div class="main-content">
+            <!-- 控制面板 - 移除外层卡片 -->
+            <div v-if="activeTab === 'dashboard'" class="dashboard-content">
+                <!-- 主标题区域 -->
+                <div class="dashboard-hero">
+                    <div class="hero-content">
+                        <div class="hero-title">
+                            <span class="title-main">智能选课</span>
+                            <span class="title-sub">控制中心</span>
+                </div>
+                        <div class="hero-subtitle">让选课变得简单而优雅</div>
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <div class="stat-value">∞</div>
+                                <div class="stat-label">可能性</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="stat-value">⚡</div>
+                                <div class="stat-label">速度</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="stat-value">🎯</div>
+                                <div class="stat-label">精准</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="floating-elements">
+                            <div class="float-item item-1">📚</div>
+                            <div class="float-item item-2">🎓</div>
+                            <div class="float-item item-3">⚡</div>
+                            <div class="float-item item-4">🎯</div>
+                            <div class="float-item item-5">🚀</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 核心功能区域 -->
+                <div class="dashboard-core">
+                    <div class="core-grid">
+                        <div class="core-card primary" @click="handleMenuSelect('course')">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">🎯</div>
+                                <h3>智能选课</h3>
+                                <p>一键自动化选课，让抢课变得轻松</p>
+                                <div class="card-meta">
+                                    <span class="meta-item">⚡ 毫秒级响应</span>
+                                    <span class="meta-item">🔄 自动重试</span>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <span>开始选课</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="core-card secondary" @click="handleMenuSelect('schedule')">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">📅</div>
+                                <h3>智能排课</h3>
+                                <p>AI算法生成最优课程表</p>
+                                <div class="card-meta">
+                                    <span class="meta-item">🧠 AI优化</span>
+                                    <span class="meta-item">⚖️ 权重平衡</span>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <span>开始排课</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="core-card accent" @click="handleMenuSelect('config')">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">⚙️</div>
+                                <h3>系统配置</h3>
+                                <p>个性化设置，定制专属体验</p>
+                                <div class="card-meta">
+                                    <span class="meta-item">🔐 安全连接</span>
+                                    <span class="meta-item">🎨 个性化</span>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <span>配置系统</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 实时状态面板 -->
+                <div class="dashboard-status-panel">
+                    <div class="status-header">
+                        <h3>系统状态</h3>
+                        <div class="status-indicator">
+                            <div class="pulse-dot"></div>
+                            <span>实时监控</span>
+                        </div>
+                    </div>
+                    <div class="status-cards">
+                        <div class="status-card">
+                            <div class="status-icon online">🔗</div>
+                            <div class="status-info">
+                                <div class="status-name">连接状态</div>
+                                <div class="status-value">已连接</div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon online">⚡</div>
+                            <div class="status-info">
+                                <div class="status-name">响应时间</div>
+                                <div class="status-value">12ms</div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon online">💾</div>
+                            <div class="status-info">
+                                <div class="status-name">缓存状态</div>
+                                <div class="status-value">正常</div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon warning">🎯</div>
+                            <div class="status-info">
+                                <div class="status-name">选课服务</div>
+                                <div class="status-value">待机中</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据洞察 -->
+                <div class="dashboard-insights">
+                    <div class="insights-header">
+                        <h3>数据洞察</h3>
+                        <div class="insights-subtitle">基于实时数据分析</div>
+                    </div>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <div class="insight-icon">📊</div>
+                                <div class="insight-title">选课成功率</div>
+                            </div>
+                            <div class="insight-value">98.7%</div>
+                            <div class="insight-chart">
+                                <div class="chart-bar" style="width: 98.7%"></div>
+                            </div>
+                            <div class="insight-trend positive">↗️ +2.3%</div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <div class="insight-icon">⏱️</div>
+                                <div class="insight-title">平均响应时间</div>
+                            </div>
+                            <div class="insight-value">12ms</div>
+                            <div class="insight-chart">
+                                <div class="chart-bar" style="width: 85%"></div>
+                            </div>
+                            <div class="insight-trend positive">↗️ 优化中</div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <div class="insight-icon">🎯</div>
+                                <div class="insight-title">今日选课次数</div>
+                            </div>
+                            <div class="insight-value">1,247</div>
+                            <div class="insight-chart">
+                                <div class="chart-bar" style="width: 92%"></div>
+                            </div>
+                            <div class="insight-trend positive">↗️ +15.7%</div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <div class="insight-icon">👥</div>
+                                <div class="insight-title">活跃用户</div>
+                            </div>
+                            <div class="insight-value">8,956</div>
+                            <div class="insight-chart">
+                                <div class="chart-bar" style="width: 78%"></div>
+                            </div>
+                            <div class="insight-trend positive">↗️ +8.2%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="dashboard-quick-actions">
+                    <h3>快捷操作</h3>
+                    <div class="quick-grid">
+                        <button class="quick-btn" @click="handleMenuSelect('cache')">
+                            <span class="btn-icon">🗂️</span>
+                            <span class="btn-text">缓存管理</span>
+                        </button>
+                        <button class="quick-btn" @click="handleMenuSelect('lessonCache')">
+                            <span class="btn-icon">📚</span>
+                            <span class="btn-text">课程数据</span>
+                        </button>
+                        <button class="quick-btn" @click="handleMenuSelect('about')">
+                            <span class="btn-icon">ℹ️</span>
+                            <span class="btn-text">关于系统</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 其他页面保持原有卡片结构 -->
+            <div v-else class="main-card">
+                <div class="main-card-content">
+                    <!-- 基础配置 -->
+                    <div v-if="activeTab === 'config'">
+                        <div class="card-title">
+                            <i class="el-icon-setting"></i>
+                            <span>基础配置</span>
+                        </div>
+                        <el-form label-position="top" :model="form" style="max-width: 600px;">
+                            <el-form-item label="教务系统地址">
+                                <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password
+                                    clearable />
+                            </el-form-item>
+                            <el-form-item label="学号">
+                                <el-input v-model="form.username" type="password" placeholder="请输入学号" show-password
+                                    clearable />
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input v-model="form.password" type="password" placeholder="请输入密码"
+                                    show-password></el-input>
+                            </el-form-item>
+                            <el-form-item label="选课页序号">
+                                <el-radio-group v-model="form.count">
+                                    <el-radio-button label="1">1</el-radio-button>
+                                    <el-radio-button label="2">2</el-radio-button>
+                                    <el-radio-button label="3">3</el-radio-button>
+                                    <el-radio-button label="4">4</el-radio-button>
+                                    <el-radio-button label="5">5</el-radio-button>
+                                </el-radio-group>
+                            </el-form-item>
+                            <el-form-item label="抢课模式">
+                                <el-radio-group v-model="form.selectionModel">
+                                    <el-radio-button label="1">并发模式</el-radio-button>
+                                    <el-radio-button label="2">顺序模式</el-radio-button>
+                                </el-radio-group>
+                            </el-form-item>
+                            <p v-if="form.selectionModel=='1'" style="color: #e6a23c;">并发有风险，且用且珍惜</p>
+                            <el-form-item label="请求延迟">
+                                <el-slider style="width: 90%; margin: 0 auto" v-model="form.delay" :step="200" :min="0"
+                                    :max="2000" show-stops />
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <!-- 选课中心：课程序号管理+日志面板合并 -->
+                    <div v-if="activeTab === 'course'" class="course-page">
+                        <el-tabs v-model="courseTab" class="course-tabs">
+                            <el-tab-pane label="任务配置" name="config">
+                                <div class="course-config">
+                                    <div class="course-config-header">
+                                        <span class="title">课程序号列表</span>
+                                        <el-button type="primary" plain @click="addLesson" :disabled="isProcessing">
+                                            <i class="el-icon-plus"></i> 添加课程
+                                        </el-button>
+                                    </div>
+                                    <el-alert title="请按顺序填入您想选择的课程的序号，支持多个课程。" type="info" show-icon :closable="false"
+                                        style="margin-bottom: 18px;">
+                                    </el-alert>
+                                    <div class="course-list">
+                                        <div v-for="(lesson, index) in form.lessons" :key="index"
+                                            class="course-list-item">
+                                            <el-input v-model="lesson.value" placeholder="课程序号（如 001.1.1）" clearable
+                                                @input="validateLesson(lesson)" style="flex:1;">
+                                                <template #append>
+                                                    <el-button @click="removeLesson(index)" :disabled="isProcessing"
+                                                        icon="el-icon-delete"></el-button>
+                                                </template>
+                                            </el-input>
+                                        </div>
+                                        <el-empty v-if="form.lessons.length === 0" description="请添加课程"></el-empty>
+                                    </div>
+                                    <div class="course-config-footer">
+                                        <div>
+                                            <span style="margin-right:10px;">循环执行</span>
+                                            <el-switch v-model="loopEnabled" active-text="开" inactive-text="关" />
+                                        </div>
+                                        <el-button size="large" type="success" @click="startProcess"
+                                            :loading="isProcessing" icon="el-icon-s-promotion">
+                                            {{ isProcessing ? '执行中...' : '开始执行' }}
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="执行日志" name="logs">
+                                <div class="course-logs">
+                                    <div class="course-steps">
+                                        <h4>执行进度</h4>
+                                        <el-steps direction="vertical" style="height:240px;" :active="activestep"
+                                            finish-status="success">
+                                            <el-step title="准备就绪"></el-step>
+                                            <el-step title="用户登录"></el-step>
+                                            <el-step title="获取轮次"></el-step>
+                                            <el-step title="初始化"></el-step>
+                                            <el-step title="课程缓存"></el-step>
+                                            <el-step title="开始选课"></el-step>
+                                        </el-steps>
+                                    </div>
+                                    <div class="course-log-list">
+                                        <h4>日志输出</h4>
+                                        <el-progress :percentage="Math.min(activestep/6*100, 100)"
+                                            style="margin-bottom:10px;"></el-progress>
+                                        <div class="log-container" ref="logContainer">
+                                            <el-skeleton :rows="4" animated
+                                                :loading="isProcessing && logs.length === 0">
+                                                <template #default>
+                                                    <template v-for="log in logs" :key="log.timestamp">
+                                                        <div v-if="log.type == 'log' || log.type == 'error' || log.type == 'good'"
+                                                            class="log-entry" :class="log.type">
+                                                            <span class="log-time">[{{ log.runtime }}]</span>
+                                                            <span class="message">{{ log.data }}</span>
+                                                        </div>
+                                                    </template>
+                                                    <el-empty v-if="logs.length === 0 && !isProcessing"
+                                                        description="暂无日志" :image-size="80"></el-empty>
+                                                </template>
+                                            </el-skeleton>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="选课结果" name="result">
+                                <div class="course-result">
+                                    <h4>选课结果</h4>
+                                    <el-table v-if="table.data.length" :data="table.data" class="log-table"
+                                        style="width:100%;">
+                                        <el-table-column v-for="(key, colIndex) in Object.keys(table.data[0] || {})"
+                                            :key="key" :prop="key" :label="key">
+                                            <template #default="scope">
+                                                <el-tag v-if="colIndex === Object.keys(table.data[0]).length - 1"
+                                                    effect="plain" v-loading="scope.row[key] =='loading'"
+                                                    :type="getStatusTagType(scope.row[key])">
+                                                    {{ getStatusName(scope.row[key]) }}
+                                                </el-tag>
+                                                <span v-else> {{ scope.row[key] }} </span>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-empty v-else description="暂无选课结果" :image-size="100"></el-empty>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                    <!-- 智能排课：课程代码管理+日志面板合并 -->
+                    <div v-if="activeTab === 'schedule'" class="course-page">
+                        <el-tabs v-model="scheduleTab" class="course-tabs">
+                            <el-tab-pane label="排课配置" name="config">
+                                <!-- 课程列表并排显示 -->
+                                <div class="course-lists-container">
+                                    <!-- 课程代码列表 -->
+                                    <div class="course-list-section">
+                                        <div class="course-config-header">
+                                            <span class="title">课程代码列表</span>
+                                            <el-button type="primary" plain @click="addLessonCode"
+                                                :disabled="isProcessing">
+                                                <i class="el-icon-plus"></i> 添加课程代码
+                                            </el-button>
+                                        </div>
+                                        <el-alert title="请填入您想排课的课程代码，支持多个课程。" type="info" show-icon :closable="false"
+                                            style="margin-bottom: 18px;">
+                                        </el-alert>
+                                        <div class="course-list-scrollable">
+                                            <div v-for="(lessonCode, index) in form.lessonCodes" :key="index"
+                                                class="course-list-item">
+                                                <el-input v-model="form.lessonCodes[index]"
+                                                    placeholder="课程代码（如 28131060-2）" clearable
+                                                    @input="validateLessonCode(index)" style="flex:1;">
+                                                    <template #append>
+                                                        <el-button @click="removeLessonCode(index)"
+                                                            :disabled="isProcessing" icon="el-icon-delete"></el-button>
+                                                    </template>
+                                                </el-input>
+                                            </div>
+                                            <el-empty v-if="form.lessonCodes.length === 0"
+                                                description="请添加课程代码"></el-empty>
+                                        </div>
+                                    </div>
+
+                                    <!-- 已选课程序号列表 -->
+                                    <div class="course-list-section">
+                                        <div class="course-config-header">
+                                            <span class="title">已选课程序号列表（可选）</span>
+                                            <el-button type="primary" plain @click="addYixuanData"
+                                                :disabled="isProcessing">
+                                                <i class="el-icon-plus"></i> 添加已选课程
+                                            </el-button>
+                                        </div>
+                                        <el-alert title="请填入您已选择的课程序号，用于排课时避免冲突（可选）。" type="info" show-icon
+                                            :closable="false" style="margin-bottom: 18px;">
+                                        </el-alert>
+                                        <div class="course-list-scrollable">
+                                            <div v-for="(yixuan, index) in form.yixuanData" :key="index"
+                                                class="course-list-item">
+                                                <el-input v-model="form.yixuanData[index]"
+                                                    placeholder="已选课程序号（如 001.1.1）" clearable
+                                                    @input="validateYixuanData(index)" style="flex:1;">
+                                                    <template #append>
+                                                        <el-button @click="removeYixuanData(index)"
+                                                            :disabled="isProcessing" icon="el-icon-delete"></el-button>
+                                                    </template>
+                                                </el-input>
+                                            </div>
+                                            <el-empty v-if="form.yixuanData.length === 0"
+                                                description="暂无已选课程（可选）"></el-empty>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <el-divider content-position="left">权重设置</el-divider>
+
+                                <div style="margin-bottom: 20px;">
+                                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                                        <el-tag :type="form.zaoba == 1 ? 'primary' : 'info'"
+                                            @click="form.zaoba = form.zaoba == 1 ? 0 : 1"
+                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
+                                            :effect="form.zaoba == 1 ? 'dark' : 'plain'">
+                                            早八权重: {{ form.zaoba == 1 ? '开启' : '关闭' }}
+                                        </el-tag>
+                                        <el-tag :type="form.zhouwu == 1 ? 'primary' : 'info'"
+                                            @click="form.zhouwu = form.zhouwu == 1 ? 0 : 1"
+                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
+                                            :effect="form.zhouwu == 1 ? 'dark' : 'plain'">
+                                            周五权重: {{ form.zhouwu == 1 ? '开启' : '关闭' }}
+                                        </el-tag>
+                                        <el-tag :type="form.zhouyi == 1 ? 'primary' : 'info'"
+                                            @click="form.zhouyi = form.zhouyi == 1 ? 0 : 1"
+                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
+                                            :effect="form.zhouyi == 1 ? 'dark' : 'plain'">
+                                            周一权重: {{ form.zhouyi == 1 ? '开启' : '关闭' }}
+                                        </el-tag>
+                                        <el-tag :type="form.zhoulio == 1 ? 'primary' : 'info'"
+                                            @click="form.zhoulio = form.zhoulio == 1 ? 0 : 1"
+                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
+                                            :effect="form.zhoulio == 1 ? 'dark' : 'plain'">
+                                            周六权重: {{ form.zhoulio == 1 ? '开启' : '关闭' }}
+                                        </el-tag>
+                                        <el-tag :type="form.zhouri == 1 ? 'primary' : 'info'"
+                                            @click="form.zhouri = form.zhouri == 1 ? 0 : 1"
+                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
+                                            :effect="form.zhouri == 1 ? 'dark' : 'plain'">
+                                            周日权重: {{ form.zhouri == 1 ? '开启' : '关闭' }}
+                                        </el-tag>
+                                    </div>
+                                </div>
+
+                                <div class="course-config-footer">
+                                    <div></div>
+                                    <el-button size="large" type="success" @click="startScheduleProcess"
+                                        :loading="isProcessing" icon="el-icon-s-promotion">
+                                        {{ isProcessing ? '执行中...' : '开始排课' }}
+                                    </el-button>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="执行日志" name="logs">
+                                <div class="course-logs">
+                                    <div class="course-steps">
+                                        <h4>执行进度</h4>
+                                        <el-steps direction="vertical" style="height:240px;"
+                                            :active="scheduleActiveStep" finish-status="success">
+                                            <el-step title="准备就绪"></el-step>
+                                            <el-step title="用户登录"></el-step>
+                                            <el-step title="获取课程数据"></el-step>
+                                            <el-step title="格式化数据"></el-step>
+                                            <el-step title="生成排课方案"></el-step>
+                                            <el-step title="权重计算"></el-step>
+                                        </el-steps>
+                                    </div>
+                                    <div class="course-log-list">
+                                        <h4>日志输出</h4>
+                                        <el-progress :percentage="Math.min(scheduleActiveStep/6*100, 100)"
+                                            style="margin-bottom:10px;"></el-progress>
+                                        <div class="log-container" ref="scheduleLogContainer">
+                                            <el-skeleton :rows="4" animated
+                                                :loading="isProcessing && scheduleLogs.length === 0">
+                                                <template #default>
+                                                    <template v-for="log in scheduleLogs" :key="log.timestamp">
+                                                        <div v-if="log.type == 'log' || log.type == 'error' || log.type == 'good'"
+                                                            class="log-entry" :class="log.type">
+                                                            <span class="log-time">[{{ log.runtime }}]</span>
+                                                            <span class="message">{{ log.data }}</span>
+                                                        </div>
+                                                    </template>
+                                                    <el-empty v-if="scheduleLogs.length === 0 && !isProcessing"
+                                                        description="暂无日志" :image-size="80"></el-empty>
+                                                </template>
+                                            </el-skeleton>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="排课结果" name="result">
+                                <div class="course-result">
+                                    <h4>排课结果</h4>
+
+                                    <!-- 方案选择器 -->
+                                    <div v-if="scheduleTable.data.length" class="schedule-solution-selector">
+                                        <el-select v-model="selectedSolutionIndex" placeholder="选择排课方案"
+                                            style="width: 200px; margin-bottom: 20px;">
+                                            <el-option v-for="(solution, index) in scheduleTable.data" :key="index"
+                                                :label="`方案${index + 1} (权重: ${solution.detail ? solution.detail.weight : 0})`"
+                                                :value="index">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+
+                                    <!-- 课表显示 -->
+                                    <div v-if="scheduleTable.data.length && selectedSolutionIndex !== null"
+                                        class="schedule-timetable">
+                                        <div class="timetable-header">
+                                            <h5>课表预览</h5>
+                                            <div class="timetable-stats">
+                                                <el-tag size="small" type="info">早八: {{
+                                                    getCurrentSolutionStats().zaobaCount }}</el-tag>
+                                                <el-tag size="small" type="warning">周五: {{
+                                                    getCurrentSolutionStats().zhouwuCount }}</el-tag>
+                                                <el-tag size="small" type="success">周一: {{
+                                                    getCurrentSolutionStats().zhouyiCount }}</el-tag>
+                                                <el-tag size="small" type="danger">周六: {{
+                                                    getCurrentSolutionStats().zhoulioCount }}</el-tag>
+                                                <el-tag size="small" type="primary">周日: {{
+                                                    getCurrentSolutionStats().zhouriCount }}</el-tag>
+                                            </div>
+                                        </div>
+
+                                        <div class="timetable-container">
+                                            <table class="timetable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="time-header">时间</th>
+                                                        <th v-for="day in ['周一', '周二', '周三', '周四', '周五', '周六', '周日']"
+                                                            :key="day" class="day-header">{{ day }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="period in 13" :key="period" class="period-row">
+                                                        <td class="time-cell">{{ getTimeSlot(period) }}</td>
+                                                        <td v-for="day in 7" :key="day" class="lesson-cell"
+                                                            :class="getLessonCellClass(day, period)"
+                                                            @click="showLessonDetail(day, period)">
+                                                            <div v-if="getLessonAt(day, period)" class="lesson-info">
+                                                                <div class="lesson-name">{{ getLessonAt(day,
+                                                                    period).name }}</div>
+                                                                <div class="lesson-teacher">{{ getLessonAt(day,
+                                                                    period).teachers }}</div>
+                                                                <div class="lesson-weeks">{{ getLessonAt(day,
+                                                                    period).weeks }}</div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <el-empty v-else description="暂无排课结果" :image-size="100"></el-empty>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                    <!-- 缓存配置 -->
+                    <div v-if="activeTab === 'cache'">
+                        <div class="card-title">
+                            <i class="el-icon-cpu"></i>
+                            <span>缓存配置</span>
+                        </div>
+                        <el-alert title="缓存数据用于提高系统性能，避免重复登录和获取数据。清除缓存后需要重新登录或获取数据。" type="info" show-icon
+                            :closable="false" style="margin-bottom: 20px;"></el-alert>
+
+                        <div style="margin-bottom: 20px;">
+                            <el-button type="warning" @click="clearCache('cookie')" :disabled="isProcessing"
+                                style="margin-right: 10px;">
+                                <i class="el-icon-delete"></i>
+                                清除Cookie
+                            </el-button>
+                            <el-button type="warning" @click="clearCache('lessonDatas')" :disabled="isProcessing"
+                                style="margin-right: 10px;">
+                                <i class="el-icon-delete"></i>
+                                清除课程数据
+                            </el-button>
+                            <el-button type="warning" @click="clearCache('profileId')" :disabled="isProcessing"
+                                style="margin-right: 10px;">
+                                <i class="el-icon-delete"></i>
+                                清除ProfileId
+                            </el-button>
+                            <el-button type="danger" @click="clearAllCache" :disabled="isProcessing">
+                                <i class="el-icon-delete"></i>
+                                清除所有缓存
+                            </el-button>
+                        </div>
+
+                        <el-divider content-position="left">Cookie缓存</el-divider>
+                        <el-form-item label="登录凭证">
+                            <div style="margin-bottom: 10px;">
+                                <el-tag :type="form.cookie ? 'success' : 'info'" size="small"
+                                    style="margin-right: 10px;">
+                                    {{ form.cookie ? '已缓存' : '未缓存' }}
+                                </el-tag>
+                                <el-tag v-if="form.cookie" type="info" size="small">
+                                    数据长度: {{ form.cookie.length }} 字符
+                                </el-tag>
+                            </div>
+                            <el-input v-model="form.cookie" :rows="3" type="textarea" placeholder="Cookie数据将在此显示"
+                                readonly>
+                            </el-input>
+                            <div v-if="form.cookie" style="margin-top: 10px;">
+                                <el-button type="text" size="small" @click="copyToClipboard('cookie', form.cookie)">
+                                    复制Cookie
+                                </el-button>
+                            </div>
+                        </el-form-item>
+
+                        <el-divider content-position="left">ProfileId缓存</el-divider>
+                        <el-form-item label="选课轮次ID">
+                            <div style="margin-bottom: 10px;">
+                                <el-tag :type="form.profileId ? 'success' : 'info'" size="small"
+                                    style="margin-right: 10px;">
+                                    {{ form.profileId ? '已缓存' : '未缓存' }}
+                                </el-tag>
+                                <el-tag v-if="form.profileId" type="info" size="small">
+                                    数据长度: {{ form.profileId.length }} 字符
+                                </el-tag>
+                            </div>
+                            <el-input v-model="form.profileId" :rows="3" type="textarea" placeholder="ProfileId将在此显示"
+                                readonly>
+                            </el-input>
+                            <div v-if="form.profileId" style="margin-top: 10px;">
+                                <el-button type="text" size="small"
+                                    @click="copyToClipboard('profileId', form.profileId)">
+                                    复制ProfileId
+                                </el-button>
+                            </div>
+                        </el-form-item>
+
+                        <el-divider content-position="left">课程数据缓存</el-divider>
+                        <el-form-item label="课程信息数据">
+                            <div style="margin-bottom: 10px;">
+                                <el-tag :type="form.lessonDatas ? 'success' : 'info'" size="small"
+                                    style="margin-right: 10px;">
+                                    {{ form.lessonDatas ? '已缓存' : '未缓存' }}
+                                </el-tag>
+                                <el-tag v-if="form.lessonDatas" type="info" size="small">
+                                    数据长度: {{ form.lessonDatas.length }} 字符
+                                </el-tag>
+                            </div>
+                            <el-input v-model="displayLessonDatas"
+                                :rows="form.lessonDatas ? (showFullLessonDatas ? 8 : 3) : 3" type="textarea"
+                                placeholder="课程数据将在此显示" readonly>
+                            </el-input>
+                            <div v-if="form.lessonDatas" style="margin-top: 10px;">
+                                <el-button type="text" size="small" @click="toggleLessonDatas">
+                                    {{ showFullLessonDatas ? '收起' : '展开完整数据' }}
+                                </el-button>
+                                <el-button type="text" size="small" @click="copyLessonDatas">
+                                    复制数据
+                                </el-button>
+                            </div>
+                        </el-form-item>
+                    </div>
+                    <!-- 课程缓存 -->
+                    <div v-if="activeTab === 'lessonCache'">
+                        <div class="card-title">
+                            <i class="el-icon-document"></i>
+                            <span>课程数据缓存</span>
+                        </div>
+                        <el-alert title="这里展示了系统中缓存的课程数据，包括课程基本信息、教师信息、时间安排等。" type="info" show-icon :closable="false"
+                            style="margin-bottom: 20px;"></el-alert>
+
+                        <div style="margin-bottom: 20px;">
+                            <el-button type="primary" @click="refreshLessonCache" :disabled="isProcessing"
+                                style="margin-right: 10px;">
+                                <i class="el-icon-refresh"></i>
+                                刷新缓存
+                            </el-button>
+                            <el-button type="warning" @click="clearLessonCache" :disabled="isProcessing"
+                                style="margin-right: 10px;">
+                                <i class="el-icon-delete"></i>
+                                清除缓存
+                            </el-button>
+                            <el-button type="success" @click="exportLessonCache" :disabled="!lessonCacheData.length">
+                                <i class="el-icon-download"></i>
+                                导出数据
+                            </el-button>
+                        </div>
+
+                        <el-divider content-position="left">缓存统计</el-divider>
+                        <el-row :gutter="12" style="margin-bottom: 20px;">
+                            <el-col :span="6">
+                                <el-card shadow="hover" class="cache-stat-card">
+                                    <div class="cache-stat-item">
+                                        <div class="cache-stat-number">{{ lessonCacheData.length }}</div>
+                                        <div class="cache-stat-label">总课程数</div>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-card shadow="hover" class="cache-stat-card">
+                                    <div class="cache-stat-item">
+                                        <div class="cache-stat-number">{{ getUniqueTeachers().length }}</div>
+                                        <div class="cache-stat-label">教师数量</div>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-card shadow="hover" class="cache-stat-card">
+                                    <div class="cache-stat-item">
+                                        <div class="cache-stat-number">{{ getUniqueCourseTypes().length }}</div>
+                                        <div class="cache-stat-label">课程类型</div>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-card shadow="hover" class="cache-stat-card">
+                                    <div class="cache-stat-item">
+                                        <div class="cache-stat-number">{{ getUniqueCampuses().length }}</div>
+                                        <div class="cache-stat-label">校区数量</div>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+
+                        <!-- 搜索和筛选 -->
+                        <div style="margin-bottom: 20px;">
+                            <el-row :gutter="20">
+                                <el-col :span="8">
+                                    <el-input v-model="lessonSearchQuery" placeholder="搜索课程名称、教师或课程代码" clearable
+                                        prefix-icon="el-icon-search">
+                                    </el-input>
+                                </el-col>
+                                <el-col :span="4">
+                                    <el-select v-model="lessonFilterType" placeholder="课程类型" clearable>
+                                        <el-option v-for="type in getUniqueCourseTypes()" :key="type" :label="type"
+                                            :value="type">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col :span="4">
+                                    <el-select v-model="lessonFilterCampus" placeholder="校区" clearable>
+                                        <el-option v-for="campus in getUniqueCampuses()" :key="campus" :label="campus"
+                                            :value="campus">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col :span="4">
+                                    <el-select v-model="lessonFilterExam" placeholder="考试方式" clearable>
+                                        <el-option label="考试" value="考试"></el-option>
+                                        <el-option label="考查" value="考查"></el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col :span="4">
+                                    <el-button type="primary" @click="clearLessonFilters">
+                                        <i class="el-icon-refresh"></i>
+                                        清除筛选
+                                    </el-button>
+                                </el-col>
+                            </el-row>
+                        </div>
+
+                        <!-- 课程数据表格 -->
+                        <div class="lesson-cache-table-container">
+                            <el-table :data="paginatedLessonCacheData" style="width: 100%"
+                                :default-sort="{prop: 'name', order: 'ascending'}" stripe border highlight-current-row>
+                                <el-table-column prop="id" label="ID" width="50" sortable></el-table-column>
+                                <el-table-column prop="no" label="课程编号" width="100" sortable></el-table-column>
+                                <el-table-column prop="name" label="课程名称" min-width="150" sortable
+                                    show-overflow-tooltip></el-table-column>
+                                <el-table-column prop="code" label="课程代码" width="90" sortable></el-table-column>
+                                <el-table-column prop="credits" label="学分" width="50" sortable></el-table-column>
+                                <el-table-column prop="teachers" label="教师" width="90" sortable
+                                    show-overflow-tooltip></el-table-column>
+                                <el-table-column prop="courseTypeName" label="课程类型" width="90" sortable>
+                                    <template #default="scope">
+                                        <el-tag :type="getCourseTypeTagType(scope.row.courseTypeName)" size="small">
+                                            {{ scope.row.courseTypeName }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="campusName" label="校区" width="70" sortable>
+                                    <template #default="scope">
+                                        <el-tag type="info" size="small">{{ scope.row.campusName }}</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="period" label="学时" width="50" sortable></el-table-column>
+                                <el-table-column prop="startWeek" label="周次" width="70" sortable>
+                                    <template #default="scope">
+                                        {{ scope.row.startWeek }}-{{ scope.row.endWeek }}周
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="examModel" label="考试方式" width="70" sortable>
+                                    <template #default="scope">
+                                        <el-tag :type="scope.row.examModel === '考试' ? 'danger' : 'warning'"
+                                            size="small">
+                                            {{ scope.row.examModel }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="scheduled" label="已安排" width="70" sortable>
+                                    <template #default="scope">
+                                        <el-tag :type="scope.row.scheduled ? 'success' : 'info'" size="small">
+                                            {{ scope.row.scheduled ? '是' : '否' }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="withdrawable" label="可退课" width="70" sortable>
+                                    <template #default="scope">
+                                        <el-tag :type="scope.row.withdrawable ? 'success' : 'danger'" size="small">
+                                            {{ scope.row.withdrawable ? '是' : '否' }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作" width="100" fixed="right">
+                                    <template #default="scope">
+                                        <el-button type="text" size="small" @click="viewLessonDetail(scope.row)">
+                                            <i class="el-icon-view"></i>
+                                            详情
+                                        </el-button>
+                                        <el-button type="text" size="small" @click="copyLessonInfo(scope.row)">
+                                            <i class="el-icon-document-copy"></i>
+                                            复制
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+
+                        <!-- 分页 -->
+                        <div style="margin-top: 20px; text-align: right;">
+                            <el-pagination @size-change="handleLessonPageSizeChange"
+                                @current-change="handleLessonCurrentChange" :current-page="lessonCurrentPage"
+                                :page-sizes="[10, 20, 50, 100]" :page-size="lessonPageSize"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="filteredLessonCacheData.length">
+                            </el-pagination>
+                        </div>
+                    </div>
+                    <!-- 关于系统 -->
+                    <div v-if="activeTab === 'about'">
+                        <div class="about-system">
+                            <!-- 装饰性背景元素 -->
+                            <div class="about-bg-decoration">
+                                <div class="decoration-circle circle-1"></div>
+                                <div class="decoration-circle circle-2"></div>
+                                <div class="decoration-circle circle-3"></div>
+                                <div class="decoration-line line-1"></div>
+                                <div class="decoration-line line-2"></div>
+                            </div>
+                            
+                            <div class="about-header">
+                                <div class="about-logo">
+                                    <div class="logo-container">
+                                        <i class="el-icon-s-tools logo-icon"></i>
+                                        <div class="logo-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="about-title">智能选课系统</div>
+                                <div class="about-subtitle">高效、智能的教务选课自动化平台</div>
+                                <div class="about-version-badge">
+                                    <span class="version-text">v1.0.0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="about-stats">
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="el-icon-s-data"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">100%</div>
+                                        <div class="stat-label">自动化</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="el-icon-s-promotion"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">24/7</div>
+                                        <div class="stat-label">运行</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="el-icon-s-check"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">99.9%</div>
+                                        <div class="stat-label">成功率</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="about-info-card">
+                                <div class="info-card-header">
+                                    <i class="el-icon-user"></i>
+                                    <span>项目信息</span>
+                                </div>
+                                <el-row :gutter="24">
+                                    <el-col :span="12">
+                                        <div class="about-info-item">
+                                            <span class="info-label">版本号：</span>
+                                            <span class="info-value">v1.0.0</span>
+                                        </div>
+                                        <div class="about-info-item">
+                                            <span class="info-label">作者：</span>
+                                            <span class="info-value">zyy0</span>
+                                        </div>
+                                        <div class="about-info-item">
+                                            <span class="info-label">邮箱：</span>
+                                            <a href="mailto:i@zyyo.net" class="info-link">i@zyyo.net</a>
+                                        </div>
+                                        <div class="about-info-item about-participants">
+                                            <span class="info-label">参与者：</span>
+                                            <span class="info-value">最帅的宇宙超人SJYssr</span>
+                                        </div>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <div class="about-info-item">
+                                            <span class="info-label">开源地址：</span>
+                                            <a href="https://github.com/ZYYO666/fuck-shuwei" target="_blank" class="info-link">
+                                                <i class="el-icon-link"></i> GitHub
+                                            </a>
+                                        </div>
+                                        <div class="about-info-item">
+                                            <span class="info-label">博客：</span>
+                                            <a href="https://zyyo.net" target="_blank" class="info-link">
+                                                <i class="el-icon-link"></i> zyyo.net
+                                            </a>
+                                        </div>
+                                        <div class="about-info-item">
+                                            <span class="info-label">许可证：</span>
+                                            <span class="info-value">MIT</span>
+                                        </div>
+                                        <div class="about-info-item">
+                                            <span class="info-label">更新时间：</span>
+                                            <span class="info-value">2024年12月</span>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            
+                            <div class="about-tech">
+                                <div class="about-tech-header">
+                                    <i class="el-icon-s-platform"></i>
+                                    <span>技术栈</span>
+                                </div>
+                                <div class="tech-tags">
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-platform"></i>
+                                        <span>Vue.js</span>
+                                    </div>
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-grid"></i>
+                                        <span>Element Plus</span>
+                                    </div>
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-operation"></i>
+                                        <span>Node.js</span>
+                                    </div>
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-connection"></i>
+                                        <span>WebSocket</span>
+                                    </div>
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-data"></i>
+                                        <span>JavaScript</span>
+                                    </div>
+                                    <div class="tech-tag">
+                                        <i class="el-icon-s-marketing"></i>
+                                        <span>CSS3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="about-features">
+                                <div class="about-features-header">
+                                    <i class="el-icon-s-opportunity"></i>
+                                    <span>核心功能</span>
+                                </div>
+                                <div class="features-grid">
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i class="el-icon-s-promotion"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h4>智能选课</h4>
+                                            <p>自动化选课流程，支持并发和顺序模式</p>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i class="el-icon-date"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h4>智能排课</h4>
+                                            <p>自动生成最优课程表，避免时间冲突</p>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i class="el-icon-s-data"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h4>数据缓存</h4>
+                                            <p>高效的数据缓存机制，提升系统性能</p>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i class="el-icon-s-management"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h4>课程管理</h4>
+                                            <p>完整的课程信息管理和查询功能</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="about-thanks">
+                                <div class="about-thanks-header">
+                                    <i class="el-icon-s-comment"></i>
+                                    <span>鸣谢</span>
+                                </div>
+                                <div class="thanks-content">
+                                    <p>感谢所有开源社区和贡献者的支持！</p>
+                                    <div class="thanks-icons">
+                                        <i class="el-icon-s-opportunity"></i>
+                                        <i class="el-icon-s-check"></i>
+                                        <i class="el-icon-s-data"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Vue3和Element Plus -->
+    <script src="./static/vue.global.js"></script>
+    <script src="./static/index.full.js"></script>
+
+    <script>
+        const { createApp, ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } = Vue;
+        const { ElNotification, ElMessage, ElMessageBox } = ElementPlus;
+
+        // 防抖函数
+        function debounce(fn, delay = 1000) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        const app = createApp({
+            setup() {
+                // 响应式状态
+                const activeTab = ref('dashboard');
+                const courseTab = ref('config');
+                const scheduleTab = ref('config');
+                const connectionStatus = ref('未连接');
+                const isProcessing = ref(false);
+                const activestep = ref(0);
+                const scheduleActiveStep = ref(0);
+                const loopEnabled = ref(false);
+                const ws = ref(null);
+                const startTime = ref(0);
+                const selectedSolutionIndex = ref(null);
+                const reconnectTimer = ref(null);
+                const logContainer = ref(null);
+                const scheduleLogContainer = ref(null);
+                const showFullLessonDatas = ref(false);
+                const displayLessonDatas = ref('');
+
+                // 课程缓存相关数据
+                const lessonCacheData = ref([]);
+                const lessonSearchQuery = ref('');
+                const lessonFilterType = ref('');
+                const lessonFilterCampus = ref('');
+                const lessonFilterExam = ref('');
+                const lessonCurrentPage = ref(1);
+                const lessonPageSize = ref(20);
+
+                // 表单数据
+                const form = reactive({
+                    url: '',
+                    username: '',
+                    password: '',
+                    count: '1',
+                    selectionModel: '2',
+                    delay: 100,
+                    lessons: [],
+                    lessonCodes: [],
+                    yixuanData: [],
+                    cookie: '',
+                    profileId: '',
+                    lessonDatas: '',
+                    zaoba: 1,
+                    zhouwu: 1,
+                    zhouyi: 1,
+                    zhoulio: 1,
+                    zhouri: 1,
+                });
+
+                // 日志数据
+                const logs = ref([]);
+                const scheduleLogs = ref([]);
+
+                // 表格数据
+                const table = reactive({ type: 'table', data: [] });
+                const scheduleTable = reactive({ type: 'table', data: [] });
+
+                // 计算属性：处理课程数据显示
+                const computedDisplayLessonDatas = computed(() => {
+                    if (!form.lessonDatas) {
+                        return '';
+                    }
+                    if (showFullLessonDatas.value) {
+                        return form.lessonDatas;
+                    }
+                    // 默认只显示前500个字符
+                    return form.lessonDatas.length > 500
+                        ? form.lessonDatas.substring(0, 500) + '...'
+                        : form.lessonDatas;
+                });
+
+                // 监听课程数据变化，更新显示
+                watch(() => form.lessonDatas, (newVal) => {
+                    displayLessonDatas.value = computedDisplayLessonDatas.value;
+                }, { immediate: true });
+
+                // 监听展开状态变化
+                watch(() => showFullLessonDatas.value, () => {
+                    displayLessonDatas.value = computedDisplayLessonDatas.value;
+                });
+
+                // 监听课程数据变化，自动更新课程缓存
+                watch(() => form.lessonDatas, (newVal) => {
+                    if (newVal) {
+                        try {
+                            const parsedData = new Function(`${newVal} return lessonJSONs`)();
+                            if (Array.isArray(parsedData)) {
+                                lessonCacheData.value = parsedData;
+                            }
+                        } catch (error) {
+                            console.log('解析课程数据失败');
+                        }
+                    }
+                }, { immediate: true });
+
+                // 课程缓存相关计算属性
+                const filteredLessonCacheData = computed(() => {
+                    let filtered = lessonCacheData.value;
+
+                    // 搜索过滤
+                    if (lessonSearchQuery.value) {
+                        const query = lessonSearchQuery.value.toLowerCase();
+                        filtered = filtered.filter(lesson =>
+                            lesson.name.toLowerCase().includes(query) ||
+                            lesson.teachers.toLowerCase().includes(query) ||
+                            lesson.code.toLowerCase().includes(query) ||
+                            lesson.no.toLowerCase().includes(query)
+                        );
+                    }
+
+                    // 课程类型过滤
+                    if (lessonFilterType.value) {
+                        filtered = filtered.filter(lesson =>
+                            lesson.courseTypeName === lessonFilterType.value
+                        );
+                    }
+
+                    // 校区过滤
+                    if (lessonFilterCampus.value) {
+                        filtered = filtered.filter(lesson =>
+                            lesson.campusName === lessonFilterCampus.value
+                        );
+                    }
+
+                    // 考试方式过滤
+                    if (lessonFilterExam.value) {
+                        filtered = filtered.filter(lesson =>
+                            lesson.examModel === lessonFilterExam.value
+                        );
+                    }
+
+                    return filtered;
+                });
+
+                const paginatedLessonCacheData = computed(() => {
+                    const start = (lessonCurrentPage.value - 1) * lessonPageSize.value;
+                    const end = start + lessonPageSize.value;
+                    return filteredLessonCacheData.value.slice(start, end);
+                });
+
+                // 方法
+                const handleMenuSelect = (key) => {
+                    activeTab.value = key;
+                };
+
+                const addLesson = () => {
+                    form.lessons.push({ value: '' });
+                };
+
+                const removeLesson = (index) => {
+                    form.lessons.splice(index, 1);
+                };
+
+                const validateLesson = (lesson) => {
+                    lesson.isValid = /^\d+\.\d+\.\d+$/.test(lesson.value);
+                };
+
+                const getStatusTagType = (status) => {
+                    const map = {
+                        success: 'success',
+                        selected: 'success',
+                        overtime: 'warning',
+                        clash: 'warning',
+                        full: 'danger',
+                        notfound: 'info',
+                        error: 'danger',
+                        noopen: 'warning',
+                    };
+                    return map[status] || 'info';
+                };
+
+                const getStatusName = (name) => {
+                    const map = {
+                        loading: '加载中...',
+                        notselected: '等待中',
+                        notfound: '找不到',
+                        error: '选课错误',
+                        noopen: '选课不开放',
+                        selected: '选课成功',
+                    };
+                    return map[name] || '系统异常';
+                };
+
+                const clearCache = (type) => {
+                    ElMessageBox.confirm('确定要清除吗？', '操作确认', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }).then(() => {
+                        form[type] = '';
+                        ElNotification.success({ title: '成功', message: '已经完成清除' });
+                    }).catch(error => {
+                        if (error !== 'cancel') {
+                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
+                        }
+                    });
+                };
+
+                const clearAllCache = () => {
+                    ElMessageBox.confirm('确定要清除所有缓存数据吗？这将清除Cookie、ProfileId和课程数据缓存。', '操作确认', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }).then(() => {
+                        form.cookie = '';
+                        form.profileId = '';
+                        form.lessonDatas = '';
+                        ElNotification.success({ title: '成功', message: '所有缓存数据已清除' });
+                    }).catch(error => {
+                        if (error !== 'cancel') {
+                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
+                        }
+                    });
+                };
+
+                const wsConnect = () => {
+                    try {
+                        ws.value = new WebSocket('ws://localhost:8080');
+                        connectionStatus.value = '连接中...';
+                        ws.value.onopen = () => {
+                            connectionStatus.value = '已连接';
+                            if (reconnectTimer.value) {
+                                clearInterval(reconnectTimer.value);
+                                reconnectTimer.value = null;
+                            }
+                        };
+
+                        ws.value.onclose = (event) => {
+                            connectionStatus.value = '断开';
+                            isProcessing.value = false;
+                            ElNotification.warning({ title: '连接断开', message: '与服务器的连接已断开，正在尝试重连...', duration: 3000 });
+                            startReconnectTimer();
+                        };
+
+                        ws.value.onerror = (error) => {
+                            connectionStatus.value = '连接出错';
+                            isProcessing.value = false;
+                            startReconnectTimer();
+                        };
+
+                        ws.value.onmessage = (event) => {
+                            const { type, data } = JSON.parse(event.data);
+                            // 统一处理缓存数据
+                            if (type === 'cache' && data && data.key) {
+                                const cacheSetters = {
+                                    cookie: v => form.cookie = v,
+                                    profileId: v => form.profileId = v,
+                                    lessonDatas: v => form.lessonDatas = v,
+                                };
+                                if (cacheSetters[data.key]) {
+                                    cacheSetters[data.key](data.value);
+                                    return;
+                                }
+                            }
+
+                            if (type === 'fuckEnded') {
+                                isProcessing.value = false;
+                                ElNotification.success({ title: '执行完成', message: '选课流程已结束', duration: 3000 });
+                                if (loopEnabled.value) {
+                                    setTimeout(() => {
+                                        startProcess();
+                                    }, 2000);
+                                }
+                                if (activeTab.value === 'course') {
+                                    courseTab.value = 'result';
+                                }
+                                return;
+                            }
+
+                            if (type === 'fuckStarted') {
+                                isProcessing.value = true;
+                                if (activeTab.value === 'course') {
+                                    courseTab.value = 'logs';
+                                }
+                                return;
+                            }
+
+                            if (type === 'scheduleEnded') {
+                                isProcessing.value = false;
+                                ElNotification.success({ title: '执行完成', message: '排课流程已结束', duration: 3000 });
+                                if (activeTab.value === 'schedule') {
+                                    scheduleTab.value = 'result';
+                                }
+                                return;
+                            }
+
+                            if (type === 'scheduleStarted') {
+                                isProcessing.value = true;
+                                if (activeTab.value === 'schedule') {
+                                    scheduleTab.value = 'logs';
+                                }
+                                return;
+                            }
+
+                            // 处理缓存数据
+                            if (type === 'lessonCache') {
+                                try {
+                                    lessonCacheData.value = Array.isArray(data) ? data : [];
+                                    ElNotification.success({
+                                        title: '缓存更新',
+                                        message: `成功获取 ${lessonCacheData.value.length} 条课程数据`
+                                    });
+                                } catch (error) {
+                                    ElNotification.error({
+                                        title: '数据解析错误',
+                                        message: error.message
+                                    });
+                                }
+                                return;
+                            }
+
+                            // 根据当前激活的tab决定日志添加到哪个数组
+                            if (activeTab.value === 'schedule') {
+                                scheduleLogs.value.push({
+                                    type,
+                                    data,
+                                    runtime: getRuntime(),
+                                    timestamp: Date.now()
+                                });
+
+                                if (type === 'table') {
+                                    scheduleTable.data = data;
+                                }
+
+                                if (type === 'step') {
+                                    scheduleActiveStep.value = data;
+                                    if (data >= 6) {
+                                        scheduleTab.value = 'result';
+                                    }
+                                }
+
+                                // 滚动到底部
+                                nextTick(() => {
+                                    if (scheduleLogContainer.value) {
+                                        scheduleLogContainer.value.scrollTop = scheduleLogContainer.value.scrollHeight;
+                                    }
+                                });
+                            } else if (activeTab.value === 'course') {
+                                logs.value.push({
+                                    type,
+                                    data,
+                                    runtime: getRuntime(),
+                                    timestamp: Date.now()
+                                });
+
+                                if (type === 'table') {
+                                    table.data = data;
+                                }
+
+                                if (type === 'step') {
+                                    activestep.value = data;
+                                    if (data >= 6) {
+                                        courseTab.value = 'result';
+                                    }
+                                }
+
+                                // 滚动到底部
+                                nextTick(() => {
+                                    if (logContainer.value) {
+                                        logContainer.value.scrollTop = logContainer.value.scrollHeight;
+                                    }
+                                });
+                            } else {
+                                logs.value.push({
+                                    type,
+                                    data,
+                                    runtime: getRuntime(),
+                                    timestamp: Date.now()
+                                });
+
+                                if (type === 'table') {
+                                    table.data = data;
+                                }
+
+                                if (type === 'step') {
+                                    activestep.value = data;
+                                }
+                            }
+                        };
+                    } catch (error) {
+                        connectionStatus.value = '连接失败';
+                        isProcessing.value = false;
+                        ElNotification.error({
+                            title: '连接失败',
+                            message: '无法创建WebSocket连接，请检查网络或后端服务',
+                            duration: 5000
+                        });
+                    }
+                };
+
+                const startProcess = () => {
+                    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+                        ElNotification.error({
+                            title: '连接错误',
+                            message: 'WebSocket连接失败，请检查后端服务是否启动',
+                            duration: 5000
+                        });
+                        return;
+                    }
+                    startTime.value = Date.now();
+                    logs.value = [];
+                    ws.value.send(JSON.stringify({ type: 'fuckStart', config: form }));
+                };
+
+                const getRuntime = () => {
+                    return ((Date.now() - startTime.value) / 1000).toFixed(3) + '秒';
+                };
+
+                const startReconnectTimer = () => {
+                    if (reconnectTimer.value) {
+                        clearInterval(reconnectTimer.value);
+                    }
+                    reconnectTimer.value = setInterval(() => {
+                        if (connectionStatus.value === '断开' || connectionStatus.value === '连接出错') {
+                            wsConnect();
+                        }
+                    }, 3000);
+                };
+
+                const addLessonCode = () => {
+                    form.lessonCodes.push('');
+                };
+
+                const removeLessonCode = (index) => {
+                    form.lessonCodes.splice(index, 1);
+                };
+
+                const validateLessonCode = (index) => {
+                    form.lessonCodes[index] = form.lessonCodes[index].replace(/[^0-9-]/g, '');
+                };
+
+                const startScheduleProcess = () => {
+                    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+                        ElNotification.error({
+                            title: '连接错误',
+                            message: 'WebSocket连接失败，请检查后端服务是否启动',
+                            duration: 5000
+                        });
+                        return;
+                    }
+                    startTime.value = Date.now();
+                    scheduleLogs.value = [];
+                    ws.value.send(JSON.stringify({ type: 'scheduleStart', config: form }));
+                };
+
+                const addYixuanData = () => {
+                    form.yixuanData.push('');
+                };
+
+                const removeYixuanData = (index) => {
+                    form.yixuanData.splice(index, 1);
+                };
+
+                const validateYixuanData = (index) => {
+                    form.yixuanData[index] = form.yixuanData[index].replace(/[^0-9.-]/g, '');
+                };
+
+                const getTimeSlot = (period) => {
+                    try {
+                        const timeSlots = [
+                            '08:00-08:45', '08:55-09:40', '10:00-10:45', '10:55-11:40',
+                            '14:00-14:45', '14:55-15:40', '16:00-16:45', '16:55-17:40',
+                            '19:00-19:45', '19:55-20:40', '20:50-21:35', '21:45-22:30',
+                            '22:40-23:25'
+                        ];
+                        return timeSlots[period - 1] || '未知时间';
+                    } catch (error) {
+                        return '未知时间';
+                    }
+                };
+
+                const getLessonCellClass = (day, period) => {
+                    try {
+                        const lesson = getLessonAt(day, period);
+                        return lesson ? 'has-lesson' : '';
+                    } catch (error) {
+                        return '';
+                    }
+                };
+
+                const getLessonAt = (day, period) => {
+                    if (!scheduleTable.data.length || selectedSolutionIndex.value === null) {
+                        return null;
+                    }
+
+                    const solution = scheduleTable.data[selectedSolutionIndex.value];
+                    if (!solution.resultLesson) {
+                        return null;
+                    }
+
+                    // 计算在课表中的位置 (day-1) * 13 + (period-1)
+                    const position = (day - 1) * 13 + (period - 1);
+
+                    // 遍历所有课程，找到在这个时间段的课程
+                    for (const courseGroup of solution.resultLesson) {
+                        if (courseGroup.formatDatas && courseGroup.formatDatas[0]) {
+                            const formatData = courseGroup.formatDatas[0];
+                            // 检查是否有课在这个时间段
+                            for (let week = 0; week < 16; week++) {
+                                if (formatData[week] && formatData[week][position]) {
+                                    const lesson = courseGroup.lessons[0];
+                                    if (!lesson) {
+                                        continue;
+                                    }
+                                    return {
+                                        name: lesson.name || '未知课程',
+                                        teachers: lesson.teachers || '未知教师',
+                                        weeks: formatWeeks(lesson.arrangeInfo),
+                                        courseCode: courseGroup.code || '未知代码',
+                                        lessonNo: lesson.no || '未知序号',
+                                        teachClassName: lesson.teachClassName || '未知班级'
+                                    };
+                                }
+                            }
+                        }
+                    }
+
+                    return null;
+                };
+
+                const formatWeeks = (arrangeInfo) => {
+                    if (!arrangeInfo || !arrangeInfo.length) {
+                        return '未知周次';
+                    }
+
+                    const weekRanges = [];
+
+                    for (const arrange of arrangeInfo) {
+                        if (!arrange || !arrange.weekState) {
+                            continue;
+                        }
+
+                        const { weekState } = arrange;
+                        if (weekState.length < 17) {
+                            continue;
+                        }
+
+                        const weekBits = weekState.slice(1, 17); // 取前16位
+
+                        let startWeek = null;
+                        let endWeek = null;
+                        let isOdd = null; // null=全部, true=单周, false=双周
+
+                        for (let i = 0; i < 16; i++) {
+                            if (weekBits[i] === '1') {
+                                if (startWeek === null) {
+                                    startWeek = i + 1;
+                                    endWeek = i + 1;
+                                } else {
+                                    endWeek = i + 1;
+                                }
+
+                                // 检查是否为单周或双周模式
+                                if (isOdd === null) {
+                                    isOdd = (i + 1) % 2 === 1;
+                                } else if (isOdd !== ((i + 1) % 2 === 1)) {
+                                    isOdd = null; // 混合模式
+                                }
+                            }
+                        }
+
+                        if (startWeek !== null) {
+                            let weekText = `${startWeek}-${endWeek}`;
+                            if (isOdd !== null) {
+                                weekText += isOdd ? '单周' : '双周';
+                            }
+                            weekRanges.push(weekText);
+                        }
+                    }
+
+                    return weekRanges.length > 0 ? weekRanges.join(', ') : '未知周次';
+                };
+
+                const showLessonDetail = (day, period) => {
+                    const lesson = getLessonAt(day, period);
+                    if (!lesson) {
+                        ElMessage.info('该时间段没有课程');
+                        return;
+                    }
+
+                    const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    const dayName = dayNames[day - 1];
+                    const timeSlot = getTimeSlot(period);
+
+                    ElMessageBox.alert(`
+                        <div style="text-align: left;">
+                            <p><strong>课程名称：</strong>${lesson.name}</p>
+                            <p><strong>任课教师：</strong>${lesson.teachers}</p>
+                            <p><strong>上课时间：</strong>${dayName} ${timeSlot}</p>
+                            <p><strong>上课周次：</strong>${lesson.weeks}</p>
+                            <p><strong>课程代码：</strong>${lesson.courseCode}</p>
+                            <p><strong>课程序号：</strong>${lesson.lessonNo}</p>
+                            <p><strong>教学班：</strong>${lesson.teachClassName}</p>
+                        </div>
+                    `, '课程详情', {
+                        dangerouslyUseHTMLString: true,
+                        confirmButtonText: '确定'
+                    });
+                };
+
+                const getCurrentSolutionStats = () => {
+                    try {
+                        if (scheduleTable.data.length > 0 && selectedSolutionIndex.value !== null) {
+                            const solution = scheduleTable.data[selectedSolutionIndex.value];
+                            if (solution && solution.detail) {
+                                return {
+                                    zaobaCount: solution.detail.zaobaCount || 0,
+                                    zhouwuCount: solution.detail.zhouwuCount || 0,
+                                    zhouyiCount: solution.detail.zhouyiCount || 0,
+                                    zhoulioCount: solution.detail.zhoulioCount || 0,
+                                    zhouriCount: solution.detail.zhouriCount || 0,
+                                };
+                            }
+                        }
+                        return {
+                            zaobaCount: 0,
+                            zhouwuCount: 0,
+                            zhouyiCount: 0,
+                            zhoulioCount: 0,
+                            zhouriCount: 0,
+                        };
+                    } catch (error) {
+                        return {
+                            zaobaCount: 0,
+                            zhouwuCount: 0,
+                            zhouyiCount: 0,
+                            zhoulioCount: 0,
+                            zhouriCount: 0,
+                        };
+                    }
+                };
+
+                const toggleLessonDatas = () => {
+                    showFullLessonDatas.value = !showFullLessonDatas.value;
+                };
+
+                const copyLessonDatas = () => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = form.lessonDatas;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    ElNotification.success({ title: '成功', message: '课程数据已复制到剪贴板' });
+                };
+
+                const copyToClipboard = (type, data) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = data;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    ElNotification.success({ title: '成功', message: `${type}数据已复制到剪贴板` });
+                };
+
+                // 课程缓存相关方法
+                const refreshLessonCache = () => {
+                    // 优先从现有的form.lessonDatas中刷新数据
+                    if (form.lessonDatas) {
+                        try {
+                            const parsedData = new Function(`${form.lessonDatas} return lessonJSONs`)();
+                            if (Array.isArray(parsedData)) {
+                                lessonCacheData.value = parsedData;
+                                ElNotification.success({
+                                    title: '刷新成功',
+                                    message: `成功加载 ${parsedData.length} 条课程数据`
+                                });
+                                return;
+                            }
+                        } catch (error) {
+                            ElNotification.error({
+                                title: '刷新失败',
+                                message: '课程数据格式错误'
+                            });
+                            return;
+                        }
+                    }
+
+                    // 如果没有缓存数据，尝试从服务器获取
+                    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+                        ElNotification.error({
+                            title: '连接错误',
+                            message: 'WebSocket连接失败，请检查后端服务是否启动',
+                            duration: 5000
+                        });
+                        return;
+                    }
+                    ws.value.send(JSON.stringify({ type: 'getLessonCache' }));
+                    ElNotification.info({ title: '刷新中', message: '正在从服务器获取课程缓存数据...' });
+                };
+
+                const clearLessonCache = () => {
+                    ElMessageBox.confirm('确定要清除课程缓存数据吗？', '操作确认', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }).then(() => {
+                        lessonCacheData.value = [];
+                        form.lessonDatas = '';
+                        ElNotification.success({ title: '成功', message: '课程缓存数据已清除' });
+                    }).catch(error => {
+                        if (error !== 'cancel') {
+                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
+                        }
+                    });
+                };
+
+                const exportLessonCache = () => {
+                    try {
+                        const dataStr = JSON.stringify(lessonCacheData.value, null, 2);
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                        const url = URL.createObjectURL(dataBlob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `课程缓存数据_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        ElNotification.success({ title: '成功', message: '课程数据已导出' });
+                    } catch (error) {
+                        ElNotification.error({ title: '导出失败', message: error.message });
+                    }
+                };
+
+                const getUniqueTeachers = () => {
+                    const teachers = new Set();
+                    lessonCacheData.value.forEach(lesson => {
+                        if (lesson.teachers) {
+                            lesson.teachers.split(',').forEach(teacher => {
+                                teachers.add(teacher.trim());
+                            });
+                        }
+                    });
+                    return Array.from(teachers).sort();
+                };
+
+                const getUniqueCourseTypes = () => {
+                    const types = new Set();
+                    lessonCacheData.value.forEach(lesson => {
+                        if (lesson.courseTypeName) {
+                            types.add(lesson.courseTypeName);
+                        }
+                    });
+                    return Array.from(types).sort();
+                };
+
+                const getUniqueCampuses = () => {
+                    const campuses = new Set();
+                    lessonCacheData.value.forEach(lesson => {
+                        if (lesson.campusName) {
+                            campuses.add(lesson.campusName);
+                        }
+                    });
+                    return Array.from(campuses).sort();
+                };
+
+                const getCourseTypeTagType = (courseType) => {
+                    const typeMap = {
+                        '专业必修课': 'danger',
+                        '专业选修课': 'warning',
+                        '公共必修课': 'primary',
+                        '公共选修课': 'success',
+                        '实践环节': 'info'
+                    };
+                    return typeMap[courseType] || 'info';
+                };
+
+                const clearLessonFilters = () => {
+                    lessonSearchQuery.value = '';
+                    lessonFilterType.value = '';
+                    lessonFilterCampus.value = '';
+                    lessonFilterExam.value = '';
+                    lessonCurrentPage.value = 1;
+                };
+
+                const handleLessonPageSizeChange = (size) => {
+                    lessonPageSize.value = size;
+                    lessonCurrentPage.value = 1;
+                };
+
+                const handleLessonCurrentChange = (page) => {
+                    lessonCurrentPage.value = page;
+                };
+
+                const viewLessonDetail = (lesson) => {
+                    ElMessageBox.alert(`
+                        <div style="text-align: left;">
+                            <p><strong>课程ID：</strong>${lesson.id}</p>
+                            <p><strong>课程名称：</strong>${lesson.name}</p>
+                            <p><strong>课程编号：</strong>${lesson.no}</p>
+                            <p><strong>课程代码：</strong>${lesson.code}</p>
+                            <p><strong>学分：</strong>${lesson.credits}</p>
+                            <p><strong>任课教师：</strong>${lesson.teachers}</p>
+                            <p><strong>课程类型：</strong>${lesson.courseTypeName}</p>
+                            <p><strong>校区：</strong>${lesson.campusName}</p>
+                            <p><strong>学时：</strong>${lesson.period}</p>
+                            <p><strong>周学时：</strong>${lesson.weekHour}</p>
+                            <p><strong>上课周次：</strong>${lesson.startWeek}-${lesson.endWeek}周</p>
+                            <p><strong>考试方式：</strong>${lesson.examModel}</p>
+                            <p><strong>已安排：</strong>${lesson.scheduled ? '是' : '否'}</p>
+                            <p><strong>可退课：</strong>${lesson.withdrawable ? '是' : '否'}</p>
+                            <p><strong>教学班：</strong>${lesson.teachClassName}</p>
+                            <p><strong>学历层次：</strong>${lesson.educations}</p>
+                            <p><strong>备注：</strong>${lesson.remark || '无'}</p>
+                        </div>
+                    `, '课程详情', {
+                        dangerouslyUseHTMLString: true,
+                        confirmButtonText: '确定'
+                    });
+                };
+
+                const copyLessonInfo = (lesson) => {
+                    const lessonInfo = `课程名称：${lesson.name}\n课程编号：${lesson.no}\n课程代码：${lesson.code}\n学分：${lesson.credits}\n任课教师：${lesson.teachers}\n课程类型：${lesson.courseTypeName}\n校区：${lesson.campusName}\n学时：${lesson.period}\n周学时：${lesson.weekHour}\n上课周次：${lesson.startWeek}-${lesson.endWeek}周\n考试方式：${lesson.examModel}\n教学班：${lesson.teachClassName}`;
+
+                    const textArea = document.createElement('textarea');
+                    textArea.value = lessonInfo;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    ElNotification.success({ title: '成功', message: '课程信息已复制到剪贴板' });
+                };
+
+                // 从缓存数据中加载课程信息
+                const loadDemoData = () => {
+                    // 如果form.lessonDatas有数据，尝试解析
+                    if (form.lessonDatas) {
+                        try {
+                            const parsedData = new Function(`${form.lessonDatas} return lessonJSONs`)();
+                            if (Array.isArray(parsedData)) {
+                                lessonCacheData.value = parsedData;
+                                return;
+                            }
+                        } catch (error) {
+                            console.log('解析课程数据失败，使用演示数据');
+                        }
+                    }
+
+
+                };
+
+                // 初始化配置
+                const initConfig = () => {
+                    try {
+                        const Config = JSON.parse(localStorage.getItem('Config'));
+                        if (Config && Config.count) {
+                            Object.assign(form, Config);
+                            // 确保lessonCodes数组存在
+                            if (!form.lessonCodes) {
+                                form.lessonCodes = [];
+                            }
+                            // 确保yixuanData数组存在
+                            if (!form.yixuanData) {
+                                form.yixuanData = [];
+                            }
+                        }
+                    } catch (error) {
+                        localStorage.setItem('Config', JSON.stringify(form));
+                        ElNotification.warning({ message: '初始化配置' });
+                    }
+                };
+
+                // 监听表单变化，保存到localStorage
+                watch(
+                    () => form,
+                    debounce(() => {
+                        try {
+                            localStorage.setItem('Config', JSON.stringify(form));
+                        } catch (error) {
+                            ElNotification.warning({ message: error.message });
+                        }
+                    }, 1000),
+                    { deep: true }
+                );
+
+                // 监听排课结果变化，默认选择第一个方案
+                watch(
+                    () => scheduleTable.data,
+                    (newVal) => {
+                        if (newVal && newVal.length > 0 && selectedSolutionIndex.value === null) {
+                            selectedSolutionIndex.value = 0;
+                        }
+                    },
+                    { deep: true }
+                );
+
+                // 生命周期钩子
+                onMounted(() => {
+                    wsConnect();
+                    initConfig();
+
+                    // 加载演示数据
+                    loadDemoData();
+                });
+
+                onBeforeUnmount(() => {
+                    if (reconnectTimer.value) {
+                        clearInterval(reconnectTimer.value);
+                        reconnectTimer.value = null;
+                    }
+                });
+
+                // 返回所有需要在模板中使用的变量和方法
+                return {
+                    activeTab,
+                    courseTab,
+                    scheduleTab,
+                    connectionStatus,
+                    isProcessing,
+                    activestep,
+                    scheduleActiveStep,
+                    loopEnabled,
+                    form,
+                    logs,
+                    scheduleLogs,
+                    table,
+                    scheduleTable,
+                    selectedSolutionIndex,
+                    logContainer,
+                    scheduleLogContainer,
+                    showFullLessonDatas,
+                    displayLessonDatas,
+                    lessonCacheData,
+                    lessonSearchQuery,
+                    lessonFilterType,
+                    lessonFilterCampus,
+                    lessonFilterExam,
+                    lessonCurrentPage,
+                    lessonPageSize,
+                    filteredLessonCacheData,
+                    paginatedLessonCacheData,
+                    handleMenuSelect,
+                    addLesson,
+                    removeLesson,
+                    validateLesson,
+                    getStatusTagType,
+                    getStatusName,
+                    clearCache,
+                    clearAllCache,
+                    startProcess,
+                    addLessonCode,
+                    removeLessonCode,
+                    validateLessonCode,
+                    startScheduleProcess,
+                    addYixuanData,
+                    removeYixuanData,
+                    validateYixuanData,
+                    getTimeSlot,
+                    getLessonCellClass,
+                    getLessonAt,
+                    showLessonDetail,
+                    getCurrentSolutionStats,
+                    toggleLessonDatas,
+                    copyLessonDatas,
+                    copyToClipboard,
+                    refreshLessonCache,
+                    clearLessonCache,
+                    exportLessonCache,
+                    getUniqueTeachers,
+                    getUniqueCourseTypes,
+                    getUniqueCampuses,
+                    getCourseTypeTagType,
+                    clearLessonFilters,
+                    handleLessonPageSizeChange,
+                    handleLessonCurrentChange,
+                    viewLessonDetail,
+                    copyLessonInfo,
+                    loadDemoData
+                };
+            }
+        });
+
+        // 全局注册Element Plus
+        app.use(ElementPlus);
+        app.mount('#app');
+    </script>
+</body>
+
+</html>
