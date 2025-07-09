@@ -29,6 +29,8 @@ wss.on('connection', (ws) => {
     sendData: (type, data) => {
       if (ws.readyState === ws.OPEN) {
         ws.send(JSON.stringify({ type, data }))
+        console.log(JSON.stringify({ type, data }));
+
       }
     },
   }
@@ -37,6 +39,8 @@ wss.on('connection', (ws) => {
   ws.on('message', async (data) => {
     try {
       const message = JSON.parse(data)
+      console.log(message);
+      
       logger.sendData('good', '收到启动请求')
       if (clients.get(clientId).status === 'running') {
         logger.sendData('good', '已经有运行的实例了, 请稍后再试')

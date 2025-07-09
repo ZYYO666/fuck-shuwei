@@ -3,6 +3,57 @@ const { getInstance } = require('./request')
 
 const fs = require('fs')
 
+ function getLessonsFromCode(lessonJSONs, userLessonCode) {
+  return userLessonCode.map((code) => {
+    const trimmedNo = code 
+    const matches = lessonJSONs.filter((l) => l.code === trimmedNo)
+
+    if (matches.length === 0) {
+      throw new Error(code + '无开课信息')
+    }
+
+    const lessons = matches.map((match) => ({
+      id: match.id,
+      name: match.name,
+      no: match.no,
+      teachers: match.teachers,
+      teachClassName: match.teachClassName,
+      arrangeInfo: match.arrangeInfo,
+    }))
+
+    return {
+      code: trimmedNo,
+      lessons: lessons,
+    }
+  })
+}
+
+ function getLessonsFromNo(lessonJSONs, userLessonNo) {
+  return userLessonNo.map((no) => {
+
+
+    const matches = lessonJSONs.filter((l) => l.no === no)
+
+    if (matches.length === 0) {
+      throw new Error(code + '无开课信息' + no)
+    }
+
+    const lessons = matches.map((match) => ({
+      id: match.id,
+      name: match.name,
+      no: match.no,
+      teachers: match.teachers,
+      teachClassName: match.teachClassName,
+      arrangeInfo: match.arrangeInfo,
+    }))
+
+    return {
+      code: no,
+      lessons: lessons,
+    }
+  })
+}
+
  function getLessonJSONs(lessonDatas) {
   try {
     return new Function(`${lessonDatas} return lessonJSONs`)()
@@ -104,4 +155,6 @@ module.exports = {
   removeArrays,
   getFile,
   getLessonJSONs,
+  getLessonsFromNo,
+  getLessonsFromCode,
 }

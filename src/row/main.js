@@ -1,7 +1,5 @@
-const { getLessonJSONs } = require('../base/tool')
-const getLessonsFromCode = require('./getLessonsFromCode')
+const { getLessonJSONs, getLessonsFromCode, getLessonsFromNo } = require('../base/tool')
 const getformatDatas = require('./getFormatDatas')
-const getLessonsFromNo = require('./getLessonsFromNo')
 const rowLesson = require('./rowLesson')
 const calcWeight = require('./calcWeight')
 const base = require('../base/main')
