@@ -32,7 +32,7 @@ module.exports = async function fuckLesson(config) {
         } catch (error) {
 
           newlessonDatas[index].状态 = 'error'
-          config.logger.sendData('error', [`处理课程 ${lesson.id} 时出错:`, error].join(' '))
+          config.logger.sendData('error', `处理课程 ${lesson.id} 时出错: ${error.message || error.toString()}`)
           config.logger.sendData('table', newlessonDatas)
         }
       }),

@@ -8,19 +8,11 @@ const startBaseProcess = async (config, retryCount = 0) => {
     try {
         configure(config.url, config.delay)
 
-        config.logger.sendData('step', 2)
-
         config = await getCookie(config)
-
-        config.logger.sendData('step', 3)
 
         config = await getProfileId(config)
 
-        config.logger.sendData('step', 4)
-
         await initSelection(config)
-
-        config.logger.sendData('step', 5)
 
         config = await getLesson(config)
 

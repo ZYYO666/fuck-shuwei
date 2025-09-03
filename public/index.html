@@ -13,628 +13,607 @@
 
 <body>
     <div id="app">
-        <!-- 全新极简侧边栏 -->
-        <nav class="sidebar-new">
-            <!-- 侧边栏标题 -->
-            <div class="sidebar-header">
-                <h2 class="sidebar-title">智能选课客户端</h2>
-            </div>
-            <div class="sidebar-menu">
-                <ul class="sidebar-menu-list">
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='dashboard'}"
-                        @click="handleMenuSelect('dashboard')">
-                        <i class="el-icon-s-home"></i>
-                        <span>控制面板</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='config'}"
-                        @click="handleMenuSelect('config')">
-                        <i class="el-icon-setting"></i>
-                        <span>基础配置</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='course'}"
-                        @click="handleMenuSelect('course')">
-                        <i class="el-icon-s-management"></i>
-                        <span>课程序号</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='schedule'}"
-                        @click="handleMenuSelect('schedule')">
-                        <i class="el-icon-date"></i>
-                        <span>智能排课</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='cache'}"
-                        @click="handleMenuSelect('cache')">
-                        <i class="el-icon-cpu"></i>
-                        <span>缓存配置</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='lessonCache'}"
-                        @click="handleMenuSelect('lessonCache')">
-                        <i class="el-icon-document"></i>
-                        <span>课程缓存</span>
-                    </li>
-                    <li class="sidebar-menu-item" :class="{active: activeTab==='about'}"
-                        @click="handleMenuSelect('about')">
-                        <i class="el-icon-info"></i>
-                        <span>关于系统</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="sidebar-conn-status-only">
-                <div class="sidebar-conn-status">
-                    <span class="sidebar-conn-dot" :class="{
-                            connected: connectionStatus==='已连接',
-                            connecting: connectionStatus==='连接中...'||connectionStatus==='连接出错',
-                            error: connectionStatus==='断开'||connectionStatus==='连接失败'
-                          }"></span>
-                    <span>{{ connectionStatus }}</span>
+        <!-- 三栏布局容器 -->
+        <div class="three-column-layout">
+            <!-- 第一栏：侧边栏导航 -->
+            <nav class="sidebar-new">
+                <!-- 侧边栏标题 -->
+                <div class="sidebar-header">
+                    <h2 class="sidebar-title">智能选课客户端</h2>
                 </div>
-            </div>
-        </nav>
-        <!-- 主内容区统一卡片包裹 -->
-        <div class="main-content">
-            <!-- 控制面板 - 移除外层卡片 -->
-            <div v-if="activeTab === 'dashboard'" class="dashboard-content">
-                <!-- 主标题区域 -->
-                <div class="dashboard-hero">
-                    <div class="hero-content">
-                        <div class="hero-title">
-                            <span class="title-main">智能选课</span>
-                            <span class="title-sub">控制中心</span>
-                        </div>
-                        <div class="hero-subtitle">让选课变得简单而优雅</div>
-                        <div class="hero-stats">
-                            <div class="hero-stat">
-                                <div class="stat-value">∞</div>
-                                <div class="stat-label">可能性</div>
-                            </div>
-                            <div class="hero-stat">
-                                <div class="stat-value">⚡</div>
-                                <div class="stat-label">速度</div>
-                            </div>
-                            <div class="hero-stat">
-                                <div class="stat-value">🎯</div>
-                                <div class="stat-label">精准</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-visual">
-                        <div class="floating-elements">
-                            <div class="float-item item-1">📚</div>
-                            <div class="float-item item-2">🎓</div>
-                            <div class="float-item item-3">⚡</div>
-                            <div class="float-item item-4">🎯</div>
-                            <div class="float-item item-5">🚀</div>
-                        </div>
+                <div class="sidebar-menu">
+                    <ul class="sidebar-menu-list">
+
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='config'}"
+                            @click="handleMenuSelect('config')">
+                            <span style="font-size: 18px; margin-right: 8px;">⚙️</span>
+                            <span>基础配置</span>
+                        </li>
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='course'}"
+                            @click="handleMenuSelect('course')">
+                            <span style="font-size: 18px; margin-right: 8px;">📚</span>
+                            <span>智能选课</span>
+                        </li>
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='schedule'}"
+                            @click="handleMenuSelect('schedule')">
+                            <span style="font-size: 18px; margin-right: 8px;">📅</span>
+                            <span>智能排课</span>
+                        </li>
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='cache'}"
+                            @click="handleMenuSelect('cache')">
+                            <span style="font-size: 18px; margin-right: 8px;">💾</span>
+                            <span>缓存配置</span>
+                        </li>
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='lessonCache'}"
+                            @click="handleMenuSelect('lessonCache')">
+                            <span style="font-size: 18px; margin-right: 8px;">📋</span>
+                            <span>课程缓存</span>
+                        </li>
+                        <li class="sidebar-menu-item" :class="{active: activeTab==='about'}"
+                            @click="handleMenuSelect('about')">
+                            <span style="font-size: 18px; margin-right: 8px;">ℹ️</span>
+                            <span>关于系统</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-conn-status-only">
+                    <div class="sidebar-conn-status">
+                        <span class="sidebar-conn-dot" :class="{
+                                connected: connectionStatus==='已连接',
+                                connecting: connectionStatus==='连接中...'||connectionStatus==='连接出错',
+                                error: connectionStatus==='断开'||connectionStatus==='连接失败'
+                              }"></span>
+                        <span>{{ connectionStatus }}</span>
                     </div>
                 </div>
-
-                <!-- 核心功能区域 -->
-                <div class="dashboard-core">
-                    <div class="core-grid">
-                        <div class="core-card primary" @click="handleMenuSelect('course')">
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">🎯</div>
-                                <h3>智能选课</h3>
-                                <p>一键自动化选课，让抢课变得轻松</p>
-                                <div class="card-meta">
-                                    <span class="meta-item">⚡ 毫秒级响应</span>
-                                    <span class="meta-item">🔄 自动重试</span>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <span>开始选课</span>
-                                <i class="el-icon-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="core-card secondary" @click="handleMenuSelect('schedule')">
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">📅</div>
-                                <h3>智能排课</h3>
-                                <p>AI算法生成最优课程表</p>
-                                <div class="card-meta">
-                                    <span class="meta-item">🧠 AI优化</span>
-                                    <span class="meta-item">⚖️ 权重平衡</span>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <span>开始排课</span>
-                                <i class="el-icon-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="core-card accent" @click="handleMenuSelect('config')">
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">⚙️</div>
-                                <h3>系统配置</h3>
-                                <p>个性化设置，定制专属体验</p>
-                                <div class="card-meta">
-                                    <span class="meta-item">🔐 安全连接</span>
-                                    <span class="meta-item">🎨 个性化</span>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <span>配置系统</span>
-                                <i class="el-icon-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 实时状态面板 -->
-                <div class="dashboard-status-panel">
-                    <div class="status-header">
-                        <h3>系统状态</h3>
-                        <div class="status-indicator">
-                            <div class="pulse-dot"></div>
-                            <span>实时监控</span>
-                        </div>
-                    </div>
-                    <div class="status-cards">
-                        <div class="status-card">
-                            <div class="status-icon online">🔗</div>
-                            <div class="status-info">
-                                <div class="status-name">连接状态</div>
-                                <div class="status-value">已连接</div>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon online">⚡</div>
-                            <div class="status-info">
-                                <div class="status-name">响应时间</div>
-                                <div class="status-value">12ms</div>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon online">💾</div>
-                            <div class="status-info">
-                                <div class="status-name">缓存状态</div>
-                                <div class="status-value">正常</div>
-                            </div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-icon warning">🎯</div>
-                            <div class="status-info">
-                                <div class="status-name">选课服务</div>
-                                <div class="status-value">待机中</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 数据洞察 -->
-                <div class="dashboard-insights">
-                    <div class="insights-header">
-                        <h3>数据洞察</h3>
-                        <div class="insights-subtitle">基于实时数据分析</div>
-                    </div>
-                    <div class="insights-grid">
-                        <div class="insight-card">
-                            <div class="insight-header">
-                                <div class="insight-icon">📊</div>
-                                <div class="insight-title">选课成功率</div>
-                            </div>
-                            <div class="insight-value">98.7%</div>
-                            <div class="insight-chart">
-                                <div class="chart-bar" style="width: 98.7%"></div>
-                            </div>
-                            <div class="insight-trend positive">↗️ +2.3%</div>
-                        </div>
-
-                        <div class="insight-card">
-                            <div class="insight-header">
-                                <div class="insight-icon">⏱️</div>
-                                <div class="insight-title">平均响应时间</div>
-                            </div>
-                            <div class="insight-value">12ms</div>
-                            <div class="insight-chart">
-                                <div class="chart-bar" style="width: 85%"></div>
-                            </div>
-                            <div class="insight-trend positive">↗️ 优化中</div>
-                        </div>
-
-                        <div class="insight-card">
-                            <div class="insight-header">
-                                <div class="insight-icon">🎯</div>
-                                <div class="insight-title">今日选课次数</div>
-                            </div>
-                            <div class="insight-value">1,247</div>
-                            <div class="insight-chart">
-                                <div class="chart-bar" style="width: 92%"></div>
-                            </div>
-                            <div class="insight-trend positive">↗️ +15.7%</div>
-                        </div>
-
-                        <div class="insight-card">
-                            <div class="insight-header">
-                                <div class="insight-icon">👥</div>
-                                <div class="insight-title">活跃用户</div>
-                            </div>
-                            <div class="insight-value">8,956</div>
-                            <div class="insight-chart">
-                                <div class="chart-bar" style="width: 78%"></div>
-                            </div>
-                            <div class="insight-trend positive">↗️ +8.2%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 快捷操作 -->
-                <div class="dashboard-quick-actions">
-                    <h3>快捷操作</h3>
-                    <div class="quick-grid">
-                        <button class="quick-btn" @click="handleMenuSelect('cache')">
-                            <span class="btn-icon">🗂️</span>
-                            <span class="btn-text">缓存管理</span>
-                        </button>
-                        <button class="quick-btn" @click="handleMenuSelect('lessonCache')">
-                            <span class="btn-icon">📚</span>
-                            <span class="btn-text">课程数据</span>
-                        </button>
-                        <button class="quick-btn" @click="handleMenuSelect('about')">
-                            <span class="btn-icon">ℹ️</span>
-                            <span class="btn-text">关于系统</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 其他页面保持原有卡片结构 -->
-            <div v-else class="main-card">
-                <div class="main-card-content">
+            </nav>
+            
+            <!-- 第二栏：主内容区 -->
+            <div class="main-content">
                     <!-- 基础配置 -->
                     <div v-if="activeTab === 'config'">
                         <div class="card-title">
                             <i class="el-icon-setting"></i>
                             <span>基础配置</span>
                         </div>
-                        <el-form label-position="top" :model="form" style="max-width: 600px;">
-                            <el-form-item label="教务系统地址">
-                                <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password
-                                    clearable />
-                            </el-form-item>
-                            <el-form-item label="学号">
-                                <el-input v-model="form.username" type="password" placeholder="请输入学号" show-password
-                                    clearable />
-                            </el-form-item>
-                            <el-form-item label="密码">
-                                <el-input v-model="form.password" type="password" placeholder="请输入密码"
-                                    show-password></el-input>
-                            </el-form-item>
-                            <el-form-item label="选课页序号">
-                                <el-radio-group v-model="form.count">
-                                    <el-radio-button label="1">1</el-radio-button>
-                                    <el-radio-button label="2">2</el-radio-button>
-                                    <el-radio-button label="3">3</el-radio-button>
-                                    <el-radio-button label="4">4</el-radio-button>
-                                    <el-radio-button label="5">5</el-radio-button>
-                                </el-radio-group>
-                            </el-form-item>
-                            <el-form-item label="抢课模式">
-                                <el-radio-group v-model="form.selectionModel">
-                                    <el-radio-button label="1">并发模式</el-radio-button>
-                                    <el-radio-button label="2">顺序模式</el-radio-button>
-                                </el-radio-group>
-                            </el-form-item>
-                            <p v-if="form.selectionModel=='1'" style="color: #e6a23c;">并发有风险，且用且珍惜</p>
-                            <el-form-item label="请求延迟">
-                                <el-slider style="width: 90%; margin: 0 auto" v-model="form.delay" :step="200" :min="0"
-                                    :max="2000" show-stops />
-                            </el-form-item>
+                        <el-form label-position="top" :model="form" class="config-form">
+                            <div class="config-section">
+                                <h3 class="section-title">账号信息</h3>
+                                <div class="form-row">
+                                    <el-form-item label="教务系统地址">
+                                        <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password clearable />
+                                    </el-form-item>
+                                </div>
+                                <div class="form-row">
+                                    <el-form-item label="学号">
+                                        <el-input v-model="form.username" type="password" placeholder="请输入学号" show-password clearable />
+                                    </el-form-item>
+                                    <el-form-item label="密码">
+                                        <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            
+                            <div class="config-section">
+                                <h3 class="section-title">账号配置</h3>
+                                <div class="form-row">
+                                    <el-form-item label="请求延迟">
+                                        <div class="delay-control">
+                                            <el-slider v-model="form.delay" :step="100" :min="0" :max="2000" :show-stops="true" />
+                                            <span class="delay-value">{{ form.delay }}ms</span>
+                                        </div>
+                                    </el-form-item>
+                                </div>
+                            </div>
                         </el-form>
                     </div>
-                    <!-- 选课中心：课程序号管理+日志面板合并 -->
-                    <div v-if="activeTab === 'course'" class="course-page">
-                        <el-tabs v-model="courseTab" class="course-tabs">
-                            <el-tab-pane label="任务配置" name="config">
-                                <div class="course-config">
-                                    <div class="course-config-header">
-                                        <span class="title">课程序号列表</span>
-                                        <el-button type="primary" plain @click="addLesson" :disabled="isProcessing">
-                                            <i class="el-icon-plus"></i> 添加课程
-                                        </el-button>
-                                    </div>
-                                    <el-alert title="请按顺序填入您想选择的课程的序号，支持多个课程。" type="info" show-icon :closable="false"
-                                        style="margin-bottom: 18px;">
-                                    </el-alert>
-                                    <div class="course-list">
-                                        <div v-for="(lesson, index) in form.lessons" :key="index"
-                                            class="course-list-item">
-                                            <el-input v-model="lesson.value" placeholder="课程序号（如 001.1.1）" clearable
-                                                @input="validateLesson(lesson)" style="flex:1;">
-                                                <template #append>
-                                                    <el-button @click="removeLesson(index)" :disabled="isProcessing"
-                                                        icon="el-icon-delete"></el-button>
-                                                </template>
-                                            </el-input>
+                    <!-- 选课中心：智能选课管理 - 现代化简约设计 -->
+                    <div v-if="activeTab === 'course'">
+                        <el-tabs v-model="courseTab" class="course-tabs-modern">
+                            <el-tab-pane label="选课配置" name="config">
+                                <div class="course-config-modern">
+                                    <div class="schedule-config-container">
+                                    <!-- 选课轮次配置 -->
+                                    <div class="schedule-section-card full-width-card">
+                                        <div class="schedule-header-modern">
+                                            <div class="schedule-title-section">
+                                                <h2 class="schedule-title">选课轮次配置</h2>
+                                                <p class="schedule-subtitle">选择您要进行选课的轮次</p>
+                                            </div>
+                                            <div class="schedule-actions" v-if="electionProfiles.length === 0">
+                                                <el-button type="primary" @click="fetchProfileData" :loading="isProcessing" size="small">
+                                                    <span style="margin-right: 5px;">🔄</span> 获取轮次数据
+                                                </el-button>
+                                            </div>
                                         </div>
-                                        <el-empty v-if="form.lessons.length === 0" description="请添加课程"></el-empty>
+                                        
+                                        <div v-if="electionProfiles.length > 0" class="profiles-dropdown-container">
+                            <el-select v-model="form.count" @change="selectProfile(parseInt(form.count) - 1)" placeholder="请选择选课轮次" class="profiles-select">
+                                <el-option
+                                    v-for="(profile, index) in electionProfiles"
+                                    :key="profile.id"
+                                    :label="profile.title"
+                                    :value="String(index + 1)"
+                                    class="profile-option">
+                                    <div class="profile-option-content">
+                                        <div class="profile-option-title">{{ profile.title }}</div>
+                                        <div class="profile-option-meta">
+                                            <el-tag size="mini" type="info">轮次 {{ profile.round }}</el-tag>
+                                            <span class="profile-option-time">{{ profile.openTime }}</span>
+                                        </div>
                                     </div>
-                                    <div class="course-config-footer">
-                                        <div>
-                                            <span style="margin-right:10px;">循环执行</span>
-                                            <el-switch v-model="loopEnabled" active-text="开" inactive-text="关" />
+                                </el-option>
+                            </el-select>
+                        </div>
+                                        <div v-else class="no-profiles">
+                                            <div class="compatibility-mode">
+                                                <p class="compatibility-title">兼容模式：手动选择轮次</p>
+                                                <span class="profile-hint" style="font-size: 12px; color: #909399; margin-bottom: 10px; display: block;">点击上方按钮发送请求获取轮次数据，或手动选择轮次</span>
+                                                <el-radio-group v-model="form.count">
+                                                    <el-radio-button label="1">1</el-radio-button>
+                                                    <el-radio-button label="2">2</el-radio-button>
+                                                    <el-radio-button label="3">3</el-radio-button>
+                                                    <el-radio-button label="4">4</el-radio-button>
+                                                    <el-radio-button label="5">5</el-radio-button>
+                                                </el-radio-group>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 抢课设置 -->
+                                    <div class="schedule-section-card">
+                                        <div class="schedule-header-modern">
+                                            <div class="schedule-title-section">
+                                                <h2 class="schedule-title">抢课设置</h2>
+                                                <p class="schedule-subtitle">配置抢课模式</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-row" style="margin-top: 15px;">
+                                            <el-form-item label="抢课模式">
+                                                <el-radio-group v-model="form.selectionModel">
+                                                    <el-radio label="2">顺序模式</el-radio>
+                                                    <el-radio label="1">并发模式</el-radio>
+                                                </el-radio-group>
+                                                <div v-if="form.selectionModel=='1'" class="mode-warning">⚠️ 并发模式有风险</div>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 智能选课列表 - 简化版 -->
+                                    <div class="schedule-section-card">
+                                        <div class="schedule-header-modern">
+                                            <div class="schedule-title-section">
+                                                <h2 class="schedule-title">智能选课列表</h2>
+                                <p class="schedule-subtitle">按优先级顺序添加您想选择的课程序号</p>
+                                            </div>
+                                            <div class="schedule-actions">
+                                                <div class="schedule-counter" @click="openLessonDialog">
+                                                    <span class="counter-icon">📋</span>
+                                                    <span class="counter-value">{{ form.lessons.length }}</span>
+                                                    <span class="counter-label">个课程</span>
+                                                </div>
+                                                <el-button type="primary" @click="openLessonDialog" :disabled="isProcessing" class="add-course-btn">
+                                                    <span style="font-size: 16px; margin-right: 8px;">➕</span> 管理课程
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 智能选课弹窗 -->
+                                    <el-dialog
+                                        title="管理智能选课"
+                                        v-model="lessonDialogVisible"
+                                        width="600px"
+                                        class="schedule-dialog">
+                                        <div class="dialog-content">
+                                            <div class="schedule-list-modern dialog-list">
+                                                <transition-group name="course-list" tag="div">
+                                                    <div v-for="(lesson, index) in form.lessons" :key="index"
+                                                        class="schedule-list-item-modern">
+                                                        <div class="schedule-item-number">{{ index + 1 }}</div>
+                                                        <el-input v-model="lesson.value" placeholder="课程序号（如 001.1.1）" clearable
+                                                            @input="validateLesson(lesson)" class="course-input">
+                                                            <template #append>
+                                                                <el-button @click="removeLesson(index)" :disabled="isProcessing"
+                                                                    class="delete-btn">
+                                                                    <span style="font-size: 16px;">🗑️</span>
+                                                                </el-button>
+                                                            </template>
+                                                        </el-input>
+                                                    </div>
+                                                </transition-group>
+                                                
+                                                <div v-if="form.lessons.length === 0" class="empty-schedule-state">
+                                                    <div class="empty-icon">📋</div>
+                                                    <p class="empty-text">您的课程列表为空</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <template #footer>
+                                            <div class="dialog-footer">
+                                                <el-button @click="addLesson" type="primary" class="dialog-add-btn">
+                                                    <span style="font-size: 16px; margin-right: 8px;">➕</span> 添加课程
+                                                </el-button>
+                                                <el-button @click="lessonDialogVisible = false">关闭</el-button>
+                                            </div>
+                                        </template>
+                                    </el-dialog>
+                                    
+                                    </div>
+                                    <div class="course-config-footer-modern">
+                                        <div class="course-options">
+                                            <div class="option-item">
+                                                <span class="option-label">循环执行</span>
+                                                <el-switch v-model="loopEnabled" class="custom-switch" />
+                                                <span class="option-status">{{ loopEnabled ? '已开启' : '已关闭' }}</span>
+                                            </div>
                                         </div>
                                         <el-button size="large" type="success" @click="startProcess"
-                                            :loading="isProcessing" icon="el-icon-s-promotion">
+                                            :loading="isProcessing" class="start-btn">
+                                            <span style="font-size: 16px; margin-right: 8px;">{{ isProcessing ? '⏳' : '▶️' }}</span>
                                             {{ isProcessing ? '执行中...' : '开始执行' }}
                                         </el-button>
                                     </div>
                                 </div>
                             </el-tab-pane>
-                            <el-tab-pane label="执行日志" name="logs">
-                                <div class="course-logs">
-                                    <div class="course-steps">
-                                        <h4>执行进度</h4>
-                                        <el-steps direction="vertical" style="height:240px;" :active="activestep"
-                                            finish-status="success">
-                                            <el-step title="准备就绪"></el-step>
-                                            <el-step title="用户登录"></el-step>
-                                            <el-step title="获取轮次"></el-step>
-                                            <el-step title="初始化"></el-step>
-                                            <el-step title="课程缓存"></el-step>
-                                            <el-step title="开始选课"></el-step>
-                                        </el-steps>
-                                    </div>
-                                    <div class="course-log-list">
-                                        <h4>日志输出</h4>
-                                        <el-progress :percentage="Math.min(activestep/6*100, 100)"
-                                            style="margin-bottom:10px;"></el-progress>
-                                        <div class="log-container" ref="logContainer">
-                                            <el-skeleton :rows="4" animated
-                                                :loading="isProcessing && logs.length === 0">
-                                                <template #default>
-                                                    <template v-for="log in logs" :key="log.timestamp">
-                                                        <div v-if="log.type === 'log' || log.type === 'error' || log.type === 'good'"
-                                                            class="log-entry" :class="log.type">
-                                                            <span class="log-time">[{{ log.runtime }}]</span>
-                                                            <span class="message">{{ log.data }}</span>
-                                                        </div>
-                                                    </template>
-                                                    <el-empty v-if="logs.length === 0 && !isProcessing"
-                                                        description="暂无日志" :image-size="80"></el-empty>
+
+                            <el-tab-pane label="选课结果" name="result">
+                                <div class="course-result-modern">
+                                    <div class="course-content-container">
+                                        <div class="result-header-compact">
+                                            <div class="result-title-compact">
+                                                <i class="el-icon-trophy"></i>
+                                                <span>选课结果</span>
+                                                <div class="result-stats-inline" v-if="table.data && table.data.length > 0">
+                                                    <span class="stat-compact">总数: {{ table.data.length }}</span>
+                                                    <span class="stat-compact success">成功: {{ table.data.filter(item => item.status === 'selected').length }}</span>
+                                                    <span class="stat-compact danger">失败: {{ table.data.filter(item => item.status !== 'selected').length }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <el-table v-if="table.data.length" :data="table.data" class="result-table"
+                                            style="width:100%;" :stripe="true" :border="false" :highlight-current-row="true">
+                                            <el-table-column v-for="(key, colIndex) in Object.keys(table.data[0] || {})"
+                                                :key="key" :prop="key" :label="key" :align="colIndex === Object.keys(table.data[0]).length - 1 ? 'center' : 'left'">
+                                                <template #default="scope">
+                                                    <el-tag v-if="colIndex === Object.keys(table.data[0]).length - 1"
+                                                        :effect="scope.row[key] == 'success' ? 'dark' : 'plain'" 
+                                                        v-loading="scope.row[key] =='loading'"
+                                                        :type="getStatusTagType(scope.row[key])" class="status-tag">
+                                                        <span style="margin-right: 4px;">
+                                                            {{ scope.row[key] == 'success' ? '✅' : scope.row[key] == 'error' ? '❌' : scope.row[key] == 'loading' ? '⏳' : '⚠️' }}
+                                                        </span>
+                                                        {{ getStatusName(scope.row[key]) }}
+                                                    </el-tag>
+                                                    <span v-else class="table-cell-text"> {{ scope.row[key] }} </span>
                                                 </template>
-                                            </el-skeleton>
+                                            </el-table-column>
+                                        </el-table>
+                                        
+                                        <div v-else class="empty-result-modern">
+                                            <div class="empty-illustration">
+                                                <div class="empty-circle">
+                                                    <i class="el-icon-document-checked"></i>
+                                                </div>
+                                                <div class="empty-waves">
+                                                    <div class="wave wave-1"></div>
+                                                    <div class="wave wave-2"></div>
+                                                    <div class="wave wave-3"></div>
+                                                </div>
+                                            </div>
+                                            <div class="empty-content">
+                                                <h3 class="empty-title">暂无选课结果</h3>
+                                                <p class="empty-description">开始您的智能选课之旅</p>
+                                                <div class="empty-steps">
+                                                    <div class="step-item">
+                                                        <span class="step-number">1</span>
+                                                        <span class="step-text">配置基础信息</span>
+                                                    </div>
+                                                    <div class="step-item">
+                                                        <span class="step-number">2</span>
+                                                        <span class="step-text">添加智能选课</span>
+                                                    </div>
+                                                    <div class="step-item">
+                                                        <span class="step-number">3</span>
+                                                        <span class="step-text">开始智能选课</span>
+                                                    </div>
+                                                </div>
+                                                <el-button type="primary" @click="activeTab = 'course'; courseTab = 'config'" class="empty-action-btn">
+                                                    <i class="el-icon-plus"></i>
+                                                    开始配置
+                                                </el-button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </el-tab-pane>
-                            <el-tab-pane label="选课结果" name="result">
-                                <div class="course-result">
-                                    <h4>选课结果</h4>
-                                    <el-table v-if="table.data.length" :data="table.data" class="log-table"
-                                        style="width:100%;">
-                                        <el-table-column v-for="(key, colIndex) in Object.keys(table.data[0] || {})"
-                                            :key="key" :prop="key" :label="key">
-                                            <template #default="scope">
-                                                <el-tag v-if="colIndex === Object.keys(table.data[0]).length - 1"
-                                                    effect="plain" v-loading="scope.row[key] =='loading'"
-                                                    :type="getStatusTagType(scope.row[key])">
-                                                    {{ getStatusName(scope.row[key]) }}
-                                                </el-tag>
-                                                <span v-else> {{ scope.row[key] }} </span>
-                                            </template>
-                                        </el-table-column>
-                                    </el-table>
-                                    <el-empty v-else description="暂无选课结果" :image-size="100"></el-empty>
                                 </div>
                             </el-tab-pane>
                         </el-tabs>
                     </div>
-                    <!-- 智能排课：课程代码管理+日志面板合并 -->
-                    <div v-if="activeTab === 'schedule'" class="course-page">
-                        <el-tabs v-model="scheduleTab" class="course-tabs">
+                    <!-- 智能排课：课程代码管理+日志面板合并 - 现代化设计 -->
+                    <div v-if="activeTab === 'schedule'">
+                        <el-tabs v-model="scheduleTab" class="course-tabs-modern">
                             <el-tab-pane label="排课配置" name="config">
-                                <!-- 课程列表并排显示 -->
-                                <div class="course-lists-container">
-                                    <!-- 课程代码列表 -->
-                                    <div class="course-list-section">
-                                        <div class="course-config-header">
-                                            <span class="title">课程代码列表</span>
-                                            <el-button type="primary" plain @click="addLessonCode"
-                                                :disabled="isProcessing">
-                                                <i class="el-icon-plus"></i> 添加课程代码
-                                            </el-button>
-                                        </div>
-                                        <el-alert title="请填入您想排课的课程代码，支持多个课程。" type="info" show-icon :closable="false"
-                                            style="margin-bottom: 18px;">
-                                        </el-alert>
-                                        <div class="course-list-scrollable">
-                                            <div v-for="(lessonCode, index) in form.lessonCodes" :key="index"
-                                                class="course-list-item">
-                                                <el-input v-model="form.lessonCodes[index]"
-                                                    placeholder="课程代码（如 28131060-2）" clearable
-                                                    @input="validateLessonCode(index)" style="flex:1;">
-                                                    <template #append>
-                                                        <el-button @click="removeLessonCode(index)"
-                                                            :disabled="isProcessing" icon="el-icon-delete"></el-button>
-                                                    </template>
-                                                </el-input>
+                                <div class="schedule-config-modern">
+                                    <!-- 课程列表容器 -->
+                                    <div class="schedule-config-container">
+                                        <!-- 课程代码列表 - 简化版 -->
+                                        <div class="schedule-section-card">
+                                            <div class="schedule-header-modern">
+                                                <div class="schedule-title-section">
+                                                    <h2 class="schedule-title">课程代码列表</h2>
+                                                    <p class="schedule-subtitle">请填入您想排课的课程代码，支持多个课程</p>
+                                                </div>
+                                                <div class="schedule-actions">
+                                                    <div class="schedule-counter" @click="openLessonCodeDialog">
+                                                        <span class="counter-icon">📋</span>
+                                                        <span class="counter-value">{{ form.lessonCodes.length }}</span>
+                                                        <span class="counter-label">个课程</span>
+                                                    </div>
+                                                    <el-button type="primary" @click="openLessonCodeDialog" :disabled="isProcessing" class="add-course-btn">
+                                                        <span style="font-size: 16px; margin-right: 8px;">➕</span> 管理课程
+                                                    </el-button>
+                                                </div>
                                             </div>
-                                            <el-empty v-if="form.lessonCodes.length === 0"
-                                                description="请添加课程代码"></el-empty>
                                         </div>
-                                    </div>
 
-                                    <!-- 已选课程序号列表 -->
-                                    <div class="course-list-section">
-                                        <div class="course-config-header">
-                                            <span class="title">已选课程序号列表（可选）</span>
-                                            <el-button type="primary" plain @click="addYixuanData"
-                                                :disabled="isProcessing">
-                                                <i class="el-icon-plus"></i> 添加已选课程
-                                            </el-button>
-                                        </div>
-                                        <el-alert title="请填入您已选择的课程序号，用于排课时避免冲突（可选）。" type="info" show-icon
-                                            :closable="false" style="margin-bottom: 18px;">
-                                        </el-alert>
-                                        <div class="course-list-scrollable">
-                                            <div v-for="(yixuan, index) in form.yixuanData" :key="index"
-                                                class="course-list-item">
-                                                <el-input v-model="form.yixuanData[index]"
-                                                    placeholder="已选课程序号（如 001.1.1）" clearable
-                                                    @input="validateYixuanData(index)" style="flex:1;">
-                                                    <template #append>
-                                                        <el-button @click="removeYixuanData(index)"
-                                                            :disabled="isProcessing" icon="el-icon-delete"></el-button>
-                                                    </template>
-                                                </el-input>
+                                        <!-- 已选课程列表 - 简化版 -->
+                        <div class="schedule-section-card">
+                            <div class="schedule-header-modern">
+                                <div class="schedule-title-section">
+                                    <h2 class="schedule-title">已选课程列表</h2>
+                                    <p class="schedule-subtitle">请填入您已选择的课程序号，用于排课时避免冲突（可选）</p>
+                                                </div>
+                                                <div class="schedule-actions">
+                                                    <div class="schedule-counter" @click="openYixuanDialog">
+                                                        <span class="counter-icon">📋</span>
+                                                        <span class="counter-value">{{ form.yixuanData.length }}</span>
+                                                        <span class="counter-label">个课程</span>
+                                                    </div>
+                                                    <el-button type="primary" @click="openYixuanDialog" :disabled="isProcessing" class="add-course-btn">
+                                                        <span style="font-size: 16px; margin-right: 8px;">➕</span> 管理课程
+                                                    </el-button>
+                                                </div>
                                             </div>
-                                            <el-empty v-if="form.yixuanData.length === 0"
-                                                description="暂无已选课程（可选）"></el-empty>
+                                        </div>
+
+                                        <!-- 权重设置 -->
+                                        <div class="schedule-section-card full-width-card">
+                                            <div class="schedule-card-header">
+                                                <div class="card-icon">
+                                                    <i class="el-icon-setting"></i>
+                                                </div>
+                                                <div class="card-title-section">
+                                                <h3 class="card-title">权重设置</h3>
+                                                <p class="card-subtitle">配置排课优先级偏好</p>
+                                                <p class="card-hint">💡 提示：由于课程时间冲突等因素，全部都避免和全部不避免的权重效果相近，建议适度选择以获得更优排课方案</p>
+                                            </div>
+                                            </div>
+                                            
+                                            <div class="weight-grid">
+                                                <div class="weight-item">
+                                                    <div class="weight-label">
+                                                        <span class="weight-icon">🌅</span>
+                                                        <span class="weight-text">避免早八</span>
+                                                    </div>
+                                                    <el-switch v-model="form.zaoba" :active-value="1" :inactive-value="0" size="small"></el-switch>
+                                                </div>
+                                                <div class="weight-item">
+                                                    <div class="weight-label">
+                                                        <span class="weight-icon">📅</span>
+                                                        <span class="weight-text">避免周五</span>
+                                                    </div>
+                                                    <el-switch v-model="form.zhouwu" :active-value="1" :inactive-value="0" size="small"></el-switch>
+                                                </div>
+                                                <div class="weight-item">
+                                                    <div class="weight-label">
+                                                        <span class="weight-icon">📆</span>
+                                                        <span class="weight-text">避免周一</span>
+                                                    </div>
+                                                    <el-switch v-model="form.zhouyi" :active-value="1" :inactive-value="0" size="small"></el-switch>
+                                                </div>
+                                                <div class="weight-item">
+                                                    <div class="weight-label">
+                                                        <span class="weight-icon">🎯</span>
+                                                        <span class="weight-text">避免周六</span>
+                                                    </div>
+                                                    <el-switch v-model="form.zhoulio" :active-value="1" :inactive-value="0" size="small"></el-switch>
+                                                </div>
+                                                <div class="weight-item">
+                                                    <div class="weight-label">
+                                                        <span class="weight-icon">🏖️</span>
+                                                        <span class="weight-text">避免周日</span>
+                                                    </div>
+                                                    <el-switch v-model="form.zhouri" :active-value="1" :inactive-value="0" size="small"></el-switch>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="weight-summary">
+                                                <span class="summary-text">已启用 {{ [form.zaoba, form.zhouwu, form.zhouyi, form.zhoulio, form.zhouri].filter(w => w === 1).length }} 项权重设置</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <el-divider content-position="left">权重设置</el-divider>
-
-                                <div style="margin-bottom: 20px;">
-                                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                                        <el-tag :type="form.zaoba == 1 ? 'primary' : 'info'"
-                                            @click="form.zaoba = form.zaoba == 1 ? 0 : 1"
-                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
-                                            :effect="form.zaoba == 1 ? 'dark' : 'plain'">
-                                            早八权重: {{ form.zaoba == 1 ? '开启' : '关闭' }}
-                                        </el-tag>
-                                        <el-tag :type="form.zhouwu == 1 ? 'primary' : 'info'"
-                                            @click="form.zhouwu = form.zhouwu == 1 ? 0 : 1"
-                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
-                                            :effect="form.zhouwu == 1 ? 'dark' : 'plain'">
-                                            周五权重: {{ form.zhouwu == 1 ? '开启' : '关闭' }}
-                                        </el-tag>
-                                        <el-tag :type="form.zhouyi == 1 ? 'primary' : 'info'"
-                                            @click="form.zhouyi = form.zhouyi == 1 ? 0 : 1"
-                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
-                                            :effect="form.zhouyi == 1 ? 'dark' : 'plain'">
-                                            周一权重: {{ form.zhouyi == 1 ? '开启' : '关闭' }}
-                                        </el-tag>
-                                        <el-tag :type="form.zhoulio == 1 ? 'primary' : 'info'"
-                                            @click="form.zhoulio = form.zhoulio == 1 ? 0 : 1"
-                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
-                                            :effect="form.zhoulio == 1 ? 'dark' : 'plain'">
-                                            周六权重: {{ form.zhoulio == 1 ? '开启' : '关闭' }}
-                                        </el-tag>
-                                        <el-tag :type="form.zhouri == 1 ? 'primary' : 'info'"
-                                            @click="form.zhouri = form.zhouri == 1 ? 0 : 1"
-                                            style="cursor: pointer; padding: 6px 12px; font-size: 14px; border-radius: 6px; transition: all 0.2s;"
-                                            :effect="form.zhouri == 1 ? 'dark' : 'plain'">
-                                            周日权重: {{ form.zhouri == 1 ? '开启' : '关闭' }}
-                                        </el-tag>
+                                    
+                                    <!-- 课程代码弹窗 -->
+                                    <el-dialog
+                                        title="管理课程代码"
+                                        v-model="lessonCodeDialogVisible"
+                                        width="600px"
+                                        class="schedule-dialog">
+                                        <div class="dialog-content">
+                                            <div class="schedule-list-modern dialog-list">
+                                                <transition-group name="course-list" tag="div">
+                                                    <div v-for="(lessonCode, index) in form.lessonCodes" :key="index"
+                                                        class="schedule-list-item-modern">
+                                                        <div class="schedule-item-number">{{ index + 1 }}</div>
+                                                        <el-input v-model="form.lessonCodes[index]" placeholder="课程代码（如 28131060-2）" clearable
+                                                            @input="validateLessonCode(index)" class="course-input">
+                                                            <template #append>
+                                                                <el-button @click="removeLessonCode(index)" :disabled="isProcessing"
+                                                                    class="delete-btn">
+                                                                    <span style="font-size: 16px;">🗑️</span>
+                                                                </el-button>
+                                                            </template>
+                                                        </el-input>
+                                                    </div>
+                                                </transition-group>
+                                                
+                                                <div v-if="form.lessonCodes.length === 0" class="empty-schedule-state">
+                                                    <div class="empty-icon">📋</div>
+                                                    <p class="empty-text">您的课程代码列表为空</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <template #footer>
+                                            <div class="dialog-footer">
+                                            <el-button @click="addLessonCode" type="primary" class="dialog-add-btn">
+                                                <span style="font-size: 16px; margin-right: 8px;">➕</span> 添加课程代码
+                                            </el-button>
+                                            <el-button @click="lessonCodeDialogVisible = false">关闭</el-button>
+                                        </div>
+                                        </template>
+                                    </el-dialog>
+                                    
+                                    <!-- 已选课程弹窗 -->
+                                    <el-dialog
+                                        title="管理已选课程"
+                                        v-model="yixuanDialogVisible"
+                                        width="600px"
+                                        class="schedule-dialog">
+                                        <div class="dialog-content">
+                                            <div class="schedule-list-modern dialog-list">
+                                                <transition-group name="course-list" tag="div">
+                                                    <div v-for="(yixuan, index) in form.yixuanData" :key="index"
+                                                        class="schedule-list-item-modern">
+                                                        <div class="schedule-item-number">{{ index + 1 }}</div>
+                                                        <el-input v-model="form.yixuanData[index]" placeholder="已选课程序号（如 001.1.1）" clearable
+                                                            @input="validateYixuanData(index)" class="course-input">
+                                                            <template #append>
+                                                                <el-button @click="removeYixuanData(index)" :disabled="isProcessing"
+                                                                    class="delete-btn">
+                                                                    <span style="font-size: 16px;">🗑️</span>
+                                                                </el-button>
+                                                            </template>
+                                                        </el-input>
+                                                    </div>
+                                                </transition-group>
+                                                
+                                                <div v-if="form.yixuanData.length === 0" class="empty-schedule-state">
+                                                    <div class="empty-icon">📋</div>
+                                                    <p class="empty-text">暂无已选课程（可选）</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <template #footer>
+                                            <div class="dialog-footer">
+                                                <el-button @click="addYixuanData" type="primary" class="dialog-add-btn">
+                                                    <span style="font-size: 16px; margin-right: 8px;">➕</span> 添加已选课程
+                                                </el-button>
+                                                <el-button @click="yixuanDialogVisible = false">关闭</el-button>
+                                            </div>
+                                        </template>
+                                    </el-dialog>
+                                    
+                                    <div class="schedule-config-footer-modern">
+                                        <div class="schedule-options">
+                                            <div class="option-item">
+                                                <span class="option-label">智能排课</span>
+                                                <span class="option-status">已准备就绪</span>
+                                            </div>
+                                        </div>
+                                        <el-button size="large" type="success" @click="startScheduleProcess"
+                                            :loading="isProcessing" class="start-btn">
+                                            <span style="font-size: 16px; margin-right: 8px;">{{ isProcessing ? '⏳' : '▶️' }}</span>
+                                            {{ isProcessing ? '执行中...' : '开始排课' }}
+                                        </el-button>
                                     </div>
-                                </div>
-
-                                <div class="course-config-footer">
-                                    <div></div>
-                                    <el-button size="large" type="success" @click="startScheduleProcess"
-                                        :loading="isProcessing" icon="el-icon-s-promotion">
-                                        {{ isProcessing ? '执行中...' : '开始排课' }}
-                                    </el-button>
                                 </div>
                             </el-tab-pane>
-                            <el-tab-pane label="执行日志" name="logs">
-                                <div class="course-logs">
-                                    <div class="course-steps">
-                                        <h4>执行进度</h4>
-                                        <el-steps direction="vertical" style="height:240px;"
-                                            :active="scheduleActiveStep" finish-status="success">
-                                            <el-step title="准备就绪"></el-step>
-                                            <el-step title="用户登录"></el-step>
-                                            <el-step title="获取课程数据"></el-step>
-                                            <el-step title="格式化数据"></el-step>
-                                            <el-step title="生成排课方案"></el-step>
-                                            <el-step title="权重计算"></el-step>
-                                        </el-steps>
-                                    </div>
-                                    <div class="course-log-list">
-                                        <h4>日志输出</h4>
-                                        <el-progress :percentage="Math.min(scheduleActiveStep/6*100, 100)"
-                                            style="margin-bottom:10px;"></el-progress>
-                                        <div class="log-container" ref="scheduleLogContainer">
-                                            <el-skeleton :rows="4" animated
-                                                :loading="isProcessing && scheduleLogs.length === 0">
-                                                <template #default>
-                                                    <template v-for="log in scheduleLogs" :key="log.timestamp">
-                                                        <div v-if="log.type === 'log' || log.type === 'error' || log.type === 'good'"
-                                                            class="log-entry" :class="log.type">
-                                                            <span class="log-time">[{{ log.runtime }}]</span>
-                                                            <span class="message">{{ log.data }}</span>
-                                                        </div>
-                                                    </template>
-                                                    <el-empty v-if="scheduleLogs.length === 0 && !isProcessing"
-                                                        description="暂无日志" :image-size="80"></el-empty>
-                                                </template>
-                                            </el-skeleton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-tab-pane>
+
                             <el-tab-pane label="排课结果" name="result">
-                                <div class="course-result">
-                                    <h4>排课结果</h4>
+                                <div class="result-page">
+                                    <div class="course-content-container">
+                                        <div class="result-header-compact">
+                                            <div class="result-title-compact">
+                                                <i class="el-icon-calendar"></i>
+                                                <span>排课结果</span>
+                                                <div class="result-stats-inline" v-if="scheduleTable.data && scheduleTable.data.length > 0">
+                                                    <span class="stat-compact">方案数: {{ scheduleTable.data.length }}</span>
+                                                    <span class="stat-compact" v-if="selectedSolutionIndex !== null">权重: {{ scheduleTable.data[selectedSolutionIndex]?.detail?.weight || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div v-if="scheduleTable.data.length" class="result-content">
+                                            <div class="solution-selector-compact">
+                                                <el-select v-model="selectedSolutionIndex" placeholder="选择排课方案" size="small">
+                                                    <el-option v-for="(solution, index) in scheduleTable.data" :key="index"
+                                                        :label="`方案${index + 1} (权重: ${solution.detail ? solution.detail.weight : 0})`"
+                                                        :value="index">
+                                                    </el-option>
+                                                </el-select>
+                                            </div>
 
-                                    <!-- 方案选择器 -->
-                                    <div v-if="scheduleTable.data.length" class="schedule-solution-selector">
-                                        <el-select v-model="selectedSolutionIndex" placeholder="选择排课方案"
-                                            style="width: 200px; margin-bottom: 20px;">
-                                            <el-option v-for="(solution, index) in scheduleTable.data" :key="index"
-                                                :label="`方案${index + 1} (权重: ${solution.detail ? solution.detail.weight : 0})`"
-                                                :value="index">
-                                            </el-option>
-                                        </el-select>
-                                    </div>
-
-                                    <!-- 课表显示 -->
-                                    <div v-if="scheduleTable.data.length && selectedSolutionIndex !== null"
-                                        class="schedule-timetable">
-                                        <div class="timetable-header">
-                                            <h5>课表预览</h5>
-                                            <div class="timetable-stats">
-                                                <el-tag size="small" type="info">早八: {{
-                                                    getCurrentSolutionStats().zaobaCount }}</el-tag>
-                                                <el-tag size="small" type="warning">周五: {{
-                                                    getCurrentSolutionStats().zhouwuCount }}</el-tag>
-                                                <el-tag size="small" type="success">周一: {{
-                                                    getCurrentSolutionStats().zhouyiCount }}</el-tag>
-                                                <el-tag size="small" type="danger">周六: {{
-                                                    getCurrentSolutionStats().zhoulioCount }}</el-tag>
-                                                <el-tag size="small" type="primary">周日: {{
-                                                    getCurrentSolutionStats().zhouriCount }}</el-tag>
+                                            <div v-if="selectedSolutionIndex !== null" class="schedule-table">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>时间</th>
+                                                            <th v-for="day in ['周一', '周二', '周三', '周四', '周五', '周六', '周日']" :key="day">{{ day }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="period in 13" :key="period">
+                                                            <td class="time-slot">{{ getTimeSlot(period) }}</td>
+                                                            <td v-for="day in 7" :key="day" class="lesson-cell" @click="showLessonDetail(day, period)">
+                                                                <div v-if="getLessonAt(day, period)" class="lesson">
+                                                                    <div class="lesson-name">{{ getLessonAt(day, period).name }}</div>
+                                                                    <div class="lesson-teacher">{{ getLessonAt(day, period).teachers }}</div>
+                                                                    <div class="lesson-weeks">{{ getLessonAt(day, period).weeks }}</div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
 
-                                        <div class="timetable-container">
-                                            <table class="timetable">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="time-header">时间</th>
-                                                        <th v-for="day in ['周一', '周二', '周三', '周四', '周五', '周六', '周日']"
-                                                            :key="day" class="day-header">{{ day }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="period in 13" :key="period" class="period-row">
-                                                        <td class="time-cell">{{ getTimeSlot(period) }}</td>
-                                                        <td v-for="day in 7" :key="day" class="lesson-cell"
-                                                            :class="getLessonCellClass(day, period)"
-                                                            @click="showLessonDetail(day, period)">
-                                                            <div v-if="getLessonAt(day, period)" class="lesson-info">
-                                                                <div class="lesson-name">{{ getLessonAt(day,
-                                                                    period).name }}</div>
-                                                                <div class="lesson-teacher">{{ getLessonAt(day,
-                                                                    period).teachers }}</div>
-                                                                <div class="lesson-weeks">{{ getLessonAt(day,
-                                                                    period).weeks }}</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div v-else class="empty-result-modern">
+                                            <div class="empty-illustration">
+                                                <div class="empty-circle">
+                                                    <i class="el-icon-calendar"></i>
+                                                </div>
+                                                <div class="empty-waves">
+                                                    <div class="wave wave-1"></div>
+                                                    <div class="wave wave-2"></div>
+                                                    <div class="wave wave-3"></div>
+                                                </div>
+                                            </div>
+                                            <div class="empty-content">
+                                                <h3 class="empty-title">暂无排课结果</h3>
+                                                <p class="empty-description">开始您的智能排课之旅</p>
+                                                <div class="empty-steps">
+                                                    <div class="step-item">
+                                                        <span class="step-number">1</span>
+                                                        <span class="step-text">添加课程代码</span>
+                                                    </div>
+                                                    <div class="step-item">
+                                                        <span class="step-number">2</span>
+                                                        <span class="step-text">配置权重偏好</span>
+                                                    </div>
+                                                    <div class="step-item">
+                                                        <span class="step-number">3</span>
+                                                        <span class="step-text">开始智能排课</span>
+                                                    </div>
+                                                </div>
+                                                <el-button type="primary" @click="activeTab = 'schedule'; scheduleTab = 'config'" class="empty-action-btn">
+                                                    <i class="el-icon-plus"></i>
+                                                    开始配置
+                                                </el-button>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <el-empty v-else description="暂无排课结果" :image-size="100"></el-empty>
                                 </div>
                             </el-tab-pane>
                         </el-tabs>
@@ -649,21 +628,6 @@
                             :closable="false" style="margin-bottom: 20px;"></el-alert>
 
                         <div style="margin-bottom: 20px;">
-                            <el-button type="warning" @click="clearCache('cookie')" :disabled="isProcessing"
-                                style="margin-right: 10px;">
-                                <i class="el-icon-delete"></i>
-                                清除Cookie
-                            </el-button>
-                            <el-button type="warning" @click="clearCache('lessonDatas')" :disabled="isProcessing"
-                                style="margin-right: 10px;">
-                                <i class="el-icon-delete"></i>
-                                清除课程数据
-                            </el-button>
-                            <el-button type="warning" @click="clearCache('profileId')" :disabled="isProcessing"
-                                style="margin-right: 10px;">
-                                <i class="el-icon-delete"></i>
-                                清除ProfileId
-                            </el-button>
                             <el-button type="danger" @click="clearAllCache" :disabled="isProcessing">
                                 <i class="el-icon-delete"></i>
                                 清除所有缓存
@@ -684,32 +648,51 @@
                             <el-input v-model="form.cookie" :rows="3" type="textarea" placeholder="Cookie数据将在此显示"
                                 readonly>
                             </el-input>
-                            <div v-if="form.cookie" style="margin-top: 10px;">
-                                <el-button type="text" size="small" @click="copyToClipboard('cookie', form.cookie)">
-                                    复制Cookie
-                                </el-button>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+                                <div>
+                                    <el-button type="warning" size="small" @click="clearCache('cookie')" :disabled="isProcessing || !form.cookie">
+                                        <i class="el-icon-delete"></i>
+                                        清除Cookie
+                                    </el-button>
+                                </div>
+                                <div v-if="form.cookie">
+                                    <el-button type="text" size="small" @click="copyToClipboard('cookie', form.cookie)">
+                                        复制Cookie
+                                    </el-button>
+                                </div>
                             </div>
                         </el-form-item>
 
-                        <el-divider content-position="left">ProfileId缓存</el-divider>
-                        <el-form-item label="选课轮次ID">
+                        <el-divider content-position="left">轮次数据缓存</el-divider>
+                        <el-form-item label="选课轮次数据">
                             <div style="margin-bottom: 10px;">
-                                <el-tag :type="form.profileId ? 'success' : 'info'" size="small"
+                                <el-tag :type="electionProfiles && electionProfiles.length > 0 ? 'success' : 'info'" size="small"
                                     style="margin-right: 10px;">
-                                    {{ form.profileId ? '已缓存' : '未缓存' }}
+                                    {{ electionProfiles && electionProfiles.length > 0 ? `已缓存 ${electionProfiles.length} 个轮次` : '未缓存' }}
+                                </el-tag>
+                                <el-tag v-if="form.count" type="info" size="small" style="margin-right: 10px;">
+                                    当前轮次: {{ form.count }}
                                 </el-tag>
                                 <el-tag v-if="form.profileId" type="info" size="small">
-                                    数据长度: {{ form.profileId.length }} 字符
+                                    ProfileId: {{ form.profileId }}
                                 </el-tag>
                             </div>
-                            <el-input v-model="form.profileId" :rows="3" type="textarea" placeholder="ProfileId将在此显示"
+                            <el-input v-model="electionProfilesDisplay" :rows="6" type="textarea" placeholder="轮次数据将在此显示"
                                 readonly>
                             </el-input>
-                            <div v-if="form.profileId" style="margin-top: 10px;">
-                                <el-button type="text" size="small"
-                                    @click="copyToClipboard('profileId', form.profileId)">
-                                    复制ProfileId
-                                </el-button>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+                                <div>
+                                    <!-- 根据用户要求移除刷新轮次数据按钮 -->
+                                    <el-button type="warning" size="small" @click="clearElectionProfiles" :disabled="isProcessing || !(electionProfiles && electionProfiles.length > 0)">
+                                        <i class="el-icon-delete"></i>
+                                        清除轮次缓存
+                                    </el-button>
+                                </div>
+                                <div v-if="electionProfiles && electionProfiles.length > 0">
+                                    <el-button type="text" size="small" @click="copyToClipboard('electionProfiles', JSON.stringify(electionProfiles, null, 2))">
+                                        复制轮次数据
+                                    </el-button>
+                                </div>
                             </div>
                         </el-form-item>
 
@@ -728,13 +711,21 @@
                                 :rows="form.lessonDatas ? (showFullLessonDatas ? 8 : 3) : 3" type="textarea"
                                 placeholder="课程数据将在此显示" readonly>
                             </el-input>
-                            <div v-if="form.lessonDatas" style="margin-top: 10px;">
-                                <el-button type="text" size="small" @click="toggleLessonDatas">
-                                    {{ showFullLessonDatas ? '收起' : '展开完整数据' }}
-                                </el-button>
-                                <el-button type="text" size="small" @click="copyLessonDatas">
-                                    复制数据
-                                </el-button>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+                                <div>
+                                    <el-button type="warning" size="small" @click="clearCache('lessonDatas')" :disabled="isProcessing || !form.lessonDatas">
+                                        <i class="el-icon-delete"></i>
+                                        清除课程数据
+                                    </el-button>
+                                </div>
+                                <div v-if="form.lessonDatas">
+                                    <el-button type="text" size="small" @click="toggleLessonDatas" style="margin-right: 10px;">
+                                        {{ showFullLessonDatas ? '收起' : '展开完整数据' }}
+                                    </el-button>
+                                    <el-button type="text" size="small" @click="copyLessonDatas">
+                                        复制数据
+                                    </el-button>
+                                </div>
                             </div>
                         </el-form-item>
                     </div>
@@ -765,7 +756,7 @@
                         </div>
 
                         <el-divider content-position="left">缓存统计</el-divider>
-                        <el-row :gutter="12" style="margin-bottom: 20px;">
+                        <el-row :gutter="12" style="margin-bottom: 12px;">
                             <el-col :span="6">
                                 <el-card shadow="hover" class="cache-stat-card">
                                     <div class="cache-stat-item">
@@ -801,8 +792,8 @@
                         </el-row>
 
                         <!-- 搜索和筛选 -->
-                        <div style="margin-bottom: 20px;">
-                            <el-row :gutter="20">
+                        <div style="margin-bottom: 12px;">
+                            <el-row :gutter="12">
                                 <el-col :span="8">
                                     <el-input v-model="lessonSearchQuery" placeholder="搜索课程名称、教师或课程代码" clearable
                                         prefix-icon="el-icon-search">
@@ -1114,9 +1105,37 @@
                             </div>
                         </div>
                     </div>
+            
+            <!-- 第三栏：统一日志区域 - 简约设计 -->
+            <div class="log-panel">
+                <div class="log-panel-header">
+                    <h3><i class="el-icon-bell"></i>日志</h3>
+                    <div class="log-panel-actions">
+                        <el-button size="small" @click="clearAllLogs" type="text" icon="el-icon-delete"></el-button>
+                    </div>
+                </div>
+                <div class="log-panel-content">
+                    <div class="log-container" ref="unifiedLogContainer">
+                        <el-scrollbar height="100%">
+                            <div v-if="allLogs.length === 0" class="log-empty">
+                                <el-empty description="暂无日志" :image-size="40"></el-empty>
+                            </div>
+                            <template v-for="log in allLogs" :key="log.timestamp">
+                                <div v-if="log.type === 'log' || log.type === 'error' || log.type === 'good'"
+                                    class="log-entry" :class="log.type">
+                                    <div class="log-meta">
+                                        <span class="log-time">{{ log.runtime }}</span>
+                                        <span class="log-source">{{ log.source }}</span>
+                                    </div>
+                                    <span class="message">{{ log.data }}</span>
+                                </div>
+                            </template>
+                        </el-scrollbar>
+                    </div>
                 </div>
             </div>
-        </div>
+            
+        </div> <!-- 关闭三栏布局容器 -->
     </div>
 
     <!-- 引入Vue3和Element Plus -->
@@ -1139,7 +1158,7 @@
         const app = createApp({
             setup() {
                 // 响应式状态
-                const activeTab = ref('dashboard');
+                const activeTab = ref('about');
                 const courseTab = ref('config');
                 const scheduleTab = ref('config');
                 const connectionStatus = ref('未连接');
@@ -1165,6 +1184,9 @@
                 const lessonCurrentPage = ref(1);
                 const lessonPageSize = ref(20);
 
+                // 选课轮次管理相关数据
+                const electionProfiles = ref([]);
+
                 // 表单数据
                 const form = reactive({
                     url: '',
@@ -1172,7 +1194,7 @@
                     password: '',
                     count: '1',
                     selectionModel: '2',
-                    delay: 100,
+                    delay: 100, // 确保这是数值类型
                     lessons: [],
                     lessonCodes: [],
                     yixuanData: [],
@@ -1277,6 +1299,14 @@
                     return filteredLessonCacheData.value.slice(start, end);
                 });
 
+                // 轮次数据显示计算属性
+                const electionProfilesDisplay = computed(() => {
+                    if (!electionProfiles.value || electionProfiles.value.length === 0) {
+                        return '';
+                    }
+                    return JSON.stringify(electionProfiles.value, null, 2);
+                });
+
                 // 方法
                 const handleMenuSelect = (key) => {
                     activeTab.value = key;
@@ -1317,39 +1347,27 @@
                         noopen: '选课不开放',
                         selected: '选课成功',
                     };
-                    return map[name] || '系统异常';
+                    return map[name] || name;
                 };
 
                 const clearCache = (type) => {
-                    ElMessageBox.confirm('确定要清除吗？', '操作确认', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }).then(() => {
-                        form[type] = '';
-                        ElNotification.success({ title: '成功', message: '已经完成清除' });
-                    }).catch(error => {
-                        if (error !== 'cancel') {
-                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
-                        }
-                    });
+                    form[type] = '';
+                    console.log(`已清除${type}缓存`);
                 };
 
                 const clearAllCache = () => {
-                    ElMessageBox.confirm('确定要清除所有缓存数据吗？这将清除Cookie、ProfileId和课程数据缓存。', '操作确认', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }).then(() => {
-                        form.cookie = '';
-                        form.profileId = '';
-                        form.lessonDatas = '';
-                        ElNotification.success({ title: '成功', message: '所有缓存数据已清除' });
-                    }).catch(error => {
-                        if (error !== 'cancel') {
-                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
-                        }
-                    });
+                    form.cookie = '';
+                    form.lessonDatas = '';
+                    // 清除轮次缓存
+                    electionProfiles.value = [];
+                    localStorage.removeItem('electionProfiles');
+                    console.log('所有缓存数据已清除');
+                };
+
+                const clearElectionProfiles = () => {
+                    electionProfiles.value = [];
+                    localStorage.removeItem('electionProfiles');
+                    console.log('轮次数据缓存已清除');
                 };
 
                 const wsConnect = () => {
@@ -1367,7 +1385,7 @@
                         ws.value.onclose = (event) => {
                             connectionStatus.value = '断开';
                             isProcessing.value = false;
-                            ElNotification.warning({ title: '连接断开', message: '与服务器的连接已断开，正在尝试重连...', duration: 3000 });
+                            console.warn('与服务器的连接已断开，正在尝试重连...');
                             startReconnectTimer();
                         };
 
@@ -1383,37 +1401,66 @@
                             if (type === 'cache' && data && data.key) {
                                 const cacheSetters = {
                                     cookie: v => form.cookie = v,
-                                    profileId: v => form.profileId = v,
                                     lessonDatas: v => form.lessonDatas = v,
+                                    electionProfiles: v => {
+                                        localStorage.setItem('electionProfiles', v);
+                                        try {
+                                            electionProfiles.value = JSON.parse(v);
+                                            // 如果是通过主动获取轮次数据按钮触发的，显示成功通知
+                                            if (isProcessing.value) {
+                                                isProcessing.value = false;
+                                                ElNotification.success({
+                                                    title: '获取成功',
+                                                    message: `成功获取到 ${electionProfiles.value.length} 个选课轮次`,
+                                                    duration: 3000
+                                                });
+                                            }
+                                        } catch (e) {
+                                            console.error('解析轮次数据失败:', e);
+                                        }
+                                    },
+                                    count: v => {
+                                        form.count = v;
+                                        // 自动设置profileId
+                                        const index = parseInt(v) - 1;
+                                        if (electionProfiles.value && electionProfiles.value[index]) {
+                                            form.profileId = electionProfiles.value[index].id;
+                                        }
+                                    }
                                 };
                                 if (cacheSetters[data.key]) {
                                     cacheSetters[data.key](data.value);
                                     return;
                                 }
+                                // 对于其他缓存键，直接存储到localStorage
+                                localStorage.setItem(data.key, data.value);
                             }
                             if (type === 'fuckEnded') {
                                 isProcessing.value = false;
-                                ElNotification.success({ title: '执行完成', message: '选课流程已结束', duration: 3000 });
+                                console.log('选课流程已结束');
                                 if (loopEnabled.value) {
                                     setTimeout(() => { startProcess(); }, 2000);
                                 }
                                 if (activeTab.value === 'course') {
                                     courseTab.value = 'result';
+                                    console.log('选课流程结束，切换到结果标签页');
                                 }
                                 return;
                             }
                             if (type === 'fuckStarted') {
                                 isProcessing.value = true;
                                 if (activeTab.value === 'course') {
-                                    courseTab.value = 'logs';
+                                    // 日志标签页已被移除，保持在当前标签页
+                                    console.log('选课流程开始');
                                 }
                                 return;
                             }
                             if (type === 'scheduleEnded') {
                                 isProcessing.value = false;
-                                ElNotification.success({ title: '执行完成', message: '排课流程已结束', duration: 3000 });
+                                console.log('排课流程已结束');
                                 if (activeTab.value === 'schedule') {
                                     scheduleTab.value = 'result';
+                                    console.log('排课流程结束，切换到结果标签页');
                                 }
                                 return;
                             }
@@ -1427,14 +1474,16 @@
                             if (type === 'lessonCache') {
                                 try {
                                     lessonCacheData.value = Array.isArray(data) ? data : [];
-                                    ElNotification.success({ title: '缓存更新', message: `成功获取 ${lessonCacheData.value.length} 条课程数据` });
+                                    console.log(`成功获取 ${lessonCacheData.value.length} 条课程数据`);
                                 } catch (error) {
-                                    ElNotification.error({ title: '数据解析错误', message: error.message });
+                                    console.error('数据解析错误:', error.message);
                                 }
                                 return;
                             }
+
                             // 日志与进度、表格处理
                             if (activeTab.value === 'schedule') {
+                                // 排课页面的日志处理
                                 if (type === 'log' || type === 'error' || type === 'good') {
                                     scheduleLogs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
                                 }
@@ -1443,8 +1492,10 @@
                                 }
                                 if (type === 'step') {
                                     scheduleActiveStep.value = data;
+                                    console.log('排课页面步骤更新为:', data);
                                     if (data >= 6) {
                                         scheduleTab.value = 'result';
+                                        console.log('排课页面步骤完成，切换到结果标签页');
                                     }
                                 }
                                 nextTick(() => {
@@ -1452,6 +1503,9 @@
                                         scheduleLogContainer.value.scrollTop = scheduleLogContainer.value.scrollHeight;
                                     }
                                 });
+                            } else if (activeTab.value === 'course') {
+                                // 智能选课页面的数据处理
+                                // 日志标签页已被移除，但仍然收集日志数据用于调试
                                 if (type === 'log' || type === 'error' || type === 'good') {
                                     logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
                                 }
@@ -1460,15 +1514,12 @@
                                 }
                                 if (type === 'step') {
                                     activestep.value = data;
+                                    console.log('智能选课页面步骤更新为:', data);
                                     if (data >= 6) {
                                         courseTab.value = 'result';
+                                        console.log('智能选课页面步骤完成，切换到结果标签页');
                                     }
                                 }
-                                nextTick(() => {
-                                    if (logContainer.value) {
-                                        logContainer.value.scrollTop = logContainer.value.scrollHeight;
-                                    }
-                                });
                             } else {
                                 if (type === 'log' || type === 'error' || type === 'good') {
                                     logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
@@ -1503,7 +1554,15 @@
                     }
                     startTime.value = Date.now();
                     logs.value = [];
-                    ws.value.send(JSON.stringify({ type: 'fuckStart', config: form }));
+                    
+                    // 从localStorage获取缓存的轮次数据
+                    const cachedProfiles = localStorage.getItem('electionProfiles');
+                    const config = {
+                        ...form,
+                        electionProfiles: cachedProfiles ? JSON.parse(cachedProfiles) : null
+                    };
+                    
+                    ws.value.send(JSON.stringify({ type: 'fuckStart', config }));
                 };
 
                 const getRuntime = () => {
@@ -1521,6 +1580,11 @@
                     }, 3000);
                 };
 
+                // 弹窗控制变量
+                const lessonCodeDialogVisible = ref(false);
+                const yixuanDialogVisible = ref(false);
+                const lessonDialogVisible = ref(false); // 智能选课弹窗
+                
                 const addLessonCode = () => {
                     form.lessonCodes.push('');
                 };
@@ -1531,6 +1595,18 @@
 
                 const validateLessonCode = (index) => {
                     form.lessonCodes[index] = form.lessonCodes[index].replace(/[^0-9-]/g, '');
+                };
+                
+                const openLessonCodeDialog = () => {
+                    lessonCodeDialogVisible.value = true;
+                };
+                
+                const openYixuanDialog = () => {
+                    yixuanDialogVisible.value = true;
+                };
+                
+                const openLessonDialog = () => {
+                    lessonDialogVisible.value = true;
                 };
 
                 const startScheduleProcess = () => {
@@ -1544,7 +1620,15 @@
                     }
                     startTime.value = Date.now();
                     scheduleLogs.value = [];
-                    ws.value.send(JSON.stringify({ type: 'scheduleStart', config: form }));
+                    
+                    // 从localStorage获取缓存的轮次数据
+                    const cachedProfiles = localStorage.getItem('electionProfiles');
+                    const config = {
+                        ...form,
+                        electionProfiles: cachedProfiles ? JSON.parse(cachedProfiles) : null
+                    };
+                    
+                    ws.value.send(JSON.stringify({ type: 'scheduleStart', config }));
                 };
 
                 const addYixuanData = () => {
@@ -1558,6 +1642,16 @@
                 const validateYixuanData = (index) => {
                     form.yixuanData[index] = form.yixuanData[index].replace(/[^0-9.-]/g, '');
                 };
+                
+                // 计算课程代码数量
+                const lessonCodesCount = computed(() => {
+                    return form.lessonCodes.filter(code => code.trim() !== '').length;
+                });
+                
+                // 计算已选课程数量
+                const yixuanDataCount = computed(() => {
+                    return form.yixuanData.filter(data => data.trim() !== '').length;
+                });
 
                 const getTimeSlot = (period) => {
                     try {
@@ -1678,7 +1772,7 @@
                 const showLessonDetail = (day, period) => {
                     const lesson = getLessonAt(day, period);
                     if (!lesson) {
-                        ElMessage.info('该时间段没有课程');
+                        console.log('该时间段没有课程');
                         return;
                     }
 
@@ -1755,7 +1849,7 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    ElNotification.success({ title: '成功', message: `${type}数据已复制到剪贴板` });
+                    console.log(`${type}数据已复制到剪贴板`);
                 };
 
                 // 课程缓存相关方法
@@ -1766,48 +1860,28 @@
                             const parsedData = new Function(`${form.lessonDatas} return lessonJSONs`)();
                             if (Array.isArray(parsedData)) {
                                 lessonCacheData.value = parsedData;
-                                ElNotification.success({
-                                    title: '刷新成功',
-                                    message: `成功加载 ${parsedData.length} 条课程数据`
-                                });
+                                console.log(`成功加载 ${parsedData.length} 条课程数据`);
                                 return;
                             }
                         } catch (error) {
-                            ElNotification.error({
-                                title: '刷新失败',
-                                message: '课程数据格式错误'
-                            });
+                            console.error('课程数据格式错误');
                             return;
                         }
                     }
 
                     // 如果没有缓存数据，尝试从服务器获取
                     if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
-                        ElNotification.error({
-                            title: '连接错误',
-                            message: 'WebSocket连接失败，请检查后端服务是否启动',
-                            duration: 5000
-                        });
+                        console.error('WebSocket连接失败，请检查后端服务是否启动');
                         return;
                     }
                     ws.value.send(JSON.stringify({ type: 'getLessonCache' }));
-                    ElNotification.info({ title: '刷新中', message: '正在从服务器获取课程缓存数据...' });
+                    console.log('正在从服务器获取课程缓存数据...');
                 };
 
                 const clearLessonCache = () => {
-                    ElMessageBox.confirm('确定要清除课程缓存数据吗？', '操作确认', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }).then(() => {
-                        lessonCacheData.value = [];
-                        form.lessonDatas = '';
-                        ElNotification.success({ title: '成功', message: '课程缓存数据已清除' });
-                    }).catch(error => {
-                        if (error !== 'cancel') {
-                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
-                        }
-                    });
+                    lessonCacheData.value = [];
+                    form.lessonDatas = '';
+                    console.log('课程缓存数据已清除');
                 };
 
                 const exportLessonCache = () => {
@@ -1822,9 +1896,122 @@
                         link.click();
                         document.body.removeChild(link);
                         URL.revokeObjectURL(url);
-                        ElNotification.success({ title: '成功', message: '课程数据已导出' });
+                        console.log('课程数据已导出');
                     } catch (error) {
-                        ElNotification.error({ title: '导出失败', message: error.message });
+                        console.error('导出失败:', error.message);
+                    }
+                };
+
+                // 选课轮次管理相关方法
+                const refreshProfiles = () => {
+                    // 从缓存中获取轮次信息
+                    const cachedProfiles = localStorage.getItem('electionProfiles');
+                    
+                    if (cachedProfiles) {
+                        try {
+                            const profiles = JSON.parse(cachedProfiles);
+                            // 确保轮次数据按照轮次号排序
+                            profiles.sort((a, b) => {
+                                // 首先按照轮次号排序
+                                const roundA = parseInt(a.round) || 0;
+                                const roundB = parseInt(b.round) || 0;
+                                if (roundA !== roundB) return roundA - roundB;
+                                
+                                // 如果轮次号相同，按照开放时间排序
+                                return new Date(a.openTime || 0) - new Date(b.openTime || 0);
+                            });
+                            
+                            electionProfiles.value = profiles;
+                            
+                            // 根据当前count值设置profileId
+                            const currentCount = parseInt(form.count) || 1;
+                            const index = currentCount - 1;
+                            if (index >= 0 && index < profiles.length) {
+                                form.profileId = profiles[index].id;
+                            }
+                            
+                            // 轮次加载成功，无需弹窗通知
+                        } catch (error) {
+                            console.error('轮次缓存数据格式错误');
+                        }
+                    } else {
+                        console.log('无轮次缓存数据，请先运行选课程序以获取轮次信息');
+                    }
+                };
+                
+                // 主动获取轮次数据
+                const fetchProfileData = () => {
+                    if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+                        ElNotification.error({
+                            title: '连接错误',
+                            message: 'WebSocket连接失败，请检查后端服务是否启动',
+                            duration: 5000
+                        });
+                        return;
+                    }
+                    
+                    // 显示加载状态
+                    isProcessing.value = true;
+                    
+                    // 发送一个空的排课请求，目的是触发后端的getProfileId流程
+                    ws.value.send(JSON.stringify({ 
+                        type: 'scheduleStart', 
+                        config: {
+                            ...form,
+                            lessonCodes: [], // 空的课程代码列表
+                            yixuanData: []   // 空的已选课程列表
+                        }
+                    }));
+                    
+                    // 显示通知
+                    ElNotification.info({
+                        title: '获取轮次数据',
+                        message: '正在发送请求获取轮次数据，请稍候...',
+                        duration: 3000
+                    });
+                    
+                    // 设置超时，如果5秒后仍然在处理中，则重置状态
+                    setTimeout(() => {
+                        if (isProcessing.value) {
+                            isProcessing.value = false;
+                            refreshProfiles(); // 尝试从缓存刷新轮次数据
+                            
+                            if (electionProfiles.value.length > 0) {
+                                ElNotification.success({
+                                    title: '获取成功',
+                                    message: `成功获取到 ${electionProfiles.value.length} 个选课轮次`,
+                                    duration: 3000
+                                });
+                            }
+                        }
+                    }, 5000);
+                };
+                
+                // 清除轮次缓存
+                const clearProfiles = () => {
+                    ElMessageBox.confirm('确定要清除轮次缓存数据吗？', '操作确认', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }).then(() => {
+                        localStorage.removeItem('electionProfiles');
+                        electionProfiles.value = [];
+                        form.profileId = '';
+                        form.count = '1';
+                        console.log('轮次缓存数据已清除');
+                    }).catch(error => {
+                        if (error !== 'cancel') {
+                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
+                        }
+                    });
+                };
+
+                const selectProfile = (index) => {
+                    if (index >= 0 && index < electionProfiles.value.length) {
+                        form.count = String(index + 1);
+                        form.profileId = electionProfiles.value[index].id;
+                        
+                        // 轮次已选择，无需弹窗通知
                     }
                 };
 
@@ -1924,7 +2111,7 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    ElNotification.success({ title: '成功', message: '课程信息已复制到剪贴板' });
+                    console.log('课程信息已复制到剪贴板');
                 };
 
                 // 从缓存数据中加载课程信息
@@ -1962,7 +2149,7 @@
                         }
                     } catch (error) {
                         localStorage.setItem('Config', JSON.stringify(form));
-                        ElNotification.warning({ message: '初始化配置' });
+                        console.log('初始化配置');
                     }
                 };
 
@@ -1973,7 +2160,7 @@
                         try {
                             localStorage.setItem('Config', JSON.stringify(form));
                         } catch (error) {
-                            ElNotification.warning({ message: error.message });
+                            console.warn('保存配置失败:', error.message);
                         }
                     }, 1000),
                     { deep: true }
@@ -1997,6 +2184,12 @@
 
                     // 加载演示数据
                     loadDemoData();
+                    
+                    // 加载轮次缓存信息
+                    refreshProfiles();
+                    
+                    // 添加默认宣传日志
+                    addDefaultLogs();
                 });
 
                 onBeforeUnmount(() => {
@@ -2005,6 +2198,121 @@
                         reconnectTimer.value = null;
                     }
                 });
+
+                // 统一日志计算属性
+                const allLogs = computed(() => {
+                    const combined = [];
+                    
+                    // 添加普通日志，标记来源
+                    logs.value.forEach(log => {
+                        combined.push({
+                            ...log,
+                            source: '智能选课',
+                            timestamp: log.timestamp || Date.now()
+                        });
+                    });
+                    
+                    // 添加排课日志，标记来源
+                    scheduleLogs.value.forEach(log => {
+                        combined.push({
+                            ...log,
+                            source: '智能排课',
+                            timestamp: log.timestamp || Date.now()
+                        });
+                    });
+                    
+                    // 按时间戳排序
+                    return combined.sort((a, b) => a.timestamp - b.timestamp);
+                });
+                
+                // 清空所有日志的方法
+                const clearAllLogs = () => {
+                    logs.value = [];
+                    scheduleLogs.value = [];
+                    console.log('已清空所有日志');
+                };
+                
+                // 添加默认宣传日志
+                const addDefaultLogs = () => {
+                    const currentTime = Date.now();
+                    const baseTime = currentTime - 10000; // 从10秒前开始
+                    
+                    const defaultLogs = [
+                        {
+                            type: 'good',
+                            data: '🎉 欢迎使用智能选课排课系统！',
+                            runtime: '00:00:00',
+                            timestamp: baseTime,
+                            source: '系统'
+                        },
+                        {
+                            type: 'log',
+                            data: '📚 本系统支持智能选课和智能排课两大核心功能',
+                            runtime: '00:00:01',
+                            timestamp: baseTime + 1000,
+                            source: '系统'
+                        },
+                        {
+                            type: 'log',
+                            data: '⚡ 智能选课：自动抢课，支持多轮次配置和权重设置',
+                            runtime: '00:00:02',
+                            timestamp: baseTime + 2000,
+                            source: '智能选课'
+                        },
+                        {
+                            type: 'log',
+                            data: '🧠 智能排课：基于遗传算法的课表优化，避免时间冲突',
+                            runtime: '00:00:03',
+                            timestamp: baseTime + 3000,
+                            source: '智能排课'
+                        },
+                        {
+                            type: 'good',
+                            data: '✨ 开源免费，持续更新，欢迎Star和Fork！',
+                            runtime: '00:00:04',
+                            timestamp: baseTime + 4000,
+                            source: '系统'
+                        },
+                        {
+                            type: 'log',
+                            data: '🔧 支持智能选课管理、已选课程导入、权重配置等高级功能',
+                            runtime: '00:00:05',
+                            timestamp: baseTime + 5000,
+                            source: '系统'
+                        },
+                        {
+                            type: 'good',
+                            data: '🚀 开始使用吧！选择左侧功能开始你的智能选课之旅',
+                            runtime: '00:00:06',
+                            timestamp: baseTime + 6000,
+                            source: '系统'
+                        }
+                    ];
+                    
+                    // 将默认日志添加到logs数组中
+                    defaultLogs.forEach(log => {
+                        logs.value.push({
+                            type: log.type,
+                            data: log.data,
+                            runtime: log.runtime,
+                            timestamp: log.timestamp
+                        });
+                    });
+                };
+                
+                // 状态相关方法
+                const getStatusType = (status) => {
+                    switch (status) {
+                        case '成功': return 'success';
+                        case '失败': return 'danger';
+                        case '进行中': return 'warning';
+                        default: return 'info';
+                    }
+                };
+                
+                const getStatusText = (status) => {
+                    return status || '未知';
+                };
 
                 // 返回所有需要在模板中使用的变量和方法
                 return {
@@ -2035,6 +2343,10 @@
                     lessonPageSize,
                     filteredLessonCacheData,
                     paginatedLessonCacheData,
+                    allLogs,
+                    clearAllLogs,
+                    getStatusType,
+                    getStatusText,
                     handleMenuSelect,
                     addLesson,
                     removeLesson,
@@ -2044,6 +2356,16 @@
                     clearCache,
                     clearAllCache,
                     startProcess,
+                    // 弹窗相关
+                    lessonCodeDialogVisible,
+                    yixuanDialogVisible,
+                    lessonDialogVisible,
+                    openLessonCodeDialog,
+                    openYixuanDialog,
+                    openLessonDialog,
+                    lessonCodesCount,
+                    yixuanDataCount,
+                    // 课程代码相关
                     addLessonCode,
                     removeLessonCode,
                     validateLessonCode,
@@ -2071,7 +2393,14 @@
                     handleLessonCurrentChange,
                     viewLessonDetail,
                     copyLessonInfo,
-                    loadDemoData
+                    loadDemoData,
+                    // 选课轮次管理
+                    electionProfiles,
+                    electionProfilesDisplay,
+                    refreshProfiles,
+                    selectProfile,
+                    clearElectionProfiles,
+                    fetchProfileData
                 };
             }
         });

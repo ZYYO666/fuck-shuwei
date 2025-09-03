@@ -28,9 +28,33 @@ wss.on('connection', (ws) => {
   const logger = {
     sendData: (type, data) => {
       if (ws.readyState === ws.OPEN) {
-        ws.send(JSON.stringify({ type, data }))
-        console.log(JSON.stringify({ type, data }));
-
+        try {
+          // 安全的JSON序列化，避免循环引用
+          const safeData = typeof data === 'object' && data !== null ? 
+            JSON.parse(JSON.stringify(data, (key, value) => {
+              // 过滤掉可能导致循环引用的属性
+              if (key === 'parent' || key === 'children' || key === 'root' || key === '_' || key === 'cheerio') {
+                return undefined;
+              }
+              // 如果是函数或DOM节点，转换为字符串描述
+              if (typeof value === 'function') {
+                return '[Function]';
+              }
+              if (value && typeof value === 'object' && value.nodeType) {
+                return '[DOM Node]';
+              }
+              return value;
+            })) : data;
+          
+          const message = { type, data: safeData };
+          ws.send(JSON.stringify(message));
+          // console.log(JSON.stringify(message));
+        } catch (error) {
+          // 如果仍然失败，发送错误信息
+          const fallbackMessage = { type, data: `[序列化失败: ${error.message}]` };
+          ws.send(JSON.stringify(fallbackMessage));
+          // console.log(JSON.stringify(fallbackMessage));
+        }
       }
     },
   }
@@ -39,7 +63,7 @@ wss.on('connection', (ws) => {
   ws.on('message', async (data) => {
     try {
       const message = JSON.parse(data)
-      console.log(message);
+      // console.log(message);
       
       logger.sendData('good', '收到启动请求')
       if (clients.get(clientId).status === 'running') {
@@ -63,7 +87,7 @@ wss.on('connection', (ws) => {
         await startScheduleProcess(message.config)
       }
     } catch (error) {
-      logger.sendData('error', ['消息处理错误:', error].join(' '))
+      logger.sendData('error', `消息处理错误: ${error.message || error.toString()}`)
       console.log(error);
 
     } finally {

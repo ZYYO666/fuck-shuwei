@@ -16,7 +16,7 @@ module.exports = async function fuck(profileId, id, cookie) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        'User-Agent':
+        'User-Agent':a
           'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Mobile/15E148 Safari/604.1',
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         "x-requested-with": "XMLHttpRequest",
@@ -48,7 +48,4 @@ module.exports = async function fuck(profileId, id, cookie) {
   } catch (error) {
     throw error
   }
-
-
-
 }

@@ -6,7 +6,6 @@ const getLessonId = require('./getLessonId')
 const startMainProcess = async (config) => {
   try {
     config = await base.startBaseProcess(config)
-    config.logger.sendData('step', 6)
     config = getLessonId(config)
     await fuckLesson(config)
   } catch (error) {

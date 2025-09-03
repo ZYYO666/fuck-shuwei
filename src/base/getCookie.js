@@ -9,9 +9,9 @@ module.exports = async function getCookie(config) {
       config.logger.sendData('log', 'Cookie缓存不存在，开始登陆获取.......')
       const newCookie = await login(config)
 
-
-      config.profileId = ''
-      //登陆和profileid的获取必须同步，这里可以选择手动清除profileid，或者手动访问一遍选课列表页面
+      // 登录后清除轮次缓存，因为新的登录可能对应不同的轮次
+      config.profileId = null
+      config.logger.sendData('cache', { key: 'electionProfiles', value: '' })
 
       config.logger.sendData('cache', { key: 'cookie', value: newCookie })
       config.cookie = newCookie

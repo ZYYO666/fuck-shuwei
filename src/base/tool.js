@@ -35,7 +35,7 @@ const fs = require('fs')
     const matches = lessonJSONs.filter((l) => l.no === no)
 
     if (matches.length === 0) {
-      throw new Error(code + '无开课信息' + no)
+      throw new Error('无开课信息' + no)
     }
 
     const lessons = matches.map((match) => ({

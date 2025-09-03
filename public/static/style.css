@@ -1,19 +1,21 @@
 :root {
-    --primary-color: #3b82f6;
-    --primary-light: #dbeafe;
-    --secondary-color: #64748b;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
-    --dark-color: #1e293b;
-    --light-color: #f8fafc;
-    --border-color: #e2e8f0;
+    --primary-color: #000000;
+    --primary-light: #f5f5f5;
+    --secondary-color: #666666;
+    --success-color: #000000;
+    --warning-color: #000000;
+    --danger-color: #000000;
+    --dark-color: #000000;
+    --light-color: #ffffff;
+    --border-color: #e0e0e0;
     --sidebar-width: 240px;
+    --log-panel-width: 320px;
     --header-height: 64px;
     --transition-speed: 0.2s;
-    --border-radius: 8px;
-    --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --box-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --border-radius: 12px;
+    --unified-border: 1px solid var(--border-color);
+    --box-shadow: none;
+    --box-shadow-hover: none;
 }
 
 * {
@@ -24,10 +26,11 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #f8fafc;
+    background-color: #ffffff;
     color: var(--dark-color);
     line-height: 1.6;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 #app {
@@ -46,10 +49,10 @@ body {
     top: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--box-shadow);
     z-index: 100;
     transition: all var(--transition-speed);
     border-right: 1px solid var(--border-color);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
 /* 侧边栏标题样式 */
@@ -92,13 +95,15 @@ body {
 }
 
 .sidebar-menu-item:hover {
-    background: var(--primary-light);
-    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
 }
 
 .sidebar-menu-item.active {
-    background: #e0f2fe;
-    color: var(--primary-color);
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
 }
 
 .sidebar-menu-item i {
@@ -137,14 +142,165 @@ body {
     background-color: var(--danger-color);
 }
 
-/* 主内容区样式 */
+/* 三栏布局容器 */
+.three-column-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* 主内容区样式 - 修改为三栏布局的第二栏 */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
-    padding: 24px;
+    margin-right: var(--log-panel-width);
+    padding: 32px;
     transition: all var(--transition-speed);
-    max-width: calc(100vw - var(--sidebar-width));
-    overflow-x: hidden;
+    overflow-x: auto;
+    min-width: 0;
+    background: white;
+    border-radius: var(--border-radius);
+    min-height: calc(100vh - 32px);
+}
+
+/* 第三栏：日志面板样式 - 简约设计 */
+.log-panel {
+    width: var(--log-panel-width);
+    background: #fafafa;
+    border-left: var(--unified-border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.log-panel-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eaeaea;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-panel-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.log-panel-header h3 i {
+    margin-right: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.log-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.log-container {
+    flex: 1;
+    padding: 12px;
+    overflow: hidden;
+}
+
+.log-entry {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 1.5;
+    background: white;
+    border: var(--unified-border);
+    border-left: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.log-entry.log {
+    border-left-color: #909399;
+}
+
+.log-entry.error {
+    border-left-color: var(--danger-color);
+}
+
+.log-entry.good {
+    border-left-color: var(--success-color);
+}
+
+.log-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.log-time {
+    color: #909399;
+    font-size: 11px;
+    margin-right: 6px;
+    font-family: monospace;
+}
+
+.log-source {
+    color: #606266;
+    font-weight: 500;
+    font-size: 11px;
+    background: #f5f7fa;
+    padding: 1px 4px;
+    border-radius: 2px;
+}
+
+.log-entry .message {
+    color: #303133;
+    word-break: break-word;
+}
+
+.log-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #909399;
+}
+
+.log-table-section {
+    border-top: 1px solid var(--border-color);
+    padding: 16px;
+    background: #fafbfc;
+}
+
+.log-table-header {
+    margin-bottom: 12px;
+}
+
+.log-table-header h4 {
+    margin: 0;
+    color: var(--dark-color);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.log-table-header h4 i {
+    margin-right: 6px;
+    color: var(--primary-color);
+}
+
+.unified-log-table {
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 /* 控制面板内容样式 - 无外层卡片 */
@@ -155,21 +311,7 @@ body {
     padding: 20px;
 }
 
-.main-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
-    min-height: calc(100vh - 48px);
-    border: 1px solid var(--border-color);
-    max-width: 100%;
-}
-
-.main-card-content {
-    padding: 32px;
-    max-width: 100%;
-    overflow-x: hidden;
-}
+/* 移除了多余的卡片嵌套 */
 
 .card-title {
     display: flex;
@@ -188,7 +330,214 @@ body {
     color: var(--primary-color);
 }
 
+/* 基础配置样式 */
+.config-form {
+    padding: 0;
+}
+
+.config-section {
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: var(--unified-border);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.form-row .el-form-item {
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.config-form .el-form-item__label {
+    font-weight: 500;
+    color: var(--dark-color);
+    font-size: 14px;
+}
+
+/* 选课轮次样式 */
+.election-profiles-section {
+    border: var(--unified-border);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    background: white;
+    margin-bottom: 24px;
+}
+
+.profiles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profiles-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.profiles-header span {
+    font-weight: 500;
+    color: var(--dark-color);
+    font-size: 16px;
+}
+
+.profiles-dropdown-container {
+    margin-bottom: 24px;
+}
+
+.profiles-select {
+    width: 100%;
+    max-width: 500px;
+}
+
+.profile-option-content {
+    padding: 8px 0;
+}
+
+.profile-option-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.profile-option-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.profile-option-time {
+    color: var(--secondary-color);
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+/* 保留原有的grid样式用于其他卡片布局 */
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.profile-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    padding: 16px;
+}
+
+.profile-card-content {
+    width: 100%;
+}
+
+.profile-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.profile-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.profile-time {
+    color: var(--secondary-color);
+    font-size: 12px;
+}
+
+.no-profiles {
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* 兼容模式 */
+.compatibility-mode {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #FDF6EC;
+    border-radius: var(--border-radius);
+}
+
+.compatibility-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #E6A23C;
+    margin-bottom: 12px;
+}
+
+/* 抢课设置 */
+.selection-mode {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 16px;
+}
+
+.selection-mode .el-radio-group {
+    display: flex;
+    gap: 12px;
+}
+
+.mode-warning {
+    margin-top: 8px;
+    color: #E6A23C;
+    font-size: 13px;
+}
+
+/* 请求延迟样式 */
+.delay-section {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+
+.delay-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.delay-control .el-slider {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.delay-value {
+    min-width: 60px;
+    font-size: 14px;
+    color: var(--secondary-color);
+    text-align: right;
+    font-weight: bold;
+}
+
 /* 课程页面样式 */
+/* 原始课程页面样式 - 保留兼容性 */
 .course-page {
     background: white;
 }
@@ -221,6 +570,853 @@ body {
     align-items: center;
     padding-top: 16px;
     border-top: 1px solid var(--border-color);
+}
+
+/* 排课页面现代化样式 */
+.schedule-config-modern {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+     overflow-y: auto;
+     margin-bottom: 24px;
+     padding: 24px;
+}
+
+.schedule-config-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.schedule-config-container .full-width-card {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1200px) {
+    .schedule-config-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.schedule-section-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    border: var(--unified-border);
+    margin-bottom: 16px;
+    height: 100%;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-list-modern {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.dialog-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0 8px;
+    margin-bottom: 16px;
+}
+
+.schedule-dialog .el-dialog__body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.schedule-header-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.schedule-counter {
+    display: flex;
+    align-items: center;
+    background-color: #ecf5ff;
+    padding: 4px 8px;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+.counter-icon {
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.counter-value {
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 3px;
+}
+
+.counter-label {
+    font-size: 12px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.dialog-add-btn {
+    margin-right: auto;
+}
+
+.schedule-title-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #303133;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.schedule-subtitle {
+    font-size: 12px;
+    color: #909399;
+    margin: 2px 0 0 0;
+    line-height: 1.3;
+}
+
+.schedule-list-item-modern {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+
+
+.schedule-weight-section {
+    margin-bottom: 16px;
+}
+
+/* 权重表单样式 */
+.weight-form {
+    margin-top: 12px;
+    max-width: 500px;
+}
+
+.schedule-config-footer-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f5f7fa;
+    border-radius: 0 0 8px 8px;
+    margin-top: auto;
+}
+
+.schedule-options {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 排课结果页面现代化样式 */
+/* 排课结果页面样式 */
+.result-page {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.result-page h2 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.result-content {
+    margin-top: 16px;
+}
+
+.solution-selector {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.solution-selector label {
+    font-weight: 500;
+    color: #333;
+}
+
+.schedule-table {
+    margin-top: 16px;
+    overflow-x: auto;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.schedule-table table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.schedule-table th,
+.schedule-table td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.schedule-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.schedule-table .time-slot {
+    background-color: #f9f9f9;
+    font-weight: 500;
+    min-width: 70px;
+}
+
+.schedule-table .lesson-cell {
+    min-height: 50px;
+    cursor: pointer;
+}
+
+
+
+.schedule-table .lesson {
+    padding: 4px;
+    background-color: #e3f2fd;
+    border-radius: 4px;
+    border: 1px solid #bbdefb;
+}
+
+.schedule-table .lesson-name {
+    font-weight: 600;
+    color: #1976d2;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.schedule-table .lesson-teacher {
+    color: #666;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.schedule-table .lesson-weeks {
+    color: #999;
+    font-size: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-state p {
+    margin: 10px 0;
+}
+
+/* 现代化课程序号页面样式 */
+.course-tabs-modern {
+    margin-top: 0;
+    margin-bottom: 24px;
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    border: var(--unified-border);
+}
+
+.course-tabs-modern .el-tabs__header {
+    margin-bottom: 0;
+    background: #f9f9f9;
+    padding: 0 20px;
+}
+
+.course-tabs-modern .el-tabs__nav-wrap::after {
+    height: 1px;
+    background-color: #f0f0f0;
+}
+
+.course-tabs-modern .el-tabs__item {
+    height: 50px;
+    line-height: 50px;
+    font-size: 15px;
+    font-weight: 500;
+
+}
+
+.course-tabs-modern .el-tabs__item.is-active {
+    color: #000;
+    font-weight: 600;
+}
+
+.course-tabs-modern .el-tabs__active-bar {
+    background-color: #000;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+}
+
+.course-config-modern {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.course-config-modern .schedule-config-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.course-config-modern .schedule-config-container .full-width-card {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1200px) {
+    .course-config-modern .schedule-config-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.course-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+.schedule-section-card {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 24px;
+    border: var(--unified-border);
+    margin-bottom: 24px;
+}
+
+
+
+.course-header-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.course-title-section, .schedule-title-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.course-title, .schedule-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #000;
+}
+
+.course-subtitle, .schedule-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.add-course-btn {
+    background: #000;
+    border-color: #000;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 500;
+}
+
+.course-list-container {
+    flex: 1;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.course-list-modern, .schedule-list-modern {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.course-list-item-modern, .schedule-list-item-modern {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 12px;
+    position: relative;
+    width: 100%;
+}
+
+.course-item-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.course-input {
+    flex: 1;
+}
+
+.course-input .el-input__inner {
+    border-radius: 8px 0 0 8px;
+    height: 42px;
+    font-size: 15px;
+}
+
+.delete-btn {
+    border-radius: 0 8px 8px 0;
+    height: 42px;
+    background: #f5f5f5;
+    border-color: #dcdfe6;
+    color: #666;
+}
+
+
+
+.empty-add-btn {
+    background: #000;
+    border-color: #000;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 500;
+}
+
+.course-config-footer-modern, .schedule-config-footer-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: auto;
+    background-color: #f9f9f9;
+    align-items: flex-end;
+}
+
+.course-options, .schedule-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.option-status {
+    font-size: 13px;
+    color: #666;
+}
+
+.custom-switch .el-switch__core {
+    background-color: #f0f0f0;
+    border-color: #dcdfe6;
+}
+
+.custom-switch.is-checked .el-switch__core {
+    background-color: #000;
+    border-color: #000;
+}
+
+/* 所有开关元素统一使用黑色主题 */
+.el-switch.is-checked .el-switch__core {
+    background-color: #000 !important;
+    border-color: #000 !important;
+}
+
+.start-btn {
+    background: #000;
+    border-color: #000;
+    border-radius: 8px;
+    padding: 0 24px;
+    height: 48px;
+
+/* 单选按钮黑色主题 */
+.el-radio__input.is-checked .el-radio__inner {
+    border-color: #000 !important;
+    background: #000 !important;
+}
+
+.el-radio__input.is-checked + .el-radio__label {
+    color: #000 !important;
+}
+
+/* 滑块黑色主题 */
+.el-slider__bar {
+    background-color: #000 !important;
+}
+
+/* 选课轮次和抢课设置卡片样式 */
+.schedule-section-card {
+    background: white;
+    border-radius: var(--border-radius);
+    border: var(--unified-border);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.schedule-header-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.course-code-display {
+    flex: 1;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: #2c3e50;
+    border: 1px solid #e9ecef;
+}
+
+.schedule-item-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.schedule-title-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #000;
+}
+
+.schedule-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 选课轮次卡片样式 */
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* 课程计数器样式 */
+.schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.schedule-counter {
+    display: flex;
+    align-items: center;
+    background-color: #f5f7fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+
+
+.counter-icon {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.counter-value {
+    font-weight: bold;
+    font-size: 16px;
+    margin-right: 4px;
+}
+
+.counter-label {
+    color: #606266;
+    font-size: 14px;
+}
+
+/* 弹窗样式 */
+.dialog-content {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.dialog-list {
+    padding: 0 10px;
+}
+
+.schedule-list-item-modern {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+}
+
+.schedule-item-number {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #409eff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.empty-schedule-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    color: #909399;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.profile-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    border: 1px solid #e4e7ed;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.profile-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.profile-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #303133;
+}
+
+.profile-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-time {
+    font-size: 12px;
+    color: #909399;
+}
+
+.no-profiles {
+    background: #f9f9f9;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.compatibility-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.compatibility-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #303133;
+    margin: 0;
+}
+
+.el-slider__button {
+    border-color: #000 !important;
+}
+
+/* 下拉菜单选中项黑色主题 */
+.el-select-dropdown__item.selected {
+    color: #000 !important;
+}
+
+/* 输入框焦点黑色主题 */
+.el-input.is-focus .el-input__inner,
+.el-input__inner:focus {
+    border-color: #000 !important;
+}
+    font-weight: 500;
+}
+
+/* 选课结果页面样式 */
+.course-result-modern {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+
+
+.result-table {
+    border-radius: 10px;
+    overflow: hidden;
+    border: var(--unified-border);
+    margin-bottom: 24px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.result-table .el-table__header-wrapper th {
+    background-color: #f9f9f9;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 16px 0;
+}
+
+.result-table .el-table__row td {
+    padding: 16px 0;
+    font-size: 14px;
+}
+
+.table-cell-text {
+    color: #333;
+}
+
+.status-tag {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.empty-result-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    background: #f9f9f9;
+    border-radius: 10px;
+    flex: 1;
+}
+
+.empty-result-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.empty-result-text {
+    font-size: 18px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.empty-result-hint {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 列表动画效果 */
+.course-list-enter-active, .course-list-leave-active {
+    transition: all 0.5s ease;
+}
+
+.course-list-enter-from, .course-list-leave-to {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.course-list-move {
+    transition: transform 0.5s ease;
 }
 
 /* 日志区域样式 */
@@ -257,7 +1453,7 @@ body {
     background: var(--light-color);
     border-radius: var(--border-radius);
     padding: 16px;
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
 }
 
 .log-entry {
@@ -305,7 +1501,7 @@ body {
 .timetable {
     width: 100%;
     border-collapse: collapse;
-    min-width: 800px;
+    table-layout: fixed;
 }
 
 .timetable th,
@@ -343,10 +1539,7 @@ body {
     background: white;
 }
 
-.lesson-cell:hover {
-    background: var(--primary-light) !important;
-    cursor: pointer;
-}
+
 
 .lesson-cell.has-lesson {
     background: var(--primary-light);
@@ -415,7 +1608,7 @@ body {
 .decoration-circle {
     position: absolute;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+    background: var(--dark-color);
     animation: float 6s ease-in-out infinite;
 }
 
@@ -445,7 +1638,7 @@ body {
 
 .decoration-line {
     position: absolute;
-    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+    background: var(--dark-color);
     height: 2px;
     animation: slide 8s linear infinite;
 }
@@ -550,10 +1743,7 @@ body {
     font-weight: 700;
     margin-bottom: 12px;
     color: var(--dark-color);
-    background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
 }
 
 .about-subtitle {
@@ -565,13 +1755,13 @@ body {
 
 .about-version-badge {
     display: inline-block;
-    background: linear-gradient(135deg, var(--success-color), #059669);
+    background: var(--dark-color);
     color: white;
     padding: 6px 16px;
     border-radius: 20px;
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    border: 1px solid var(--border-color);
     animation: bounce 2s ease-in-out infinite;
 }
 
@@ -598,12 +1788,10 @@ body {
 .stat-item {
     flex: 1;
     background: white;
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 12px;
+    padding: 16px;
     text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
@@ -615,12 +1803,7 @@ body {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-}
-
-.stat-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    background: var(--primary-color);
 }
 
 .stat-icon {
@@ -648,14 +1831,14 @@ body {
     padding: 0;
     margin-bottom: 40px;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
     overflow: hidden;
     position: relative;
     z-index: 1;
 }
 
 .info-card-header {
-    background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+    background: var(--dark-color);
     color: white;
     padding: 20px 24px;
     font-size: 18px;
@@ -719,12 +1902,12 @@ body {
     border-radius: 16px;
     padding: 0;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    
     overflow: hidden;
 }
 
 .about-tech-header {
-    background: linear-gradient(135deg, var(--success-color), #059669);
+    background: var(--dark-color);
     color: white;
     padding: 20px 24px;
     font-size: 18px;
@@ -732,6 +1915,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .about-tech-header i {
@@ -764,7 +1948,7 @@ body {
     background: var(--primary-color);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    
 }
 
 .tech-tag i {
@@ -778,12 +1962,12 @@ body {
     border-radius: 16px;
     padding: 0;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    
     overflow: hidden;
 }
 
 .about-features-header {
-    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    background: var(--dark-color);
     color: white;
     padding: 20px 24px;
     font-size: 18px;
@@ -818,7 +2002,7 @@ body {
 .feature-item:hover {
     background: white;
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    
 }
 
 .feature-icon {
@@ -831,7 +2015,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    
     flex-shrink: 0;
 }
 
@@ -854,12 +2038,12 @@ body {
     border-radius: 16px;
     padding: 0;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    
     overflow: hidden;
 }
 
 .about-thanks-header {
-    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    background: var(--dark-color);
     color: white;
     padding: 20px 24px;
     font-size: 18px;
@@ -941,21 +2125,20 @@ body {
 
 /* 滚动条美化 */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 0px;
+    display: none;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--light-color);
-    border-radius: 3px;
+    display: none;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 3px;
+    display: none;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
+    display: none;
 }
 
 .el-form-item {
@@ -976,7 +2159,7 @@ body {
 .cache-stat-card {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
     height: 100%;
@@ -984,12 +2167,12 @@ body {
 
 .cache-stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
 }
 
 .cache-stat-item {
     text-align: center;
-    padding: 16px 12px;
+    padding: 12px 8px;
 }
 
 .cache-stat-number {
@@ -1009,9 +2192,9 @@ body {
 /* 课程表格容器样式 */
 .lesson-cache-table-container {
     background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+    
     border: 1px solid var(--border-color);
     overflow-x: auto;
     max-width: 100%;
@@ -1019,7 +2202,15 @@ body {
 
 .lesson-cache-table-container .el-table {
     width: 100%;
-    min-width: 800px;
+}
+
+.lesson-cache-table-container .el-table td,
+.lesson-cache-table-container .el-table th {
+    padding: 8px 12px !important;
+}
+
+.lesson-cache-table-container .el-table__row {
+    height: auto;
 }
 
 .lesson-cache-table-container .el-table__body-wrapper {
@@ -1046,6 +2237,29 @@ body {
     color: var(--primary-color);
     background-color: var(--primary-light);
     border-radius: 4px;
+}
+
+/* 统一按钮黑色主题 */
+.el-button--primary {
+    background-color: #000 !important;
+    border-color: #000 !important;
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus {
+    background-color: #333 !important;
+    border-color: #333 !important;
+}
+
+.el-button--success {
+    background-color: #000 !important;
+    border-color: #000 !important;
+}
+
+.el-button--success:hover,
+.el-button--success:focus {
+    background-color: #333 !important;
+    border-color: #333 !important;
 }
 
 .el-row .el-col {
@@ -1157,26 +2371,25 @@ body {
 }
 
 .course-list-scrollable::-webkit-scrollbar {
-    width: 6px;
+    width: 0px;
+    display: none;
 }
 
 .course-list-scrollable::-webkit-scrollbar-track {
-    background: var(--light-color);
-    border-radius: 3px;
+    display: none;
 }
 
 .course-list-scrollable::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 3px;
+    display: none;
 }
 
 .course-list-scrollable::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
+    display: none;
 }
 
 /* 控制面板样式 */
 .dashboard-welcome {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--dark-color);
     border-radius: 16px;
     padding: 32px;
     margin-bottom: 32px;
@@ -1266,18 +2479,11 @@ body {
 
 .overview-card {
     background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 16px;
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    transition: all 0.3s ease;
-}
-
-.overview-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .overview-icon {
@@ -1293,19 +2499,19 @@ body {
 }
 
 .overview-card:nth-child(1) .overview-icon {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--dark-color);
 }
 
 .overview-card:nth-child(2) .overview-icon {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--dark-color);
 }
 
 .overview-card:nth-child(3) .overview-icon {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: var(--dark-color);
 }
 
 .overview-card:nth-child(4) .overview-icon {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    background: var(--dark-color);
 }
 
 .overview-content {
@@ -1343,7 +2549,7 @@ body {
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 32px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
     border: 1px solid var(--border-color);
 }
 
@@ -1391,12 +2597,12 @@ body {
 
 .status-indicator.online {
     background: var(--success-color);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    
 }
 
 .status-indicator.warning {
     background: var(--warning-color);
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    
 }
 
 .status-info {
@@ -1437,7 +2643,7 @@ body {
     background: white;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -1447,7 +2653,7 @@ body {
 
 .action-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
     border-color: var(--primary-color);
 }
 
@@ -1497,7 +2703,7 @@ body {
     background: white;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
     border: 1px solid var(--border-color);
 }
 
@@ -1526,7 +2732,7 @@ body {
 
 .activity-item:hover {
     background: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    
 }
 
 .activity-icon {
@@ -1611,14 +2817,14 @@ body {
 
 /* 全新控制面板样式 - 浅色系设计 */
 .dashboard-hero {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+    background: var(--dark-color);
     border-radius: 24px;
     padding: 48px;
     margin-bottom: 40px;
     color: var(--dark-color);
     position: relative;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    
     border: 1px solid var(--border-color);
 }
 
@@ -1649,7 +2855,7 @@ body {
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 8px;
-    background: linear-gradient(45deg, var(--dark-color), var(--secondary-color));
+    background: var(--dark-color);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1777,32 +2983,32 @@ body {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid var(--border-color);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    
 }
 
 .core-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    
     border-color: var(--primary-color);
 }
 
 .core-card.primary {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    background: var(--light-color);
     color: var(--dark-color);
-    border-color: #bae6fd;
+    border-color: var(--border-color);
 }
 
 .core-card.secondary {
-    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    background: var(--light-color);
     color: var(--dark-color);
-    border-color: #f9a8d4;
+    border-color: var(--border-color);
 }
 
 .core-card.accent {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    background: var(--light-color);
     color: var(--dark-color);
-    border-color: #86efac;
+    border-color: var(--border-color);
 }
 
 .card-glow {
@@ -1885,7 +3091,7 @@ body {
     border-radius: 20px;
     padding: 32px;
     margin-bottom: 40px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    
     border: 1px solid var(--border-color);
 }
 
@@ -1954,7 +3160,7 @@ body {
 
 .status-card:hover {
     background: white;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    
     transform: translateY(-2px);
 }
 
@@ -1971,13 +3177,13 @@ body {
 }
 
 .status-icon.online {
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    background: var(--dark-color);
     color: var(--success-color);
     border: 1px solid #86efac;
 }
 
 .status-icon.warning {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    background: var(--dark-color);
     color: var(--warning-color);
     border: 1px solid #fbbf24;
 }
@@ -2031,14 +3237,14 @@ body {
     background: white;
     border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
 }
 
 .insight-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+    
 }
 
 .insight-header {
@@ -2076,7 +3282,7 @@ body {
 
 .chart-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    background: var(--dark-color);
     border-radius: 4px;
     transition: width 1s ease;
 }
@@ -2095,7 +3301,7 @@ body {
     background: white;
     border-radius: 20px;
     padding: 32px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    
     border: 1px solid var(--border-color);
 }
 
@@ -2115,7 +3321,7 @@ body {
 
 .quick-btn {
     background: var(--light-color);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 20px;
     display: flex;
@@ -2133,7 +3339,7 @@ body {
     background: white;
     border-color: var(--primary-color);
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    
 }
 
 .btn-icon {
@@ -2143,6 +3349,312 @@ body {
 
 .btn-text {
     font-size: 14px;
+}
+
+/* 紧凑布局样式 */
+.result-header-compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 16px;
+}
+
+.result-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-icon {
+    font-size: 20px;
+    color: var(--primary-color);
+}
+
+.result-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0;
+}
+
+.result-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--secondary-color);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.solution-selector-compact {
+    margin-bottom: 16px;
+}
+
+/* 空结果页面样式 */
+.empty-result-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    min-height: 400px;
+}
+
+.empty-illustration {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.empty-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--secondary-color);
+    position: relative;
+    z-index: 2;
+}
+
+.empty-waves {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.wave {
+    position: absolute;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: wave-animation 3s ease-in-out infinite;
+}
+
+.wave-1 {
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    left: -50px;
+    animation-delay: 0s;
+}
+
+.wave-2 {
+    width: 120px;
+    height: 120px;
+    top: -60px;
+    left: -60px;
+    animation-delay: 0.5s;
+}
+
+.wave-3 {
+    width: 140px;
+    height: 140px;
+    top: -70px;
+    left: -70px;
+    animation-delay: 1s;
+}
+
+@keyframes wave-animation {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.1;
+    }
+}
+
+.empty-content {
+    max-width: 400px;
+}
+
+.empty-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.empty-description {
+    font-size: 16px;
+    color: var(--secondary-color);
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.empty-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 14px;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.empty-action-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+/* 权重设置卡片样式 */
+.schedule-section-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.schedule-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.card-title-section {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0 0 4px 0;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: var(--secondary-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card-hint {
+    color: #e6a23c;
+    font-size: 13px;
+    margin: 8px 0 0 0;
+    line-height: 1.4;
+    background: rgba(230, 162, 60, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #e6a23c;
+}
+
+.weight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.weight-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+
+
+.weight-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.weight-icon {
+    font-size: 14px;
+}
+
+.weight-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.weight-summary {
+    padding: 12px 16px;
+    background: #f0f9ff;
+    border-radius: 8px;
+    border: 1px solid #bae6fd;
+    text-align: center;
+}
+
+.summary-text {
+    font-size: 14px;
+    color: #0369a1;
+    font-weight: 500;
 }
 
 /* 响应式设计 */
@@ -2183,5 +3695,33 @@ body {
 
     .quick-grid {
         grid-template-columns: 1fr;
+    }
+
+    .result-header-compact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .result-stats {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+
+    .weight-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .empty-result-modern {
+        padding: 40px 20px;
+        min-height: 300px;
+    }
+
+    .empty-steps {
+        align-items: stretch;
+    }
+
+    .step-item {
+        text-align: left;
     }
 }
