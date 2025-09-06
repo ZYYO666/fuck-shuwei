@@ -3,146 +3,285 @@ const { requireAuth } = require('./auth');
 const { APIError, formatSuccessResponse, asyncHandler } = require('../utils/errorHandler');
 const router = express.Router();
 
-// 模拟课程数据
+// 生成大量模拟课程数据
+function generateMockCourses() {
+  const courses = [];
+  
+  // 课程基础数据
+  const departments = [
+    { code: '001', name: '计算机科学与技术', prefix: 'CS' },
+    { code: '002', name: '数学与应用数学', prefix: 'MATH' },
+    { code: '003', name: '英语', prefix: 'ENG' },
+    { code: '004', name: '物理学', prefix: 'PHY' },
+    { code: '005', name: '化学', prefix: 'CHEM' },
+    { code: '006', name: '经济学', prefix: 'ECON' },
+    { code: '007', name: '管理学', prefix: 'MGMT' },
+    { code: '008', name: '电子工程', prefix: 'EE' },
+    { code: '009', name: '机械工程', prefix: 'ME' },
+    { code: '010', name: '土木工程', prefix: 'CE' }
+  ];
+  
+  const teachers = [
+    '张教授', '李教授', '王教授', '赵教授', '刘教授', '陈教授', '杨教授', '黄教授',
+    'Smith教授', 'Johnson教授', '孙教授', '周教授', '吴教授', '郑教授', '冯教授',
+    '何教授', '高教授', '林教授', '徐教授', '胡教授', '朱教授', '郭教授', '罗教授'
+  ];
+  
+  const courseTemplates = {
+    '001': [ // 计算机科学
+      { name: '计算机科学导论', credits: 3 },
+      { name: '程序设计基础', credits: 4 },
+      { name: 'C++程序设计', credits: 4 },
+      { name: 'Java程序设计', credits: 4 },
+      { name: 'Python程序设计', credits: 3 },
+      { name: '数据结构与算法', credits: 4 },
+      { name: '计算机组成原理', credits: 4 },
+      { name: '操作系统', credits: 4 },
+      { name: '计算机网络', credits: 3 },
+      { name: '数据库系统', credits: 4 },
+      { name: '软件工程', credits: 3 },
+      { name: '人工智能', credits: 3 },
+      { name: '机器学习', credits: 4 },
+      { name: '深度学习', credits: 3 },
+      { name: '计算机图形学', credits: 3 },
+      { name: '编译原理', credits: 4 },
+      { name: '算法设计与分析', credits: 3 },
+      { name: '分布式系统', credits: 3 },
+      { name: '网络安全', credits: 3 },
+      { name: '移动应用开发', credits: 3 }
+    ],
+    '002': [ // 数学
+      { name: '高等数学A', credits: 5 },
+      { name: '高等数学B', credits: 4 },
+      { name: '线性代数', credits: 3 },
+      { name: '概率论与数理统计', credits: 4 },
+      { name: '离散数学', credits: 3 },
+      { name: '数学分析', credits: 5 },
+      { name: '抽象代数', credits: 4 },
+      { name: '实变函数', credits: 3 },
+      { name: '复变函数', credits: 3 },
+      { name: '数值分析', credits: 3 },
+      { name: '运筹学', credits: 3 },
+      { name: '图论', credits: 2 },
+      { name: '数学建模', credits: 3 },
+      { name: '微分方程', credits: 4 },
+      { name: '拓扑学', credits: 3 }
+    ],
+    '003': [ // 英语
+      { name: '大学英语I', credits: 2 },
+      { name: '大学英语II', credits: 2 },
+      { name: '大学英语III', credits: 2 },
+      { name: '大学英语IV', credits: 2 },
+      { name: '英语听说', credits: 2 },
+      { name: '英语写作', credits: 2 },
+      { name: '英语阅读', credits: 2 },
+      { name: '商务英语', credits: 3 },
+      { name: '学术英语', credits: 3 },
+      { name: '英美文学', credits: 3 },
+      { name: '英语语言学', credits: 3 },
+      { name: '翻译理论与实践', credits: 3 }
+    ],
+    '004': [ // 物理
+      { name: '大学物理A', credits: 4 },
+      { name: '大学物理B', credits: 3 },
+      { name: '理论力学', credits: 4 },
+      { name: '电磁学', credits: 4 },
+      { name: '热力学与统计物理', credits: 4 },
+      { name: '量子力学', credits: 4 },
+      { name: '固体物理', credits: 3 },
+      { name: '光学', credits: 3 },
+      { name: '原子物理', credits: 3 },
+      { name: '核物理', credits: 3 },
+      { name: '物理实验', credits: 2 }
+    ],
+    '005': [ // 化学
+      { name: '无机化学', credits: 4 },
+      { name: '有机化学', credits: 4 },
+      { name: '物理化学', credits: 4 },
+      { name: '分析化学', credits: 4 },
+      { name: '生物化学', credits: 3 },
+      { name: '化学实验', credits: 2 },
+      { name: '材料化学', credits: 3 },
+      { name: '环境化学', credits: 3 },
+      { name: '药物化学', credits: 3 }
+    ],
+    '006': [ // 经济学
+      { name: '微观经济学', credits: 3 },
+      { name: '宏观经济学', credits: 3 },
+      { name: '计量经济学', credits: 4 },
+      { name: '国际经济学', credits: 3 },
+      { name: '货币银行学', credits: 3 },
+      { name: '财政学', credits: 3 },
+      { name: '发展经济学', credits: 3 },
+      { name: '产业经济学', credits: 3 },
+      { name: '劳动经济学', credits: 3 },
+      { name: '环境经济学', credits: 2 }
+    ],
+    '007': [ // 管理学
+      { name: '管理学原理', credits: 3 },
+      { name: '组织行为学', credits: 3 },
+      { name: '人力资源管理', credits: 3 },
+      { name: '市场营销', credits: 3 },
+      { name: '财务管理', credits: 4 },
+      { name: '战略管理', credits: 3 },
+      { name: '运营管理', credits: 3 },
+      { name: '项目管理', credits: 3 },
+      { name: '质量管理', credits: 2 },
+      { name: '创新管理', credits: 2 }
+    ],
+    '008': [ // 电子工程
+      { name: '电路分析', credits: 4 },
+      { name: '模拟电子技术', credits: 4 },
+      { name: '数字电子技术', credits: 4 },
+      { name: '信号与系统', credits: 4 },
+      { name: '通信原理', credits: 4 },
+      { name: '微波技术', credits: 3 },
+      { name: '天线原理', credits: 3 },
+      { name: '电磁场理论', credits: 3 },
+      { name: '集成电路设计', credits: 3 }
+    ],
+    '009': [ // 机械工程
+      { name: '工程制图', credits: 3 },
+      { name: '理论力学', credits: 4 },
+      { name: '材料力学', credits: 4 },
+      { name: '机械原理', credits: 4 },
+      { name: '机械设计', credits: 4 },
+      { name: '流体力学', credits: 3 },
+      { name: '热力学', credits: 3 },
+      { name: '控制工程', credits: 3 },
+      { name: '制造工艺', credits: 3 }
+    ],
+    '010': [ // 土木工程
+      { name: '工程力学', credits: 4 },
+      { name: '结构力学', credits: 4 },
+      { name: '土力学', credits: 3 },
+      { name: '混凝土结构', credits: 4 },
+      { name: '钢结构', credits: 3 },
+      { name: '工程测量', credits: 3 },
+      { name: '建筑材料', credits: 3 },
+      { name: '施工技术', credits: 3 },
+      { name: '工程管理', credits: 2 }
+    ]
+  };
+  
+  let courseId = 1;
+  
+  // 为每个院系生成课程
+  departments.forEach(dept => {
+    const templates = courseTemplates[dept.code] || [];
+    
+    templates.forEach((template, index) => {
+      // 为每门课程生成多个班级
+      const classCount = Math.floor(Math.random() * 3) + 1; // 1-3个班级
+      
+      for (let classNum = 1; classNum <= classCount; classNum++) {
+        const id = String(courseId).padStart(6, '0');
+        const no = `${dept.code}.${String(index + 1)}.${classNum}`;
+        const teacher = teachers[Math.floor(Math.random() * teachers.length)];
+        const capacity = 30 + Math.floor(Math.random() * 50); // 30-80人
+        const selected = Math.floor(Math.random() * capacity);
+        
+        let status = 'open';
+        if (selected >= capacity) {
+          status = 'full';
+        } else if (Math.random() < 0.1) {
+          status = 'closed';
+        }
+        
+        // 生成课程安排
+        const arrangeInfo = generateArrangeInfo();
+        
+        courses.push({
+          id,
+          code: `${dept.prefix}${String(index + 101)}`,
+          no,
+          name: template.name,
+          teachers: teacher,
+          teachClassName: `${dept.name}${classNum}班`,
+          arrangeInfo,
+          capacity,
+          selected,
+          status,
+          credits: template.credits,
+          department: dept.name,
+          courseType: getCourseType(template.name),
+          campus: getRandomCampus(),
+          semester: '2024春',
+          description: `${template.name}是${dept.name}专业的重要课程，旨在培养学生的专业能力。`,
+          prerequisites: getPrerequisites(template.name, dept.code),
+          textbooks: [`《${template.name}教程》`, `《${template.name}习题集》`],
+          assessment: {
+            attendance: '10%',
+            homework: '20%',
+            midterm: '30%',
+            final: '40%'
+          }
+        });
+        
+        courseId++;
+      }
+    });
+  });
+  
+  return courses;
+}
+
+// 生成课程安排信息
+function generateArrangeInfo() {
+  const arrangements = [];
+  const sessionCount = Math.floor(Math.random() * 2) + 1; // 1-2次课
+  
+  for (let i = 0; i < sessionCount; i++) {
+    const weekDay = Math.floor(Math.random() * 5) + 1; // 周一到周五
+    const startUnit = Math.floor(Math.random() * 10) + 1; // 1-10节
+    const duration = Math.floor(Math.random() * 2) + 1; // 1-2节课
+    
+    arrangements.push({
+      weekDay,
+      weekState: "011111111111111110", // 2-17周
+      startUnit,
+      endUnit: startUnit + duration - 1,
+      classroom: `${String.fromCharCode(65 + Math.floor(Math.random() * 5))}${Math.floor(Math.random() * 500) + 100}`,
+      weeks: "2-17周"
+    });
+  }
+  
+  return arrangements;
+}
+
+// 获取课程类型
+function getCourseType(courseName) {
+  if (courseName.includes('基础') || courseName.includes('导论')) return '基础课';
+  if (courseName.includes('实验') || courseName.includes('实践')) return '实验课';
+  if (courseName.includes('英语') || courseName.includes('体育')) return '公共课';
+  if (courseName.includes('数学') || courseName.includes('物理')) return '基础课';
+  return '专业课';
+}
+
+// 获取随机校区
+function getRandomCampus() {
+  const campuses = ['本部', '东校区', '西校区', '南校区'];
+  return campuses[Math.floor(Math.random() * campuses.length)];
+}
+
+// 获取先修课程
+function getPrerequisites(courseName, deptCode) {
+  const prerequisites = [];
+  
+  if (courseName.includes('高级') || courseName.includes('II') || courseName.includes('2')) {
+    prerequisites.push('相关基础课程');
+  }
+  
+  if (deptCode === '001' && (courseName.includes('算法') || courseName.includes('数据结构'))) {
+    prerequisites.push('程序设计基础');
+  }
+  
+  return prerequisites;
+}
+
+// 生成课程数据
 const mockCourses = {
-  "lessons": [
-    {
-      "id": "001001",
-      "code": "101",
-      "no": "001.1.1",
-      "name": "计算机科学导论",
-      "teachers": "张教授",
-      "teachClassName": "计科1班",
-      "arrangeInfo": [
-        {
-          "weekDay": 1,
-          "weekState": "011111111111111110",
-          "startUnit": 1,
-          "endUnit": 2
-        },
-        {
-          "weekDay": 3,
-          "weekState": "011111111111111110",
-          "startUnit": 3,
-          "endUnit": 4
-        }
-      ],
-      "capacity": 50,
-      "selected": 35,
-      "status": "open",
-      "credits": 3
-    },
-    {
-      "id": "001002",
-      "code": "CS102", 
-      "no": "001.1.2",
-      "name": "程序设计基础",
-      "teachers": "李教授",
-      "teachClassName": "计科1班",
-      "arrangeInfo": [
-        {
-          "weekDay": 2,
-          "weekState": "011111111111111110",
-          "startUnit": 1,
-          "endUnit": 2
-        },
-        {
-          "weekDay": 4,
-          "weekState": "011111111111111110",
-          "startUnit": 3,
-          "endUnit": 4
-        }
-      ],
-      "capacity": 45,
-      "selected": 45,
-      "status": "full",
-      "credits": 4
-    },
-    {
-      "id": "002001",
-      "code": "MATH101",
-      "no": "002.1.1", 
-      "name": "高等数学A",
-      "teachers": "王教授",
-      "teachClassName": "数学1班",
-      "arrangeInfo": [
-        {
-          "weekDay": 1,
-          "weekState": "011111111111111110",
-          "startUnit": 3,
-          "endUnit": 4
-        },
-        {
-          "weekDay": 3,
-          "weekState": "011111111111111110",
-          "startUnit": 1,
-          "endUnit": 2
-        },
-        {
-          "weekDay": 5,
-          "weekState": "011111111111111110",
-          "startUnit": 1,
-          "endUnit": 2
-        }
-      ],
-      "capacity": 60,
-      "selected": 42,
-      "status": "open",
-      "credits": 5
-    },
-    {
-      "id": "003001",
-      "code": "ENG101",
-      "no": "003.1.1",
-      "name": "大学英语",
-      "teachers": "Smith老师",
-      "teachClassName": "英语1班", 
-      "arrangeInfo": [
-        {
-          "weekDay": 2,
-          "weekState": "011111111111111110",
-          "startUnit": 3,
-          "endUnit": 4
-        },
-        {
-          "weekDay": 4,
-          "weekState": "011111111111111110",
-          "startUnit": 1,
-          "endUnit": 2
-        }
-      ],
-      "capacity": 40,
-      "selected": 38,
-      "status": "open",
-      "credits": 2
-    },
-    {
-      "id": "004001",
-      "code": "PHY101",
-      "no": "004.1.1",
-      "name": "大学物理",
-      "teachers": "赵教授",
-      "teachClassName": "物理1班",
-      "arrangeInfo": [
-        {
-          "weekDay": 1,
-          "weekState": "011111111111111110",
-          "startUnit": 5,
-          "endUnit": 6
-        },
-        {
-          "weekDay": 3,
-          "weekState": "011111111111111110",
-          "startUnit": 5,
-          "endUnit": 6
-        }
-      ],
-      "capacity": 50,
-      "selected": 30,
-      "status": "open",
-      "credits": 4
-    }
-  ]
+  lessons: generateMockCourses()
 };
 
 // 用户选课状态
