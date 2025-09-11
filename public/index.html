@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能选课控制台</title>
+  <link rel="stylesheet" href="./static/element.css" />
+  <!-- Import Vue 3 -->
+  <script src="./static/vue.global.js"></script>
+  <script src="./static/index.full.js"></script>
+  <link rel="stylesheet" href="./static/style.css" />
+</head>
+
+<body>
+  <div id="app">
+    <div class="config-card">
+      <h2>智能选课系统 <el-tag effect="plain" round> v4.6</el-tag> <el-tag effect="plain" round>
+          {{ connectionStatus }}
+        </el-tag></h2>
+
+
+      <el-form label-position="top" :model="form">
+        <el-tabs v-model="activeName" class="demo-tabs">
+          <el-tab-pane label="基础配置" name="base">
+            <el-form-item label="教务系统地址">
+              <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password clearable />
+            </el-form-item>
+
+            <el-form-item label="学号">
+              <el-input v-model="form.username" type="password" placeholder="请输入学号" show-password clearable />
+            </el-form-item>
+
+            <el-form-item label="密码">
+              <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password></el-input>
+            </el-form-item>
+
+            <el-form-item label="选课页序号">
+              <el-radio-group v-model="form.count">
+                <el-radio-button value="1">1</el-radio-button>
+                <el-radio-button value="2">2</el-radio-button>
+                <el-radio-button value="3">3</el-radio-button>
+                <el-radio-button value="4">4</el-radio-button>
+                <el-radio-button value="5">5</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="抢课模式">
+              <el-radio-group v-model="form.selectionModel">
+                <el-radio-button value="1">并发模式</el-radio-button>
+                <el-radio-button value="2">顺序模式</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <p v-if="form.selectionModel==1">并发有风险，且用且珍惜</p>
+            <el-form-item label="请求延迟">
+              <el-slider style="width: 90%; margin: 0 auto" v-model="form.delay" :step="200" :min="0" :max="2000"
+                show-stops />
+            </el-form-item>
+
+          </el-tab-pane>
+          <el-tab-pane label="课程序号" name="lesson">
+            <el-form-item label="">
+              <div class="lessonList">
+                <div v-for="(lesson, index) in form.lessons" :key="lesson.id" class="lesson-item">
+                  <el-input v-model="lesson.value" placeholder="课程序号（不是课程代码）" clearable
+                    @input="validateLesson(lesson)">
+                    <template #append>
+                      <el-button @click="removeLesson(index)" :disabled="isProcessing"><svg t="1743098108722"
+                          class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                          p-id="1614" width="20" height="20">
+                          <path
+                            d="M765.505691 191.942567 639.627772 191.942567c0-35.32453-28.636201-63.960731-63.960731-63.960731L447.74558 127.981836c-35.32453 0-63.960731 28.636201-63.960731 63.960731L257.905908 191.942567c-36.452213 0-66.00325 29.551036-66.00325 66.00325l0 59.875692c0 36.452213 29.551036 66.00325 66.00325 66.00325l-2.042519 0 0 445.681572c0 36.452213 29.551036 66.00325 66.00325 66.00325l61.918211 0 63.960731 0 127.921461 0 63.960731 0 61.918211 0c36.452213 0 66.00325-29.551036 66.00325-66.00325L767.549234 383.823736l-2.042519 0c36.452213 0 66.00325-29.551036 66.00325-66.00325l0-59.875692C831.508941 221.49258 801.958928 191.942567 765.505691 191.942567zM703.58748 803.413046c-0.101307 3.123131-1.743714 27.813462-27.961842 28.134781l-35.998889 0-63.960731 0L447.74558 831.547827 383.78485 831.547827l-35.879162 0c-27.988448-0.343831-27.969005-28.459169-27.969005-28.459169l-0.112564 0.031722L319.824119 383.823736l383.76336 0L703.58748 803.413046zM735.567845 319.863005 287.843754 319.863005c-17.662265 0-31.980365-14.3181-31.980365-31.980365 0-17.662265 14.3181-31.980365 31.980365-31.980365l159.901827 0 127.921461 0 159.901827 0c17.662265 0 31.980365 14.3181 31.980365 31.980365C767.54821 305.544905 753.23011 319.863005 735.567845 319.863005z"
+                            p-id="1615"></path>
+                          <path
+                            d="M447.74558 767.588119c17.662265 0 31.980365-14.3181 31.980365-31.980365L479.725946 479.764831c0-17.662265-14.3181-31.980365-31.980365-31.980365-17.662265 0-31.980365 14.3181-31.980365 31.980365l0 255.842922C415.765215 753.270019 430.083316 767.588119 447.74558 767.588119z"
+                            p-id="1616"></path>
+                          <path
+                            d="M575.667042 767.588119c17.662265 0 31.980365-14.3181 31.980365-31.980365L607.647407 479.764831c0-17.662265-14.3181-31.980365-31.980365-31.980365-17.662265 0-31.980365 14.3181-31.980365 31.980365l0 255.842922C543.686676 753.270019 558.004777 767.588119 575.667042 767.588119z"
+                            p-id="1617"></path>
+                        </svg></el-button>
+                    </template>
+                  </el-input>
+                </div>
+                <el-button type="primary" plain @click="addLesson" class="add-btn" :disabled="isProcessing">
+                  <i class="el-icon-plus"></i>
+                  添加课程
+                </el-button>
+              </div>
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="缓存配置" name="cache">
+            <h3>强行使用大权限侵犯文件，强制删除{{connectionStatus}}</h3>
+            <el-button type="warning" @click="clearCache('cookie')" :disabled="isProcessing">
+              <i class="el-icon-delete"></i>
+              清除Cookie
+            </el-button>
+            <el-button type="warning" @click="clearCache('lessonDatas')" :disabled="isProcessing">
+              <i class="el-icon-delete"></i>
+              清除课程数据
+            </el-button>
+            <el-button type="warning" @click="clearCache('profileId')" :disabled="isProcessing">
+              <i class="el-icon-delete"></i>
+              清除ProfileId
+            </el-button>
+
+            <el-input disabled style="margin-top: 20px" v-model="form.cookie" :rows="5" type="textarea"
+              placeholder=""></el-input>
+
+            <el-input disabled style="margin-top: 20px" v-model="form.profileId" :rows="5" type="textarea"
+              placeholder=""></el-input>
+
+            <el-input disabled style="margin-top: 20px" v-model="form.lessonDatas" :rows="5" type="textarea"
+              placeholder=""></el-input>
+          </el-tab-pane>
+          <el-tab-pane label="关于我" name="other">
+            <div class="about-me">
+              本自动化脚本用于模拟选课过程
+              <br />
+              如果需要多个客户端选课，可以新开一个浏览器，或者在当前浏览器的无痕模式再次打开当前页面
+              <br />
+              仅做学习js用途，请勿用于真实的选课行为。
+              <br />
+              使用此脚本造成的任何后果与作者无关。
+              <br />
+              作者：zyyo
+              <br />
+              博客：zyyo.net
+              <br />
+              邮件：i@zyyo.net
+              <br />
+              本脚本仅供学习交流使用，请勿用于非法用途。
+              <br />
+              本脚本仅供学习交流使用，请勿用于非法用途。
+              <br />
+              本脚本仅供学习交流使用，请勿用于非法用途。
+              <br /> <br />
+              开源地址：https://github.com/ZYYO666/fuck-shuwei
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+
+        <el-form-item style="
+              margin-top: 30px;
+              position: absolute;
+              bottom: 30px;
+              right: 180px;
+              display: flex;
+              align-items: center;
+            ">
+          <span style="margin-right: 10px;">循环执行</span>
+          <el-switch v-model="loopEnabled" active-text="开" inactive-text="关" />
+        </el-form-item>
+        <el-form-item style="
+              margin-top: 30px;
+              position: absolute;
+              bottom: 30px;
+              right: 30px;
+            ">
+          <el-button size="large" type="primary" @click="startProcess" :loading="isProcessing">
+            {{ isProcessing ? '执行中...' : '开始执行' }}
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <!-- 日志部分保持不变 -->
+    <div class="log-card">
+      <div class="log-panel">
+        <el-steps direction="vertical" style="width: 150px" :active="activestep" align-center>
+          <el-step title="加载中"></el-step>
+          <el-step title="登陆"></el-step>
+          <el-step title="获取轮次"></el-step>
+          <el-step title="初始化"></el-step>
+          <el-step title="课程缓存"></el-step>
+          <el-step title="映射课程"></el-step>
+        </el-steps>
+        <div class="log-data">
+          <el-progress :percentage="activestep/6*100"></el-progress>
+          <el-skeleton :rows="4" animated :loading="activestep==0">
+            <template #default>
+              <template v-for="log in logs" :key="log.timestamp">
+                <div v-if="log.type == 'log' || log.type == 'error' || log.type == 'good'" class="log-entry"
+                  :class="log.type">
+                  <span class="timestamp">{{ log.runtime }}</span>
+                  <span class="message">{{ log.data }}</span>
+                </div>
+              </template>
+            </template>
+          </el-skeleton>
+        </div>
+      </div>
+
+      <div class="log-panel">
+        <el-empty description="等待获取课程中" v-if="activestep==0" :image-size="200"></el-empty>
+
+        <el-table class="no-wrap-table" v-if="!table.data.length==0" :data="table.data" class="log-table"
+          style="width: 100%; height: 100%">
+          <el-table-column v-for="(key, colIndex) in Object.keys(table.data[0] || {})" :key="key" :prop="key"
+            :label="key">
+            <template #default="scope">
+              <el-tag v-if="colIndex === Object.keys(table.data[0]).length - 1" effect="plain"
+                v-loading="scope.row[key] =='loading'">
+                {{ getStatusName(scope.row[key]) }}
+              </el-tag>
+              <span v-else> {{ scope.row[key] }} </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, reactive, computed, ref, onMounted, watch, onUnmounted } = Vue
+    const { ElNotification, ElMessageBox } = ElementPlus
+    // 防抖函数
+    function debounce(fn, delay = 1000) {
+      let timeoutId
+      return function (...args) {
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => fn.apply(this, args), delay)
+      }
+    }
+
+    createApp({
+      setup() {
+        // 响应式数据
+
+        const form = reactive({
+          url: '',
+          username: '',
+          password: '',
+          count: '1',
+          selectionModel: '2',
+          delay: 100,
+          lessons: [],
+
+          cookie: '',
+          profileId: '',
+          lessonDatas: '',
+        })
+
+        const logs = ref([])
+        const table = computed(() => {
+          return (
+            logs.value.findLast((item) => item.type === 'table') ?? {
+              type: 'table',
+              data: [],
+            }
+          )
+        })
+
+        const activestep = computed(() => {
+          const found = logs.value.findLast((item) => item.type === 'step')
+          return found?.data ?? 0
+        })
+
+        watch(
+          logs,
+          () => {
+            const typeMap = [
+              { type: 'cookie', formProp: 'cookie' },
+              { type: 'profileId', formProp: 'profileId' },
+              { type: 'lessonDatas', formProp: 'lessonDatas' }
+            ]
+
+            typeMap.forEach(({ type, formProp }) => {
+              const lastItem = logs.value.findLast(item => item.type === type)
+              if (lastItem) form[formProp] = lastItem.data
+            })
+          },
+          { deep: true }
+        )
+
+        const activeName = ref('base')
+        const isProcessing = ref(false)
+
+        const startTime = ref(0)
+
+        const ws = ref(null)
+        const connectionStatus = ref('未连接')
+        const reconnectTimer = ref(null)
+        const loopEnabled = ref(false)
+        let loopTimer = null
+
+        const getStatusName = (name) => {
+          if (name == 'loading') {
+            return '加载中...'
+          } else if (name == 'success') {
+            return '选课成功'
+          } else if (name == 'overtime') {
+            return '选课过时'
+          } else if (name == 'clash') {
+            return '选课冲突'
+          } else if (name == 'full') {
+            return '人数已满'
+          } else if (name == 'notselected') {
+            return '等待中'
+          } else if (name == 'notfound') {
+            return '找不到'
+          } else if (name == 'error') {
+            return '选课错误'
+          } else if (name == 'noopen') {
+            return '选课不开放'
+          } else if (name == 'selected') {
+            return '选课成功'
+          } else {
+            return name
+          }
+        }
+        // 自动保存方法
+        const saveConfig = async () => {
+          try {
+            const config = {
+              ...form,
+            }
+            localStorage.setItem('Config', JSON.stringify(config))
+
+            ElNotification({
+              message: '配置自动保存成功',
+              type: 'success',
+            })
+          } catch (error) {
+            ElNotification({
+              message: error.message,
+              type: 'warning',
+            })
+          }
+        }
+
+        // 创建防抖保存实例
+        const debouncedSave = debounce(saveConfig)
+
+        watch(
+          () => form,
+          () => debouncedSave(),
+          { deep: true },
+        )
+
+        const addLesson = () => {
+          form.lessons.push({
+            value: '',
+          })
+        }
+
+        const removeLesson = (index) => {
+          form.lessons.splice(index, 1)
+        }
+
+        const validateLesson = (lesson) => {
+          lesson.isValid = /^\d+\.\d+\.\d+$/.test(lesson.value)
+        }
+
+        const getRuntime = () => {
+          return `${((Date.now() - startTime.value) / 1000).toFixed(3)}秒`
+        }
+
+        onMounted(async () => {
+          try {
+            wsConnect()
+
+            const Config = JSON.parse(localStorage.getItem('Config'))
+            if (Config.count) {
+              Object.assign(form, Config)
+            } else {
+              throw new Error()
+            }
+          } catch (error) {
+
+            localStorage.setItem('Config', JSON.stringify(form))
+            ElNotification({
+              message: '初始化配置.',
+              type: 'warning',
+            })
+          }
+        })
+
+        // 组件卸载时清理定时器
+        onUnmounted(() => {
+          if (reconnectTimer.value) {
+            clearInterval(reconnectTimer.value)
+            reconnectTimer.value = null
+          }
+          if (loopTimer) {
+            clearTimeout(loopTimer)
+            loopTimer = null
+          }
+        })
+
+        const clearCache = async (type) => {
+          try {
+            await ElMessageBox.confirm('确定要清除吗？', '操作确认', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            })
+            form[type] = ''
+            ElNotification({
+              title: '成功',
+              message: '已经完成清除',
+              type: 'success',
+            })
+          } catch (error) {
+            if (error !== 'cancel') {
+              ElNotification({
+                title: '错误',
+                message: error.message || '操作异常',
+                type: 'warning',
+              })
+            }
+          }
+        }
+        const wsConnect = () => {
+          try {
+            ws.value = new WebSocket('ws://localhost:8080')
+
+            connectionStatus.value = '连接中...'
+
+            ws.value.onopen = () => {
+              connectionStatus.value = '已连接'
+              // 连接成功时清除重连定时器
+              if (reconnectTimer.value) {
+                clearInterval(reconnectTimer.value)
+                reconnectTimer.value = null
+              }
+            }
+
+            ws.value.onclose = (event) => {
+              connectionStatus.value = '断开'
+              console.log('WebSocket连接关闭:', event.code, event.reason)
+              // 连接断开时立即重置执行状态
+              isProcessing.value = false
+              // 显示连接断开通知
+              ElNotification({
+                title: '连接断开',
+                message: '与服务器的连接已断开，正在尝试重连...',
+                type: 'warning',
+                duration: 3000,
+              })
+              // 启动重连定时器
+              startReconnectTimer()
+            }
+
+            ws.value.onerror = (error) => {
+              connectionStatus.value = '连接出错'
+              console.error('WebSocket连接错误:', error)
+              // 连接错误时立即重置执行状态
+              isProcessing.value = false
+              // 启动重连定时器
+              startReconnectTimer()
+            }
+
+            ws.value.onmessage = (event) => {
+              const { type, data } = JSON.parse(event.data)
+
+              // 处理执行结束通知
+              if (type === 'processEnd') {
+                isProcessing.value = false
+                ElNotification({
+                  title: '执行完成',
+                  message: '选课流程已结束',
+                  type: 'success',
+                  duration: 3000,
+                })
+                // 如果循环开关开启，1秒后自动再次执行
+                if (loopEnabled.value) {
+                  loopTimer = setTimeout(() => {
+                    startProcess()
+                  }, 1000)
+                }
+                return
+              }
+
+              // 处理执行开始通知
+              if (type === 'processStart') {
+                isProcessing.value = true
+                return
+              }
+
+              logs.value.push({
+                type,
+                data,
+                runtime: getRuntime(),
+                timestamp: Date.now(),
+              })
+            }
+          } catch (error) {
+            connectionStatus.value = '连接失败'
+            console.error('创建WebSocket连接失败:', error)
+            // 连接失败时立即重置执行状态
+            isProcessing.value = false
+            ElNotification({
+              title: '连接失败',
+              message: '无法创建WebSocket连接，请检查网络或后端服务',
+              type: 'error',
+              duration: 5000,
+            })
+          }
+        }
+        const startProcess = async () => {
+          if (loopTimer) {
+            clearTimeout(loopTimer)
+            loopTimer = null
+          }
+          // 检查WebSocket连接状态
+          if (!ws.value || ws.value.readyState !== WebSocket.OPEN) {
+            ElNotification({
+              title: '连接错误',
+              message: 'WebSocket连接失败，请检查后端服务是否启动',
+              type: 'error',
+              duration: 5000,
+            })
+            return
+          }
+
+          startTime.value = Date.now()
+          logs.value = []
+
+          try {
+            ws.value.send(
+              JSON.stringify({
+                type: 'start',
+                config: form,
+              }),
+            )
+          } catch (error) {
+            ElNotification({
+              title: '发送失败',
+              message: `发送消息失败: ${error.message}`,
+              type: 'error',
+              duration: 5000,
+            })
+          }
+        }
+
+        const startReconnectTimer = () => {
+          if (reconnectTimer.value) {
+            clearInterval(reconnectTimer.value)
+          }
+          reconnectTimer.value = setInterval(() => {
+            if (connectionStatus.value === '断开' || connectionStatus.value === '连接出错') {
+              wsConnect()
+            }
+          }, 3000) // 每3秒重试一次
+        }
+
+        return {
+          form,
+          logs,
+          activeName,
+          isProcessing,
+          connectionStatus,
+          getStatusName,
+          clearCache,
+          addLesson,
+          removeLesson,
+          validateLesson,
+          startProcess,
+          activestep,
+          table,
+          startReconnectTimer,
+          loopEnabled,
+        }
+      },
+    })
+      .use(ElementPlus, {
+        size: '',
+      })
+      .mount('#app')
+  </script>
+</body>
+
+</html>

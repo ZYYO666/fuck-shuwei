@@ -1,0 +1,210 @@
+/* Reset and Global Styles */
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+}
+
+.el-tabs__item,
+.el-form-item__label {
+  font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  /* 或 width: 0; height: 0; */
+}
+
+/* 隐藏Firefox的滚动条 */
+html {
+  scrollbar-width: none;
+}
+
+/* 隐藏IE/Edge的滚动条 */
+body {
+  -ms-overflow-style: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 全局设置方案 */
+.no-wrap-table .el-table__cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 单列设置方案 */
+:deep(.no-wrap-cell) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: var(--text-primary);
+  line-height: 1.5;
+  height: 100vh;
+
+  padding: 3rem;
+}
+
+#app {
+  height: 100%;
+  width: 90%;
+  max-width: 1500px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 20px;
+}
+
+/* Card Styles */
+.config-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid rgba(219, 223, 233, 0.6);
+}
+
+.lessonList {
+  height: 100%;
+  width: 100%;
+}
+
+.log-card {
+  height: 100%;
+  display: grid;
+  flex-direction: column;
+  overflow: hidden;
+  grid-template-rows: 3.5fr 5fr;
+  gap: 20px;
+}
+
+.log-card .log-panel {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 1.8rem;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid rgba(219, 223, 233, 0.6);
+}
+
+.log-card .log-panel .log-data {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.config-card form {
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+
+  height: 70%;
+
+}
+
+.el-tabs--top {
+  flex-direction: column-reverse;
+  height: 100%;
+}
+.el-tabs__content {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+}
+.config-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-right: -0.5rem;
+}
+
+/* Typography */
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.el-collapse {
+  width: 100%;
+}
+
+.log-entry {
+  padding: 0.5rem;
+  margin: 0.2rem 0;
+  width: 100%;
+  border-left: 3px solid;
+  color: #000000;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: fadeIn 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.log-entry.log {
+  background: rgba(33, 149, 243, 0.051);
+  border-color: #409eff;
+  color: #40a0ff87;
+}
+
+.log-entry.error {
+  background: #f56c6c11;
+  border-color: #f56c6c;
+  color: rgba(244, 67, 54, 0.435);
+}
+
+.log-entry.good {
+  border-color: #67c23a;
+  background: #67c23a11;
+  color: #67c23a7e;
+}
+
+.timestamp {
+  color: #90a4ae;
+  margin-right: 0.9rem;
+  font-size: 0.9rem;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.046);
+  border-radius: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lesson-item {
+  margin-bottom: 10px;
+}
