@@ -20,7 +20,7 @@ module.exports = async function getProfileId(config) {
       }
     }
 
-    let result = await visit('/eams/stdElectCourse.action', config.cookie)
+    let result = await visit('/eams/stdElectCourse!innerIndex.action?projectId=1', config.cookie)
 
     if (!result) {
       throw new Error('初始页面失败')
@@ -76,6 +76,8 @@ module.exports = async function getProfileId(config) {
     })
 
     if (electionProfiles.length === 0) {
+      console.log(result);
+      
       throw new Error('未找到任何选课轮次，请检查是否开放选课')
     }
 
