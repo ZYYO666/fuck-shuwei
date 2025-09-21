@@ -521,7 +521,7 @@ router.get('/stdElectCourse!data.action', requireAuth, asyncHandler(async (req, 
 }));
 
 // 获取选课轮次页面 - 这是getProfileId.js访问的URL
-router.get('/stdElectCourse.action', requireAuth, asyncHandler(async (req, res) => {
+router.get('/stdElectCourse!innerIndex.action', requireAuth, asyncHandler(async (req, res) => {
   const pageHtml = `
     <!DOCTYPE html>
     <html>

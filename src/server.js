@@ -4,6 +4,7 @@ const path = require('path')
 
 const { startMainProcess } = require('./fuck/main.js')
 const { startScheduleProcess } = require('./row/main.js')
+const { startBaseProcess } = require('./base/main.js')
 
 
 
@@ -30,7 +31,7 @@ wss.on('connection', (ws) => {
       if (ws.readyState === ws.OPEN) {
         try {
           // 安全的JSON序列化，避免循环引用
-          const safeData = typeof data === 'object' && data !== null ? 
+          const safeData = typeof data === 'object' && data !== null ?
             JSON.parse(JSON.stringify(data, (key, value) => {
               // 过滤掉可能导致循环引用的属性
               if (key === 'parent' || key === 'children' || key === 'root' || key === '_' || key === 'cheerio') {
@@ -45,7 +46,7 @@ wss.on('connection', (ws) => {
               }
               return value;
             })) : data;
-          
+
           const message = { type, data: safeData };
           ws.send(JSON.stringify(message));
           // console.log(JSON.stringify(message));
@@ -61,10 +62,9 @@ wss.on('connection', (ws) => {
 
 
   ws.on('message', async (data) => {
+    let message = null;
     try {
-      const message = JSON.parse(data)
-      // console.log(message);
-      
+      message = JSON.parse(data)
       logger.sendData('good', '收到启动请求')
       if (clients.get(clientId).status === 'running') {
         logger.sendData('good', '已经有运行的实例了, 请稍后再试')
@@ -80,11 +80,12 @@ wss.on('connection', (ws) => {
         ws.send(JSON.stringify({ type: 'rowStarted' }))
         message.config.logger = logger
         await startScheduleProcess(message.config)
-      } else if (message.type === 'scheduleStart') {
+      } else if (message.type === 'getProfiles') {
+        // 独立的轮次数据获取功能，直接调用base/main
         clients.get(clientId).status = 'running'
-        ws.send(JSON.stringify({ type: 'scheduleStarted' }))
+        ws.send(JSON.stringify({ type: 'profilesStarted' }))
         message.config.logger = logger
-        await startScheduleProcess(message.config)
+        await startBaseProcess(message.config)
       }
     } catch (error) {
       logger.sendData('error', `消息处理错误: ${error.message || error.toString()}`)
@@ -97,8 +98,15 @@ wss.on('connection', (ws) => {
       } else {
         console.warn(`Client with id ${clientId} not found in clients map.`);
       }
-      ws.send(JSON.stringify({ type: 'fuckEnded' }))
-      ws.send(JSON.stringify({ type: 'scheduleEnded' }))
+      
+      // 根据消息类型发送对应的结束消息
+      if (message && message.type === 'fuckStart') {
+        ws.send(JSON.stringify({ type: 'fuckEnded' }))
+      } else if (message && message.type === 'rowStart') {
+        ws.send(JSON.stringify({ type: 'scheduleEnded' }))
+      } else if (message && message.type === 'getProfiles') {
+        ws.send(JSON.stringify({ type: 'profilesEnded' }))
+      }
     }
   })
 
@@ -110,12 +118,6 @@ wss.on('connection', (ws) => {
     clients.delete(clientId)
   })
 })
-
-
-
-
-
-
 
 wss.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {

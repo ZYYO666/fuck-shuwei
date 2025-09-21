@@ -697,32 +697,38 @@
                         </el-form-item>
 
                         <el-divider content-position="left">课程数据缓存</el-divider>
-                        <el-form-item label="课程信息数据">
+                        <el-form-item label="课程数据缓存">
                             <div style="margin-bottom: 10px;">
-                                <el-tag :type="form.lessonDatas ? 'success' : 'info'" size="small"
+                                <el-tag :type="form.lessonJSONsCache ? 'success' : 'info'" size="small"
                                     style="margin-right: 10px;">
-                                    {{ form.lessonDatas ? '已缓存' : '未缓存' }}
+                                    {{ form.lessonJSONsCache ? '已缓存' : '未缓存' }}
                                 </el-tag>
-                                <el-tag v-if="form.lessonDatas" type="info" size="small">
-                                    数据长度: {{ form.lessonDatas.length }} 字符
+                                <el-tag v-if="form.profileId" type="warning" size="small" style="margin-right: 10px;">
+                                    当前轮次: {{ form.profileId }}
+                                </el-tag>
+                                <el-tag v-if="form.lessonJSONsCache" type="info" size="small" style="margin-right: 10px;">
+                                    {{ getCachedRoundsCount() }} 个轮次
+                                </el-tag>
+                                <el-tag v-if="form.lessonJSONsCache" type="info" size="small">
+                                    数据长度: {{ form.lessonJSONsCache.length }} 字符
                                 </el-tag>
                             </div>
-                            <el-input v-model="displayLessonDatas"
-                                :rows="form.lessonDatas ? (showFullLessonDatas ? 8 : 3) : 3" type="textarea"
-                                placeholder="课程数据将在此显示" >
+                            <el-input v-model="displayLessonJSONsCache"
+                                :rows="form.lessonJSONsCache ? (showFullLessonJSONsCache ? 8 : 3) : 3" type="textarea"
+                                placeholder="多轮次课程数据将在此显示" readonly>
                             </el-input>
                             <div style="margin-top: 10px; display: flex; justify-content: space-between;">
                                 <div>
-                                    <el-button type="warning" size="small" @click="clearCache('lessonDatas')" :disabled="isProcessing || !form.lessonDatas">
+                                    <el-button type="warning" size="small" @click="clearCache('lessonJSONsCache')" :disabled="isProcessing || !form.lessonJSONsCache">
                                         <i class="el-icon-delete"></i>
-                                        清除课程数据
+                                        清除多轮次缓存
                                     </el-button>
                                 </div>
-                                <div v-if="form.lessonDatas">
-                                    <el-button type="text" size="small" @click="toggleLessonDatas" style="margin-right: 10px;">
-                                        {{ showFullLessonDatas ? '收起' : '展开完整数据' }}
+                                <div v-if="form.lessonJSONsCache">
+                                    <el-button type="text" size="small" @click="toggleLessonJSONsCache" style="margin-right: 10px;">
+                                        {{ showFullLessonJSONsCache ? '收起' : '展开完整数据' }}
                                     </el-button>
-                                    <el-button type="text" size="small" @click="copyLessonDatas">
+                                    <el-button type="text" size="small" @click="copyToClipboard('lessonJSONsCache', form.lessonJSONsCache)">
                                         复制数据
                                     </el-button>
                                 </div>
@@ -1172,8 +1178,6 @@
                 const reconnectTimer = ref(null);
                 const logContainer = ref(null);
                 const scheduleLogContainer = ref(null);
-                const showFullLessonDatas = ref(false);
-                const displayLessonDatas = ref('');
 
                 // 课程缓存相关数据
                 const lessonCacheData = ref([]);
@@ -1200,7 +1204,7 @@
                     yixuanData: [],
                     cookie: '',
                     profileId: '',
-                    lessonDatas: '',
+                    lessonJSONsCache: '',
                     zaoba: 1,
                     zhouwu: 1,
                     zhouyi: 1,
@@ -1215,44 +1219,6 @@
                 // 表格数据
                 const table = reactive({ type: 'table', data: [] });
                 const scheduleTable = reactive({ type: 'table', data: [] });
-
-                // 计算属性：处理课程数据显示
-                const computedDisplayLessonDatas = computed(() => {
-                    if (!form.lessonDatas) {
-                        return '';
-                    }
-                    if (showFullLessonDatas.value) {
-                        return form.lessonDatas;
-                    }
-                    // 默认只显示前500个字符
-                    return form.lessonDatas.length > 500
-                        ? form.lessonDatas.substring(0, 500) + '...'
-                        : form.lessonDatas;
-                });
-
-                // 监听课程数据变化，更新显示
-                watch(() => form.lessonDatas, (newVal) => {
-                    displayLessonDatas.value = computedDisplayLessonDatas.value;
-                }, { immediate: true });
-
-                // 监听展开状态变化
-                watch(() => showFullLessonDatas.value, () => {
-                    displayLessonDatas.value = computedDisplayLessonDatas.value;
-                });
-
-                // 监听课程数据变化，自动更新课程缓存
-                watch(() => form.lessonDatas, (newVal) => {
-                    if (newVal) {
-                        try {
-                            const parsedData = new Function(`${newVal} return lessonJSONs`)();
-                            if (Array.isArray(parsedData)) {
-                                lessonCacheData.value = parsedData;
-                            }
-                        } catch (error) {
-                            console.log('解析课程数据失败');
-                        }
-                    }
-                }, { immediate: true });
 
                 // 课程缓存相关计算属性
                 const filteredLessonCacheData = computed(() => {
@@ -1307,6 +1273,40 @@
                     return JSON.stringify(electionProfiles.value, null, 2);
                 });
 
+                // 多轮次缓存显示计算属性
+                const displayLessonJSONsCache = computed(() => {
+                    if (!form.lessonJSONsCache) {
+                        return '';
+                    }
+                    try {
+                        const cacheData = JSON.parse(form.lessonJSONsCache);
+                        return JSON.stringify(cacheData, null, 2);
+                    } catch (error) {
+                        return '缓存数据格式错误';
+                    }
+                });
+
+                // 获取缓存轮次数量
+                const getCachedRoundsCount = () => {
+                    if (!form.lessonJSONsCache) {
+                        return 0;
+                    }
+                    try {
+                        const cacheData = JSON.parse(form.lessonJSONsCache);
+                        return Object.keys(cacheData).length;
+                    } catch (error) {
+                        return 0;
+                    }
+                };
+
+                // 控制多轮次缓存展示的状态
+                const showFullLessonJSONsCache = ref(false);
+
+                // 切换多轮次缓存展示
+                const toggleLessonJSONsCache = () => {
+                    showFullLessonJSONsCache.value = !showFullLessonJSONsCache.value;
+                };
+
                 // 方法
                 const handleMenuSelect = (key) => {
                     activeTab.value = key;
@@ -1357,7 +1357,7 @@
 
                 const clearAllCache = () => {
                     form.cookie = '';
-                    form.lessonDatas = '';
+                    form.lessonJSONsCache = '';
                     // 清除轮次缓存
                     electionProfiles.value = [];
                     localStorage.removeItem('electionProfiles');
@@ -1368,6 +1368,28 @@
                     electionProfiles.value = [];
                     localStorage.removeItem('electionProfiles');
                     console.log('轮次数据缓存已清除');
+                };
+
+                // 清除多轮次缓存
+                const clearLessonJSONsCache = () => {
+                    form.lessonJSONsCache = '';
+                    localStorage.removeItem('lessonJSONsCache');
+                    console.log('多轮次课程缓存已清除');
+                };
+
+                // 复制多轮次缓存数据
+                const copyLessonJSONsCache = async () => {
+                    if (!form.lessonJSONsCache) {
+                        ElMessage.warning('没有多轮次缓存数据可复制');
+                        return;
+                    }
+                    try {
+                        await navigator.clipboard.writeText(displayLessonJSONsCache.value);
+                        ElMessage.success('多轮次缓存数据已复制到剪贴板');
+                    } catch (error) {
+                        console.error('复制失败:', error);
+                        ElMessage.error('复制失败，请手动复制');
+                    }
                 };
 
                 const wsConnect = () => {
@@ -1401,7 +1423,7 @@
                             if (type === 'cache' && data && data.key) {
                                 const cacheSetters = {
                                     cookie: v => form.cookie = v,
-                                    lessonDatas: v => form.lessonDatas = v,
+                                    lessonJSONsCache: v => form.lessonJSONsCache = v,
                                     electionProfiles: v => {
                                         localStorage.setItem('electionProfiles', v);
                                         try {
@@ -1464,10 +1486,29 @@
                                 }
                                 return;
                             }
-                            if (type === 'scheduleStarted') {
+                            if (type === 'rowStarted') {
                                 isProcessing.value = true;
                                 if (activeTab.value === 'schedule') {
                                     scheduleTab.value = 'logs';
+                                }
+                                return;
+                            }
+                            if (type === 'profilesStarted') {
+                                isProcessing.value = true;
+                                console.log('轮次数据获取开始');
+                                return;
+                            }
+                            if (type === 'profilesEnded') {
+                                isProcessing.value = false;
+                                console.log('轮次数据获取结束');
+                                refreshProfiles(); // 刷新轮次数据
+                                
+                                if (electionProfiles.value.length > 0) {
+                                    ElNotification.success({
+                                        title: '获取成功',
+                                        message: `成功获取到 ${electionProfiles.value.length} 个选课轮次`,
+                                        duration: 3000
+                                    });
                                 }
                                 return;
                             }
@@ -1628,7 +1669,7 @@
                         electionProfiles: cachedProfiles ? JSON.parse(cachedProfiles) : null
                     };
                     
-                    ws.value.send(JSON.stringify({ type: 'scheduleStart', config }));
+                    ws.value.send(JSON.stringify({ type: 'rowStart', config }));
                 };
 
                 const addYixuanData = () => {
@@ -1828,20 +1869,6 @@
                     }
                 };
 
-                const toggleLessonDatas = () => {
-                    showFullLessonDatas.value = !showFullLessonDatas.value;
-                };
-
-                const copyLessonDatas = () => {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = form.lessonDatas;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    ElNotification.success({ title: '成功', message: '课程数据已复制到剪贴板' });
-                };
-
                 const copyToClipboard = (type, data) => {
                     const textArea = document.createElement('textarea');
                     textArea.value = data;
@@ -1854,18 +1881,17 @@
 
                 // 课程缓存相关方法
                 const refreshLessonCache = () => {
-                    // 优先从现有的form.lessonDatas中刷新数据
-                    if (form.lessonDatas) {
+                    // 从多轮次缓存中获取当前轮次的数据
+                    if (form.lessonJSONsCache && form.profileId) {
                         try {
-                            const parsedData = new Function(`${form.lessonDatas} return lessonJSONs`)();
-                            if (Array.isArray(parsedData)) {
-                                lessonCacheData.value = parsedData;
-                                console.log(`成功加载 ${parsedData.length} 条课程数据`);
+                            const cacheData = JSON.parse(form.lessonJSONsCache);
+                            if (cacheData[form.profileId] && Array.isArray(cacheData[form.profileId])) {
+                                lessonCacheData.value = cacheData[form.profileId];
+                                console.log(`从缓存加载轮次 ${form.profileId} 的 ${cacheData[form.profileId].length} 条课程数据`);
                                 return;
                             }
                         } catch (error) {
-                            console.error('课程数据格式错误');
-                            return;
+                            console.error('多轮次缓存数据格式错误');
                         }
                     }
 
@@ -1880,7 +1906,7 @@
 
                 const clearLessonCache = () => {
                     lessonCacheData.value = [];
-                    form.lessonDatas = '';
+                    form.lessonJSONsCache = '';
                     console.log('课程缓存数据已清除');
                 };
 
@@ -1950,16 +1976,15 @@
                         return;
                     }
                     
-                    // 显示加载状态
-                    isProcessing.value = true;
-                    
-                    // 发送一个空的排课请求，目的是触发后端的getProfileId流程
+                    // 使用专门的getProfiles消息类型获取轮次数据
                     ws.value.send(JSON.stringify({ 
-                        type: 'scheduleStart', 
+                        type: 'getProfiles', 
                         config: {
-                            ...form,
-                            lessonCodes: [], // 空的课程代码列表
-                            yixuanData: []   // 空的已选课程列表
+                            url: form.url,
+                            username: form.username,
+                            password: form.password,
+                            cookie: form.cookie,
+                            delay: form.delay
                         }
                     }));
                     
@@ -1969,47 +1994,16 @@
                         message: '正在发送请求获取轮次数据，请稍候...',
                         duration: 3000
                     });
-                    
-                    // 设置超时，如果5秒后仍然在处理中，则重置状态
-                    setTimeout(() => {
-                        if (isProcessing.value) {
-                            isProcessing.value = false;
-                            refreshProfiles(); // 尝试从缓存刷新轮次数据
-                            
-                            if (electionProfiles.value.length > 0) {
-                                ElNotification.success({
-                                    title: '获取成功',
-                                    message: `成功获取到 ${electionProfiles.value.length} 个选课轮次`,
-                                    duration: 3000
-                                });
-                            }
-                        }
-                    }, 5000);
                 };
-                
-                // 清除轮次缓存
-                const clearProfiles = () => {
-                    ElMessageBox.confirm('确定要清除轮次缓存数据吗？', '操作确认', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }).then(() => {
-                        localStorage.removeItem('electionProfiles');
-                        electionProfiles.value = [];
-                        form.profileId = '';
-                        form.count = '1';
-                        console.log('轮次缓存数据已清除');
-                    }).catch(error => {
-                        if (error !== 'cancel') {
-                            ElNotification.warning({ title: '错误', message: error.message || '操作异常' });
-                        }
-                    });
-                };
+
 
                 const selectProfile = (index) => {
                     if (index >= 0 && index < electionProfiles.value.length) {
                         form.count = String(index + 1);
                         form.profileId = electionProfiles.value[index].id;
+                        
+                        // 轮次切换时，自动加载对应轮次的课程数据
+                        loadLessonDataForProfile(form.profileId);
                         
                         // 轮次已选择，无需弹窗通知
                     }
@@ -2116,20 +2110,85 @@
 
                 // 从缓存数据中加载课程信息
                 const loadDemoData = () => {
-                    // 如果form.lessonDatas有数据，尝试解析
-                    if (form.lessonDatas) {
+                    // 从多轮次缓存中加载当前轮次的数据
+                    if (form.lessonJSONsCache && form.profileId) {
                         try {
-                            const parsedData = new Function(`${form.lessonDatas} return lessonJSONs`)();
-                            if (Array.isArray(parsedData)) {
-                                lessonCacheData.value = parsedData;
+                            const cacheData = JSON.parse(form.lessonJSONsCache);
+                            if (cacheData[form.profileId] && Array.isArray(cacheData[form.profileId])) {
+                                lessonCacheData.value = cacheData[form.profileId];
+                                console.log(`从多轮次缓存加载轮次 ${form.profileId} 的 ${cacheData[form.profileId].length} 条课程数据`);
                                 return;
                             }
                         } catch (error) {
-                            console.log('解析课程数据失败，使用演示数据');
+                            console.log('解析多轮次缓存数据失败');
                         }
                     }
 
+                    console.log('没有找到可用的课程缓存数据');
+                };
 
+                // 根据轮次ID加载对应的课程数据
+                const loadLessonDataForProfile = (profileId) => {
+                    if (!profileId) {
+                        console.log('未指定轮次ID');
+                        return;
+                    }
+
+                    // 优先从多轮次缓存中加载
+                    if (form.lessonJSONsCache) {
+                        try {
+                            const cacheData = JSON.parse(form.lessonJSONsCache);
+                            if (cacheData[profileId] && Array.isArray(cacheData[profileId])) {
+                                lessonCacheData.value = cacheData[profileId];
+                                console.log(`切换到轮次 ${profileId}，加载了 ${cacheData[profileId].length} 条课程数据`);
+                                return;
+                            }
+                        } catch (error) {
+                            console.error('解析多轮次缓存数据失败:', error);
+                        }
+                    }
+
+                    // 如果缓存中没有数据，清空当前显示
+                    lessonCacheData.value = [];
+                    console.log(`轮次 ${profileId} 暂无课程数据，请先获取课程数据`);
+                };
+
+                // 更新多轮次课程数据缓存
+                const updateLessonJSONsCache = (lessonData) => {
+                    if (!form.profileId || !lessonData) {
+                        return;
+                    }
+
+                    try {
+                        // 解析当前课程数据
+                        const currentLessonData = JSON.parse(lessonData);
+                        if (!Array.isArray(currentLessonData)) {
+                            console.error('课程数据格式错误，应为数组');
+                            return;
+                        }
+
+                        // 获取现有的多轮次缓存
+                        let cacheData = {};
+                        if (form.lessonJSONsCache) {
+                            try {
+                                cacheData = JSON.parse(form.lessonJSONsCache);
+                            } catch (error) {
+                                console.log('解析现有缓存失败，创建新缓存');
+                                cacheData = {};
+                            }
+                        }
+
+                        // 更新当前轮次的数据
+                        cacheData[form.profileId] = currentLessonData;
+                        form.lessonJSONsCache = JSON.stringify(cacheData);
+
+                        // 更新当前显示的课程数据
+                        lessonCacheData.value = currentLessonData;
+
+                        console.log(`已更新轮次 ${form.profileId} 的课程缓存，共 ${currentLessonData.length} 条数据`);
+                    } catch (error) {
+                        console.error('更新多轮次缓存失败:', error);
+                    }
                 };
 
                 // 初始化配置
@@ -2332,8 +2391,6 @@
                     selectedSolutionIndex,
                     logContainer,
                     scheduleLogContainer,
-                    showFullLessonDatas,
-                    displayLessonDatas,
                     lessonCacheData,
                     lessonSearchQuery,
                     lessonFilterType,
@@ -2378,8 +2435,6 @@
                     getLessonAt,
                     showLessonDetail,
                     getCurrentSolutionStats,
-                    toggleLessonDatas,
-                    copyLessonDatas,
                     copyToClipboard,
                     refreshLessonCache,
                     clearLessonCache,
@@ -2400,7 +2455,14 @@
                     refreshProfiles,
                     selectProfile,
                     clearElectionProfiles,
-                    fetchProfileData
+                    fetchProfileData,
+                    // 多轮次缓存管理
+                    displayLessonJSONsCache,
+                    getCachedRoundsCount,
+                    showFullLessonJSONsCache,
+                    toggleLessonJSONsCache,
+                    clearLessonJSONsCache,
+                    copyLessonJSONsCache
                 };
             }
         });
