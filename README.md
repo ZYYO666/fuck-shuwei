@@ -1,4 +1,5 @@
 # 一个综合树维教务系统的选课排课客户端脚本基于nodejs
+最近发现一个新问题，大三学生的选课轮次页面新增了一个tab，内部内容是动态加载的，之前的版本只能获取到静态的html，而新的版本需要更换url，新的url能兼容旧的模式，但是只能加载tab的第一个页面，后续会逐步优化
 main分支处于开发中不可用状态，请前往master分支获取稳定的版本
 
 ![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)  
