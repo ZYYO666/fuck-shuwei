@@ -39,7 +39,7 @@ body {
 }
 
 /* 侧边栏样式 */
-.sidebar-new {
+.sidebar {
     width: var(--sidebar-width);
     background: white;
     color: var(--dark-color);
@@ -55,13 +55,6 @@ body {
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-/* 侧边栏标题样式 */
-.sidebar-header {
-    padding: 20px 24px 16px 24px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--light-color);
-}
-
 .sidebar-title {
     color: var(--dark-color);
     font-size: 16px;
@@ -69,19 +62,19 @@ body {
     margin: 0;
     text-align: center;
     letter-spacing: 0.3px;
+    padding: 20px 24px 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--light-color);
 }
 
 .sidebar-menu {
     flex: 1;
     padding: 16px 0 20px 0;
     overflow-y: auto;
-}
-
-.sidebar-menu-list {
     list-style: none;
 }
 
-.sidebar-menu-item {
+.menu-item {
     display: flex;
     align-items: center;
     padding: 10px 20px;
@@ -94,51 +87,48 @@ body {
     font-size: 14px;
 }
 
-.sidebar-menu-item:hover {
+.menu-item:hover {
     background: rgba(0, 0, 0, 0.8);
     color: #ffffff;
 }
 
-.sidebar-menu-item.active {
+.menu-item.active {
     background: #000000;
     color: #ffffff;
     border: none;
     border-radius: var(--border-radius);
 }
 
-.sidebar-menu-item i {
-    margin-right: 10px;
-    font-size: 16px;
+.menu-icon {
+    font-size: 18px;
+    margin-right: 8px;
 }
 
-.sidebar-conn-status-only {
+.connection-status {
     padding: 16px 24px;
     border-top: 1px solid var(--border-color);
-}
-
-.sidebar-conn-status {
     display: flex;
     align-items: center;
     font-size: 14px;
     color: var(--secondary-color);
 }
 
-.sidebar-conn-dot {
+.status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     margin-right: 8px;
 }
 
-.sidebar-conn-dot.connected {
+.status-dot.connected {
     background-color: var(--success-color);
 }
 
-.sidebar-conn-dot.connecting {
+.status-dot.connecting {
     background-color: var(--warning-color);
 }
 
-.sidebar-conn-dot.error {
+.status-dot.error {
     background-color: var(--danger-color);
 }
 
@@ -311,9 +301,8 @@ body {
     padding: 20px;
 }
 
-/* 移除了多余的卡片嵌套 */
-
-.card-title {
+/* 页面标题样式 */
+.page-title {
     display: flex;
     align-items: center;
     margin-bottom: 24px;
@@ -324,18 +313,18 @@ body {
     font-weight: 600;
 }
 
-.card-title i {
+.page-title i {
     margin-right: 12px;
     font-size: 20px;
     color: var(--primary-color);
 }
 
-/* 基础配置样式 */
+/* 表单样式 */
 .config-form {
     padding: 0;
 }
 
-.config-section {
+.form-section {
     background-color: #fff;
     border-radius: var(--border-radius);
     padding: 24px;
@@ -343,7 +332,7 @@ body {
     border: var(--unified-border);
 }
 
-.section-title {
+.form-section h3 {
     font-size: 16px;
     font-weight: 500;
     color: var(--primary-color);

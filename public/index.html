@@ -15,75 +15,62 @@
     <div id="app">
         <!-- 三栏布局容器 -->
         <div class="three-column-layout">
-            <!-- 第一栏：侧边栏导航 -->
-            <nav class="sidebar-new">
-                <!-- 侧边栏标题 -->
-                <div class="sidebar-header">
-                    <h2 class="sidebar-title">智能选课客户端</h2>
-                </div>
-                <div class="sidebar-menu">
-                    <ul class="sidebar-menu-list">
-
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='config'}"
-                            @click="handleMenuSelect('config')">
-                            <span style="font-size: 18px; margin-right: 8px;">⚙️</span>
-                            <span>基础配置</span>
-                        </li>
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='course'}"
-                            @click="handleMenuSelect('course')">
-                            <span style="font-size: 18px; margin-right: 8px;">📚</span>
-                            <span>智能选课</span>
-                        </li>
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='schedule'}"
-                            @click="handleMenuSelect('schedule')">
-                            <span style="font-size: 18px; margin-right: 8px;">📅</span>
-                            <span>智能排课</span>
-                        </li>
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='cache'}"
-                            @click="handleMenuSelect('cache')">
-                            <span style="font-size: 18px; margin-right: 8px;">💾</span>
-                            <span>缓存配置</span>
-                        </li>
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='lessonCache'}"
-                            @click="handleMenuSelect('lessonCache')">
-                            <span style="font-size: 18px; margin-right: 8px;">📋</span>
-                            <span>课程缓存</span>
-                        </li>
-                        <li class="sidebar-menu-item" :class="{active: activeTab==='about'}"
-                            @click="handleMenuSelect('about')">
-                            <span style="font-size: 18px; margin-right: 8px;">ℹ️</span>
-                            <span>关于系统</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="sidebar-conn-status-only">
-                    <div class="sidebar-conn-status">
-                        <span class="sidebar-conn-dot" :class="{
-                                connected: connectionStatus==='已连接',
-                                connecting: connectionStatus==='连接中...'||connectionStatus==='连接出错',
-                                error: connectionStatus==='断开'||connectionStatus==='连接失败'
-                              }"></span>
-                        <span>{{ connectionStatus }}</span>
-                    </div>
+            <!-- 侧边栏导航 -->
+            <nav class="sidebar">
+                <h2 class="sidebar-title">智能选课客户端</h2>
+                
+                <ul class="sidebar-menu">
+                    <li class="menu-item" :class="{active: activeTab==='config'}" @click="handleMenuSelect('config')">
+                        <span class="menu-icon">⚙️</span>
+                        <span>基础配置</span>
+                    </li>
+                    <li class="menu-item" :class="{active: activeTab==='course'}" @click="handleMenuSelect('course')">
+                        <span class="menu-icon">📚</span>
+                        <span>智能选课</span>
+                    </li>
+                    <li class="menu-item" :class="{active: activeTab==='schedule'}" @click="handleMenuSelect('schedule')">
+                        <span class="menu-icon">📅</span>
+                        <span>智能排课</span>
+                    </li>
+                    <li class="menu-item" :class="{active: activeTab==='cache'}" @click="handleMenuSelect('cache')">
+                        <span class="menu-icon">💾</span>
+                        <span>缓存配置</span>
+                    </li>
+                    <li class="menu-item" :class="{active: activeTab==='lessonCache'}" @click="handleMenuSelect('lessonCache')">
+                        <span class="menu-icon">📋</span>
+                        <span>课程缓存</span>
+                    </li>
+                    <li class="menu-item" :class="{active: activeTab==='about'}" @click="handleMenuSelect('about')">
+                        <span class="menu-icon">ℹ️</span>
+                        <span>关于系统</span>
+                    </li>
+                </ul>
+                
+                <div class="connection-status">
+                    <span class="status-dot" :class="{
+                            connected: connectionStatus==='已连接',
+                            connecting: connectionStatus==='连接中...'||connectionStatus==='连接出错',
+                            error: connectionStatus==='断开'||connectionStatus==='连接失败'
+                          }"></span>
+                    <span>{{ connectionStatus }}</span>
                 </div>
             </nav>
             
             <!-- 第二栏：主内容区 -->
             <div class="main-content">
                     <!-- 基础配置 -->
-                    <div v-if="activeTab === 'config'">
-                        <div class="card-title">
+                    <div v-if="activeTab === 'config'" class="config-page">
+                        <h2 class="page-title">
                             <i class="el-icon-setting"></i>
-                            <span>基础配置</span>
-                        </div>
+                            基础配置
+                        </h2>
+                        
                         <el-form label-position="top" :model="form" class="config-form">
-                            <div class="config-section">
-                                <h3 class="section-title">账号信息</h3>
-                                <div class="form-row">
-                                    <el-form-item label="教务系统地址">
-                                        <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password clearable />
-                                    </el-form-item>
-                                </div>
+                            <section class="form-section">
+                                <h3>账号信息</h3>
+                                <el-form-item label="教务系统地址">
+                                    <el-input v-model="form.url" type="password" placeholder="请输入链接" show-password clearable />
+                                </el-form-item>
                                 <div class="form-row">
                                     <el-form-item label="学号">
                                         <el-input v-model="form.username" type="password" placeholder="请输入学号" show-password clearable />
@@ -92,19 +79,17 @@
                                         <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password></el-input>
                                     </el-form-item>
                                 </div>
-                            </div>
+                            </section>
                             
-                            <div class="config-section">
-                                <h3 class="section-title">账号配置</h3>
-                                <div class="form-row">
-                                    <el-form-item label="请求延迟">
-                                        <div class="delay-control">
-                                            <el-slider v-model="form.delay" :step="100" :min="0" :max="2000" :show-stops="true" />
-                                            <span class="delay-value">{{ form.delay }}ms</span>
-                                        </div>
-                                    </el-form-item>
-                                </div>
-                            </div>
+                            <section class="form-section">
+                                <h3>请求配置</h3>
+                                <el-form-item label="请求延迟">
+                                    <div class="delay-control">
+                                        <el-slider v-model="form.delay" :step="100" :min="0" :max="2000" :show-stops="true" />
+                                        <span class="delay-value">{{ form.delay }}ms</span>
+                                    </div>
+                                </el-form-item>
+                            </section>
                         </el-form>
                     </div>
                     <!-- 选课中心：智能选课管理 - 现代化简约设计 -->
@@ -761,6 +746,42 @@
                             </el-button>
                         </div>
 
+                        <!-- 轮次选择器 -->
+                        <div style="margin-bottom: 20px;">
+                            <el-divider content-position="left">轮次选择</el-divider>
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                <span style="font-weight: 500; color: #606266;">选择查看轮次：</span>
+                                <el-select 
+                                    v-model="selectedCacheProfileId" 
+                                    @change="handleCacheProfileChange" 
+                                    placeholder="请选择要查看的轮次" 
+                                    style="width: 300px;"
+                                    clearable>
+                                    <el-option
+                                        v-for="profileId in getAvailableProfileIds()"
+                                        :key="profileId"
+                                        :label="getProfileDisplayName(profileId)"
+                                        :value="profileId">
+                                        <span style="float: left">{{ getProfileDisplayName(profileId) }}</span>
+                                        <span style="float: right; color: #8492a6; font-size: 13px">
+                                            {{ getCachedLessonCount(profileId) }} 门课程
+                                        </span>
+                                    </el-option>
+                                </el-select>
+                                <el-tag v-if="selectedCacheProfileId" type="info" size="small">
+                                    当前查看：{{ getProfileDisplayName(selectedCacheProfileId) }}
+                                </el-tag>
+                            </div>
+                            <el-alert 
+                                v-if="!electionProfiles || electionProfiles.length === 0"
+                                title="提示：如需显示详细的轮次名称，请先在配置页面获取轮次数据" 
+                                type="info" 
+                                :closable="false"
+                                show-icon
+                                style="margin-top: 10px;">
+                            </el-alert>
+                        </div>
+
                         <el-divider content-position="left">缓存统计</el-divider>
                         <el-row :gutter="12" style="margin-bottom: 12px;">
                             <el-col :span="6">
@@ -1180,7 +1201,31 @@
                 const scheduleLogContainer = ref(null);
 
                 // 课程缓存相关数据
-                const lessonCacheData = ref([]);
+                const lessonCacheData = computed(() => {
+                    if (!form.lessonJSONsCache) {
+                        return [];
+                    }
+                    try {
+                        const cacheData = JSON.parse(form.lessonJSONsCache);
+                        
+                        // 如果选择了特定轮次，显示该轮次的数据
+                        if (selectedCacheProfileId.value && cacheData[selectedCacheProfileId.value]) {
+                            const profileData = cacheData[selectedCacheProfileId.value];
+                            return Array.isArray(profileData) ? profileData : [];
+                        }
+                        
+                        // 如果没有选择轮次，显示所有轮次的数据（合并）
+                        const allLessons = [];
+                        Object.values(cacheData).forEach(profileData => {
+                            if (Array.isArray(profileData)) {
+                                allLessons.push(...profileData);
+                            }
+                        });
+                        return allLessons;
+                    } catch (error) {
+                        return [];
+                    }
+                });
                 const lessonSearchQuery = ref('');
                 const lessonFilterType = ref('');
                 const lessonFilterCampus = ref('');
@@ -1190,6 +1235,9 @@
 
                 // 选课轮次管理相关数据
                 const electionProfiles = ref([]);
+                
+                // 课程缓存页面专用轮次选择
+                const selectedCacheProfileId = ref('');
 
                 // 表单数据
                 const form = reactive({
@@ -1280,6 +1328,13 @@
                     }
                     try {
                         const cacheData = JSON.parse(form.lessonJSONsCache);
+                        
+                        // 如果选择了特定轮次，只显示该轮次的数据
+                        if (selectedCacheProfileId.value && cacheData[selectedCacheProfileId.value]) {
+                            return JSON.stringify(cacheData[selectedCacheProfileId.value], null, 2);
+                        }
+                        
+                        // 如果没有选择轮次或选择的轮次不存在，显示所有数据
                         return JSON.stringify(cacheData, null, 2);
                     } catch (error) {
                         return '缓存数据格式错误';
@@ -1355,6 +1410,50 @@
                     console.log(`已清除${type}缓存`);
                 };
 
+                // 处理课程缓存页面轮次选择变化
+                const handleCacheProfileChange = (profileId) => {
+                    selectedCacheProfileId.value = profileId;
+                    console.log(`课程缓存页面切换到轮次: ${profileId}`);
+                };
+
+                // 获取可用的轮次ID列表
+                const getAvailableProfileIds = () => {
+                    if (!form.lessonJSONsCache) {
+                        return [];
+                    }
+                    try {
+                        const cacheData = JSON.parse(form.lessonJSONsCache);
+                        return Object.keys(cacheData);
+                    } catch (error) {
+                        return [];
+                    }
+                };
+
+                // 获取轮次显示名称
+                const getProfileDisplayName = (profileId) => {
+                    const profile = electionProfiles.value.find(p => p.id === profileId);
+                    if (profile) {
+                        // 优先使用title，如果没有则使用name
+                        return profile.title || profile.name || `第${profile.round || ''}轮选课`;
+                    }
+                    // 如果没有轮次信息，尝试从缓存数据中推断
+                    return `选课轮次 ${profileId}`;
+                };
+
+                // 获取指定轮次的课程数量
+                const getCachedLessonCount = (profileId) => {
+                    if (!form.lessonJSONsCache) {
+                        return 0;
+                    }
+                    try {
+                        const cacheData = JSON.parse(form.lessonJSONsCache);
+                        const profileData = cacheData[profileId];
+                        return profileData ? profileData.length : 0;
+                    } catch (error) {
+                        return 0;
+                    }
+                };
+
                 const clearAllCache = () => {
                     form.cookie = '';
                     form.lessonJSONsCache = '';
@@ -1418,7 +1517,19 @@
                         };
 
                         ws.value.onmessage = (event) => {
-                            const { type, data } = JSON.parse(event.data);
+                            try {
+                                if (!event.data) {
+                                    console.warn('收到空的WebSocket消息');
+                                    return;
+                                }
+                                
+                                const messageData = JSON.parse(event.data);
+                                if (!messageData || typeof messageData !== 'object') {
+                                    console.warn('收到无效的WebSocket消息格式:', event.data);
+                                    return;
+                                }
+                                
+                                const { type, data } = messageData;
                             // 处理缓存同步
                             if (type === 'cache' && data && data.key) {
                                 const cacheSetters = {
@@ -1513,12 +1624,8 @@
                                 return;
                             }
                             if (type === 'lessonCache') {
-                                try {
-                                    lessonCacheData.value = Array.isArray(data) ? data : [];
-                                    console.log(`成功获取 ${lessonCacheData.value.length} 条课程数据`);
-                                } catch (error) {
-                                    console.error('数据解析错误:', error.message);
-                                }
+                                // lessonCacheData现在是计算属性，会自动根据缓存数据更新
+                                console.log('课程缓存数据已更新');
                                 return;
                             }
 
@@ -1526,10 +1633,20 @@
                             if (activeTab.value === 'schedule') {
                                 // 排课页面的日志处理
                                 if (type === 'log' || type === 'error' || type === 'good') {
-                                    scheduleLogs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                    scheduleLogs.value.push({ 
+                                        type: type || 'log', 
+                                        data: data || '', 
+                                        runtime: getRuntime(), 
+                                        timestamp: Date.now() 
+                                    });
                                 }
                                 if (type === 'table') {
-                                    scheduleTable.data = data;
+                                    if (Array.isArray(data)) {
+                                        scheduleTable.data = data;
+                                    } else {
+                                        console.warn('收到无效的表格数据格式:', data);
+                                        scheduleTable.data = [];
+                                    }
                                 }
                                 if (type === 'step') {
                                     scheduleActiveStep.value = data;
@@ -1548,10 +1665,20 @@
                                 // 智能选课页面的数据处理
                                 // 日志标签页已被移除，但仍然收集日志数据用于调试
                                 if (type === 'log' || type === 'error' || type === 'good') {
-                                    logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                    logs.value.push({ 
+                                        type: type || 'log', 
+                                        data: data || '', 
+                                        runtime: getRuntime(), 
+                                        timestamp: Date.now() 
+                                    });
                                 }
                                 if (type === 'table') {
-                                    table.data = data;
+                                    if (Array.isArray(data)) {
+                                        table.data = data;
+                                    } else {
+                                        console.warn('收到无效的表格数据格式:', data);
+                                        table.data = [];
+                                    }
                                 }
                                 if (type === 'step') {
                                     activestep.value = data;
@@ -1563,14 +1690,33 @@
                                 }
                             } else {
                                 if (type === 'log' || type === 'error' || type === 'good') {
-                                    logs.value.push({ type, data, runtime: getRuntime(), timestamp: Date.now() });
+                                    logs.value.push({ 
+                                        type: type || 'log', 
+                                        data: data || '', 
+                                        runtime: getRuntime(), 
+                                        timestamp: Date.now() 
+                                    });
                                 }
                                 if (type === 'table') {
-                                    table.data = data;
+                                    if (Array.isArray(data)) {
+                                        table.data = data;
+                                    } else {
+                                        console.warn('收到无效的表格数据格式:', data);
+                                        table.data = [];
+                                    }
                                 }
                                 if (type === 'step') {
                                     activestep.value = data;
                                 }
+                            }
+                            } catch (parseError) {
+                                console.error('WebSocket消息解析失败:', parseError, '原始消息:', event.data);
+                                // 可以选择显示用户友好的错误提示
+                                // ElNotification.warning({
+                                //     title: '消息解析失败',
+                                //     message: '收到无效的服务器消息',
+                                //     duration: 3000
+                                // });
                             }
                         };
                     } catch (error) {
@@ -1886,7 +2032,7 @@
                         try {
                             const cacheData = JSON.parse(form.lessonJSONsCache);
                             if (cacheData[form.profileId] && Array.isArray(cacheData[form.profileId])) {
-                                lessonCacheData.value = cacheData[form.profileId];
+                                // lessonCacheData现在是计算属性，会自动根据缓存数据更新
                                 console.log(`从缓存加载轮次 ${form.profileId} 的 ${cacheData[form.profileId].length} 条课程数据`);
                                 return;
                             }
@@ -1905,7 +2051,7 @@
                 };
 
                 const clearLessonCache = () => {
-                    lessonCacheData.value = [];
+                    // 清除缓存数据，lessonCacheData会自动更新为空数组
                     form.lessonJSONsCache = '';
                     console.log('课程缓存数据已清除');
                 };
@@ -2115,7 +2261,7 @@
                         try {
                             const cacheData = JSON.parse(form.lessonJSONsCache);
                             if (cacheData[form.profileId] && Array.isArray(cacheData[form.profileId])) {
-                                lessonCacheData.value = cacheData[form.profileId];
+                                // lessonCacheData现在是计算属性，会自动根据缓存数据更新
                                 console.log(`从多轮次缓存加载轮次 ${form.profileId} 的 ${cacheData[form.profileId].length} 条课程数据`);
                                 return;
                             }
@@ -2139,7 +2285,7 @@
                         try {
                             const cacheData = JSON.parse(form.lessonJSONsCache);
                             if (cacheData[profileId] && Array.isArray(cacheData[profileId])) {
-                                lessonCacheData.value = cacheData[profileId];
+                                // lessonCacheData现在是计算属性，会自动根据缓存数据更新
                                 console.log(`切换到轮次 ${profileId}，加载了 ${cacheData[profileId].length} 条课程数据`);
                                 return;
                             }
@@ -2148,8 +2294,7 @@
                         }
                     }
 
-                    // 如果缓存中没有数据，清空当前显示
-                    lessonCacheData.value = [];
+                    // lessonCacheData现在是计算属性，会自动根据缓存数据更新
                     console.log(`轮次 ${profileId} 暂无课程数据，请先获取课程数据`);
                 };
 
@@ -2182,8 +2327,7 @@
                         cacheData[form.profileId] = currentLessonData;
                         form.lessonJSONsCache = JSON.stringify(cacheData);
 
-                        // 更新当前显示的课程数据
-                        lessonCacheData.value = currentLessonData;
+                        // lessonCacheData现在是计算属性，会自动根据缓存数据更新
 
                         console.log(`已更新轮次 ${form.profileId} 的课程缓存，共 ${currentLessonData.length} 条数据`);
                     } catch (error) {
@@ -2264,20 +2408,30 @@
                     
                     // 添加普通日志，标记来源
                     logs.value.forEach(log => {
-                        combined.push({
-                            ...log,
-                            source: '智能选课',
-                            timestamp: log.timestamp || Date.now()
-                        });
+                        // 验证日志对象的完整性
+                        if (log && typeof log === 'object' && log.type && log.data !== undefined) {
+                            combined.push({
+                                type: log.type,
+                                data: log.data,
+                                runtime: log.runtime || '00:00:00',
+                                source: '智能选课',
+                                timestamp: log.timestamp || Date.now()
+                            });
+                        }
                     });
                     
                     // 添加排课日志，标记来源
                     scheduleLogs.value.forEach(log => {
-                        combined.push({
-                            ...log,
-                            source: '智能排课',
-                            timestamp: log.timestamp || Date.now()
-                        });
+                        // 验证日志对象的完整性
+                        if (log && typeof log === 'object' && log.type && log.data !== undefined) {
+                            combined.push({
+                                type: log.type,
+                                data: log.data,
+                                runtime: log.runtime || '00:00:00',
+                                source: '智能排课',
+                                timestamp: log.timestamp || Date.now()
+                            });
+                        }
                     });
                     
                     // 按时间戳排序
@@ -2456,6 +2610,12 @@
                     selectProfile,
                     clearElectionProfiles,
                     fetchProfileData,
+                    // 课程缓存页面专用轮次选择
+                    selectedCacheProfileId,
+                    handleCacheProfileChange,
+                    getAvailableProfileIds,
+                    getProfileDisplayName,
+                    getCachedLessonCount,
                     // 多轮次缓存管理
                     displayLessonJSONsCache,
                     getCachedRoundsCount,
