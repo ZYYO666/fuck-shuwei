@@ -3,22 +3,8 @@ const cheerio = require('cheerio')
 
 module.exports = async function getProfileId(config) {
   try {
-    // 检查是否有缓存的轮次信息
-    const cachedProfiles = config.electionProfiles
-    const count = parseInt(config.count) || 1
-
-    if (cachedProfiles && cachedProfiles.length > 0) {
-      // 使用count来确定选择哪个轮次
-      const profileIndex = count - 1 // count从1开始，数组从0开始
-
-      if (profileIndex >= 0 && profileIndex < cachedProfiles.length) {
-        config.profileId = cachedProfiles[profileIndex].id
-        config.logger.sendData('log', `使用缓存轮次 ${count}: ${cachedProfiles[profileIndex].title}`)
-        return config
-      } else {
-        config.logger.sendData('log', `（兼容模式）count值 ${count} 超出轮次范围，重新获取轮次列表`)
-      }
-    }
+    const rawCount = config.count === undefined || config.count === null ? '' : String(config.count).trim()
+    const count = parseInt(rawCount) || 1
 
     let result = await visit('/eams/stdElectCourse!innerIndex.action', config.cookie)
 
@@ -96,7 +82,6 @@ module.exports = async function getProfileId(config) {
     }))
     config.logger.sendData('cache', { key: 'electionProfiles', value: JSON.stringify(safeProfiles) })
 
-    // 根据count选择对应的轮次
     const profileIndex = count - 1
     if (profileIndex >= 0 && profileIndex < electionProfiles.length) {
       config.profileId = electionProfiles[profileIndex].id

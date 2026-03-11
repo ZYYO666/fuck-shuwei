@@ -1,21 +1,25 @@
 const { WebSocketServer } = require('ws')
 const express = require('express')
 const path = require('path')
+const { exec, execFile } = require('child_process')
 
 const { startMainProcess } = require('./fuck/main.js')
 const { startScheduleProcess } = require('./row/main.js')
 const { startBaseProcess } = require('./base/main.js')
+const { getElectedLessonNos } = require('./base/tool.js')
 
 
+const HTTP_PORT = Number(process.env.PORT || process.env.HTTP_PORT || 3000)
+const WS_PORT = Number(process.env.WS_PORT || 8080)
 
 const app = express()
 app.use(express.static(path.join(__dirname, '../public')))
-app.listen(3000, () => { })
+app.listen(HTTP_PORT, () => { })
 
 
 
 
-const wss = new WebSocketServer({ port: 8080 })
+const wss = new WebSocketServer({ port: WS_PORT })
 const clients = new Map()
 
 
@@ -86,6 +90,18 @@ wss.on('connection', (ws) => {
         ws.send(JSON.stringify({ type: 'profilesStarted' }))
         message.config.logger = logger
         await startBaseProcess(message.config)
+      } else if (message.type === 'getYixuanData') {
+        clients.get(clientId).status = 'running'
+        ws.send(JSON.stringify({ type: 'yixuanDataStarted' }))
+        message.config.logger = logger
+        const baseConfig = await startBaseProcess(message.config)
+        const { nos, missingIds } = await getElectedLessonNos(baseConfig)
+        logger.sendData('cache', { key: 'yixuanData', value: JSON.stringify(nos) })
+        if (missingIds.length > 0) {
+          logger.sendData('log', `已选课程解析完成，未映射课程数: ${missingIds.length}`)
+        } else {
+          logger.sendData('log', `已选课程解析完成，共 ${nos.length} 门`)
+        }
       }
     } catch (error) {
       logger.sendData('error', `消息处理错误: ${error.message || error.toString()}`)
@@ -106,6 +122,8 @@ wss.on('connection', (ws) => {
         ws.send(JSON.stringify({ type: 'scheduleEnded' }))
       } else if (message && message.type === 'getProfiles') {
         ws.send(JSON.stringify({ type: 'profilesEnded' }))
+      } else if (message && message.type === 'getYixuanData') {
+        ws.send(JSON.stringify({ type: 'yixuanDataEnded' }))
       }
     }
   })
@@ -141,13 +159,18 @@ wss.on('error', (err) => {
 
 async function updateTable() {
   console.clear();
-  console.log(`WebSocket端口: 8080`)
-  console.log(`静态服务器: http://localhost:${3000}`)
+  console.log(`WebSocket端口: ${WS_PORT}`)
+  console.log(`静态服务器: http://localhost:${HTTP_PORT}`)
   console.log(`浏览器打开上面的链接`)
   console.log(`不要关闭当前窗口`)
-  const { default: open } = await import('open');
-  open(`http://localhost:${3000}`);
+  const url = `http://localhost:${HTTP_PORT}`
+  if (process.platform === 'win32') {
+    exec(`start "" "${url}"`, { shell: true })
+  } else if (process.platform === 'darwin') {
+    execFile('open', [url])
+  } else {
+    execFile('xdg-open', [url])
+  }
 }
 
 updateTable();
-

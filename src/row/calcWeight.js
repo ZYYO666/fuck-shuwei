@@ -11,6 +11,55 @@ module.exports = function calcWeight(
   zhouri,
 ) {
 
+  const createEmptyFormat = () =>
+    Array.from({ length: 16 }, () => Array(91).fill(0))
+
+  const normalizeYixuanLessons = () => {
+    if (!Array.isArray(yixuanData) || yixuanData.length === 0) return []
+    return yixuanData.map((group) => {
+      let merged = createEmptyFormat()
+      const formats = Array.isArray(group.formatDatas) ? group.formatDatas : []
+      for (const f of formats) {
+        merged = mergeArrays(merged, f)
+      }
+
+      const lessons = Array.isArray(group.lessons) ? group.lessons : []
+      const arrangeInfo = lessons.flatMap((l) =>
+        Array.isArray(l?.arrangeInfo) ? l.arrangeInfo : [],
+      )
+      const teachers = Array.from(
+        new Set(
+          lessons
+            .map((l) => l?.teachers)
+            .filter(Boolean)
+            .flatMap((t) => String(t).split(',')),
+        ),
+      )
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .join(',')
+
+      const first = lessons[0] || {}
+
+      return {
+        type: 'yixuan',
+        code: group.code,
+        lessons: [
+          {
+            id: first.id,
+            name: first.name,
+            no: first.no,
+            teachers: teachers || first.teachers,
+            teachClassName: first.teachClassName,
+            arrangeInfo,
+          },
+        ],
+        formatDatas: [merged],
+      }
+    })
+  }
+
+  const yixuanLesson = normalizeYixuanLessons()
 
   const result = solutions.map((selected) => {
     let schedule = createEmptySchedule(yixuanData) // 初始化课表
@@ -69,11 +118,13 @@ module.exports = function calcWeight(
 
     const resultLesson = allLessons.map((item, index) => ({
       ...item,
+      type: 'result',
       lessons: [item.lessons[selected[index]]],
-      formatDatas: [item.formatDatas[selected[index]]]
+      formatDatas: [item.formatDatas[selected[index]]],
     }))
     return {
       resultLesson,
+      yixuanLesson,
       detail: {
         weight,
         zaobaCount,

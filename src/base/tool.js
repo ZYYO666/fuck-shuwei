@@ -145,16 +145,65 @@ function zyyo_delay(zyyo_ms) {
   return new Promise((resolve) => setTimeout(resolve, zyyo_ms))
 }
 
+async function getElectedLessonNos(config) {
+  const profileId = config.profileId
+  if (!profileId) {
+    throw new Error('profileId 不能为空')
+  }
+  if (!config.cookie) {
+    throw new Error('cookie 不能为空')
+  }
+
+  const page = await visit(
+    `/eams/stdElectCourse!defaultPage.action?electionProfile.id=${profileId}`,
+    config.cookie,
+  )
+  if (!page) {
+    return { ids: [], nos: [], missingIds: [] }
+  }
+
+  const ids = []
+  const re = /electedIds\["l(\d+)"\]\s*=\s*true/g
+  let m = null
+  while ((m = re.exec(page)) !== null) {
+    if (m[1]) ids.push(m[1])
+  }
+
+  const uniqueIds = Array.from(new Set(ids))
+  const byId = new Map()
+  if (Array.isArray(config.lessonJSONs)) {
+    for (const l of config.lessonJSONs) {
+      const raw = l && l.id !== undefined && l.id !== null ? String(l.id) : ''
+      if (!raw) continue
+      const normalized = raw.replace(/^l/, '')
+      if (!byId.has(normalized)) byId.set(normalized, l)
+    }
+  }
+
+  const nos = []
+  const missingIds = []
+  for (const id of uniqueIds) {
+    const lesson = byId.get(String(id))
+    if (!lesson) {
+      missingIds.push(id)
+      continue
+    }
+    if (lesson.no) nos.push(String(lesson.no))
+  }
+
+  return { ids: uniqueIds, nos: Array.from(new Set(nos)), missingIds }
+}
+
 module.exports = {
   visit,
   zyyo_delay,
   mergeArrays,
   createEmptySchedule,
   isConflict,
-  mergeArrays,
   removeArrays,
   getFile,
   getLessonJSONs,
   getLessonsFromNo,
   getLessonsFromCode,
+  getElectedLessonNos,
 }

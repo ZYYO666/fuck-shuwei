@@ -64,7 +64,7 @@ function configure(url, delay) {
       } else if (error.request) {
         errMsg = '网络错误，请检查地址是否正确';
       }
-      return delayError(new Error(errMsg));
+      return delayError(new Error(errMsg+' '+error.message));
     }
   )
 
