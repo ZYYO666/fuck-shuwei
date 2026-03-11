@@ -1,5 +1,7 @@
 **/node_modules
 **/Cache
+!frontend/src/pages/cache/
+!frontend/src/pages/cache/**
 **/dist
 .DS_Store
 **/.DS_Store
