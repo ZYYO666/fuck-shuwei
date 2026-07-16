@@ -48,6 +48,8 @@
                   :bordered="false"
                   :single-line="false"
                   :max-height="tableMaxHeight"
+                  virtual-scroll
+                  :row-key="rowKey"
                 />
               </div>
             </n-tab-pane>
@@ -83,11 +85,12 @@ const currentRaw = computed(() => {
 })
 
 const currentJson = computed(() => {
-  try {
-    return currentRaw.value ? JSON.stringify(currentRaw.value, null, 2) : ''
-  } catch {
-    return ''
-  }
+  const raw = currentRaw.value
+  if (!raw) return ''
+  if (typeof raw === 'string') return raw.length > 200000 ? `${raw.slice(0, 200000)}\n... 已截断` : raw
+  const list = normalizeLessonJSONs(raw)
+  if (list.length > 0) return `课程列表较大，已跳过自动格式化。当前轮次共 ${list.length} 条；需要查看单条原文请在表格点“详情”。`
+  return '课程缓存较大，已跳过自动格式化。'
 })
 
 function normalizeLessonJSONs(raw) {
@@ -164,6 +167,16 @@ const filteredLessons = computed(() => {
 const detailOpen = ref(false)
 const detailJson = ref('')
 const detailTitle = ref('')
+const fallbackRowKeys = new WeakMap()
+let fallbackRowKeyId = 0
+
+function rowKey(row) {
+  const key = [row?.no, row?.code, row?.name, row?.teachClassName].filter(Boolean).join('|')
+  if (key) return key
+  if (!row || typeof row !== 'object') return String(row || '')
+  if (!fallbackRowKeys.has(row)) fallbackRowKeys.set(row, `row-${fallbackRowKeyId++}`)
+  return fallbackRowKeys.get(row)
+}
 
 function openDetail(row) {
   try {

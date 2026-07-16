@@ -44,7 +44,14 @@ const store = usePersistedStore()
 
 const rawCacheJson = computed(() => {
   try {
-    return JSON.stringify(store.cache || {}, null, 2)
+    const cache = store.cache || {}
+    const lessonJSONsCache = cache.lessonJSONsCache && typeof cache.lessonJSONsCache === 'object'
+      ? cache.lessonJSONsCache
+      : {}
+    return JSON.stringify({
+      ...cache,
+      lessonJSONsCache: `[课程缓存较大，已折叠；轮次数 ${Object.keys(lessonJSONsCache).length}]`,
+    }, null, 2)
   } catch {
     return ''
   }

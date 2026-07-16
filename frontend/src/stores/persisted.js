@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { markRaw, toRaw } from 'vue'
 import {
   loadPersistedState,
   normalizeCacheFromStorage,
@@ -6,6 +7,10 @@ import {
   savePersistedState,
 } from '@/shared/persist'
 import { safeJsonParse } from '@/shared/utils'
+
+function rawLessonCache(value) {
+  return markRaw(value && typeof value === 'object' ? value : {})
+}
 
 export const usePersistedStore = defineStore('persisted', {
   state: () => ({
@@ -41,6 +46,7 @@ export const usePersistedStore = defineStore('persisted', {
       const raw = loadPersistedState()
       this.form = normalizeFormFromStorage(raw.form)
       this.cache = normalizeCacheFromStorage(raw.cache)
+      this.cache.lessonJSONsCache = rawLessonCache(this.cache.lessonJSONsCache)
       this.courseLoop = Boolean(raw.courseLoop)
       this.scheduleInput = {
         lessonCodes: Array.isArray(raw.scheduleInput?.lessonCodes)
@@ -66,7 +72,10 @@ export const usePersistedStore = defineStore('persisted', {
     persist() {
       savePersistedState({
         form: this.form,
-        cache: this.cache,
+        cache: {
+          ...this.cache,
+          lessonJSONsCache: toRaw(this.cache.lessonJSONsCache || {}),
+        },
         courseLoop: this.courseLoop,
         scheduleInput: {
           lessonCodes: this.scheduleInput.lessonCodes,
@@ -123,7 +132,7 @@ export const usePersistedStore = defineStore('persisted', {
       this.persist()
     },
     clearLessonCache() {
-      this.cache.lessonJSONsCache = {}
+      this.cache.lessonJSONsCache = rawLessonCache({})
       this.persist()
     },
     applyCache(key, value) {
@@ -138,7 +147,7 @@ export const usePersistedStore = defineStore('persisted', {
       }
       if (key === 'lessonJSONsCache') {
         const parsed = typeof value === 'string' ? safeJsonParse(value, {}) : value
-        this.cache.lessonJSONsCache = parsed && typeof parsed === 'object' ? parsed : {}
+        this.cache.lessonJSONsCache = rawLessonCache(parsed)
         return
       }
       if (key === 'yixuanData') {
@@ -149,7 +158,7 @@ export const usePersistedStore = defineStore('persisted', {
     },
     buildCommonBaseConfig() {
       const electionProfiles = Array.isArray(this.cache.electionProfiles) ? this.cache.electionProfiles : []
-      const lessonJSONsCache = this.cache.lessonJSONsCache && typeof this.cache.lessonJSONsCache === 'object' ? this.cache.lessonJSONsCache : {}
+      const lessonJSONsCache = this.cache.lessonJSONsCache && typeof this.cache.lessonJSONsCache === 'object' ? toRaw(this.cache.lessonJSONsCache) : {}
       return {
         url: this.form.url,
         username: this.form.username,
