@@ -34,6 +34,9 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <div class="min-w-[180px] flex-1">
                     <n-input v-model:value="persisted.form.lessonsText[idx]" size="small" placeholder="课程序号（如 001.1.1）" />
+                    <div v-if="courseNameByNo(persisted.form.lessonsText[idx])" class="mt-1 truncate text-xs text-slate-500">
+                      {{ courseNameByNo(persisted.form.lessonsText[idx]) }}
+                    </div>
                   </div>
                   <div class="flex items-center gap-1 shrink-0">
                     <n-button size="tiny" secondary :disabled="idx === 0" @click="moveLessonUp(idx)">上移</n-button>
@@ -172,6 +175,7 @@ import { NAlert, NButton, NCard, NDataTable, NForm, NFormItemGi, NGrid, NInput, 
 import { useCourseStore } from '@/stores/course'
 import { usePersistedStore } from '@/stores/persisted'
 import { useWsStore } from '@/stores/ws'
+import { buildCourseLabelIndex } from '@/shared/utils'
 
 const persisted = usePersistedStore()
 const ws = useWsStore()
@@ -179,6 +183,8 @@ const course = useCourseStore()
 const lessonsConfigOpen = ref(false)
 const resultsModalOpen = ref(false)
 const courseStarted = ref(false)
+
+const courseLabelIndex = computed(() => buildCourseLabelIndex(persisted.cache.lessonJSONsCache))
 
 const profileOptions = computed(() => {
   const list = Array.isArray(persisted.cache.electionProfiles) ? persisted.cache.electionProfiles : []
@@ -202,6 +208,10 @@ const lessonsPreview = computed(() => {
     .slice(0, 12)
   return items.length > 0 ? items.join('、') : '未配置'
 })
+
+function courseNameByNo(no) {
+  return courseLabelIndex.value.byNo.get(String(no || '').trim()) || ''
+}
 
 const resultsTableMaxHeight = computed(() => {
   const h = typeof window !== 'undefined' ? window.innerHeight : 900

@@ -117,6 +117,9 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <div class="min-w-[180px] flex-1">
                     <n-input v-model:value="persisted.scheduleInput.lessonCodes[idx]" size="small" placeholder="例如 001.1.1" />
+                    <div v-if="courseNameByCode(persisted.scheduleInput.lessonCodes[idx])" class="mt-1 truncate text-xs text-slate-500">
+                      {{ courseNameByCode(persisted.scheduleInput.lessonCodes[idx]) }}
+                    </div>
                   </div>
                   <div class="flex items-center gap-1 shrink-0">
                     <n-button size="tiny" secondary :disabled="idx === 0" @click="moveLessonCodeUp(idx)">上移</n-button>
@@ -176,6 +179,9 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <div class="min-w-[180px] flex-1">
                     <n-input v-model:value="persisted.cache.yixuanData[idx]" size="small" placeholder="课程序号（如 001.1.1）" />
+                    <div v-if="courseNameByNo(persisted.cache.yixuanData[idx])" class="mt-1 truncate text-xs text-slate-500">
+                      {{ courseNameByNo(persisted.cache.yixuanData[idx]) }}
+                    </div>
                   </div>
                   <div class="flex items-center gap-1 shrink-0">
                     <n-button size="tiny" secondary :disabled="idx === 0" @click="moveYixuanUp(idx)">上移</n-button>
@@ -319,28 +325,40 @@
                           :style="blockCardStyle(b)"
                           @click="openCourseDetail(b)"
                         >
-                          <div class="relative h-full px-2.5 py-2 flex flex-col">
+                          <div v-if="b.items.length > 1" class="relative h-full px-2 py-1.5">
+                            <div class="flex h-full min-h-0 flex-col justify-center gap-0.5 overflow-hidden">
+                              <div
+                                v-for="(item, itemIdx) in b.items"
+                                :key="`${item.id}-${itemIdx}`"
+                                class="flex min-w-0 items-center gap-1.5 text-[10px] leading-tight text-slate-900"
+                              >
+                                <span class="min-w-0 truncate font-semibold">{{ item.title }}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div v-else class="relative h-full px-2.5 py-2 flex flex-col">
                             <div class="flex items-start justify-between gap-2">
                               <div class="min-w-0 flex items-start gap-2">
-                                <div class="mt-1 h-2 w-2 shrink-0 rounded-full" :style="{ background: b.color.border }" />
+                                <div class="mt-1 h-2 w-2 shrink-0 rounded-full" :style="{ background: b.items[0].color.border }" />
                                 <div class="min-w-0">
                                   <div class="text-[11px] font-semibold text-slate-900 leading-snug line-clamp-2">
-                                    {{ b.title }}
+                                    {{ b.items[0].title }}
                                   </div>
                                   <div class="mt-0.5 text-[10px] text-slate-700 leading-snug line-clamp-2">
-                                    {{ b.subtitle }}
+                                    {{ b.items[0].subtitle }}
                                   </div>
                                 </div>
                               </div>
 
-                              <div v-if="b.source" class="shrink-0 rounded-full bg-white/60 px-2 py-0.5 text-[10px] text-slate-700">
-                                {{ b.source }}
+                              <div v-if="b.items[0].source" class="shrink-0 rounded-full bg-white/60 px-2 py-0.5 text-[10px] text-slate-700">
+                                {{ b.items[0].source }}
                               </div>
                             </div>
 
                             <div class="mt-auto flex items-center justify-between gap-2 pt-2 text-[10px] text-slate-600 tabular-nums">
-                              <div class="min-w-0 truncate">{{ b.rangeLabel }}</div>
-                              <div v-if="b.duration > 1" class="shrink-0 text-slate-500">×{{ b.duration }}</div>
+                              <div class="min-w-0 truncate">{{ b.items[0].rangeLabel }}</div>
+                              <div v-if="b.items[0].duration > 1" class="shrink-0 text-slate-500">×{{ b.items[0].duration }}</div>
                             </div>
                           </div>
                         </button>
@@ -370,65 +388,127 @@
     </n-modal>
 
     <n-modal v-model:show="courseDetailOpen">
-      <n-card size="large" :bordered="false" :style="{ width: '560px', maxWidth: '94vw' }">
+      <n-card
+        size="large"
+        :bordered="false"
+        :style="{ width: activeBlock?.items.length > 1 ? '680px' : '560px', maxWidth: '94vw' }"
+      >
         <div v-if="activeBlock" class="space-y-4">
+          <template v-if="activeBlock.items.length === 1">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-base font-semibold leading-snug">{{ activeBlock.items[0].title }}</div>
+                <div class="mt-1 text-xs text-slate-600 leading-relaxed">
+                  {{ activeBlock.items[0].subtitle || '-' }}
+                </div>
+              </div>
+              <n-button secondary size="small" @click="courseDetailOpen = false">关闭</n-button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="rounded-2xl bg-black/5 px-3 py-2">
+                <div class="text-[11px] text-slate-600">方案</div>
+                <div class="mt-0.5 text-sm font-semibold tabular-nums">
+                  {{ activeRow ? `方案 ${activeRow._idx + 1}` : '-' }}
+                </div>
+              </div>
+              <div class="rounded-2xl bg-black/5 px-3 py-2">
+                <div class="text-[11px] text-slate-600">周次</div>
+                <div class="mt-0.5 text-sm font-semibold tabular-nums">{{ activeBlock.items[0].weekLabel || '总体' }}</div>
+              </div>
+              <div class="rounded-2xl bg-black/5 px-3 py-2">
+                <div class="text-[11px] text-slate-600">星期</div>
+                <div class="mt-0.5 text-sm font-semibold">{{ activeBlock.items[0].dayLabel }}</div>
+              </div>
+              <div class="rounded-2xl bg-black/5 px-3 py-2">
+                <div class="text-[11px] text-slate-600">节次</div>
+                <div class="mt-0.5 text-sm font-semibold tabular-nums">{{ activeBlock.items[0].start }}-{{ activeBlock.items[0].end }}</div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-black/5 px-3 py-3 space-y-2">
+              <div class="flex items-center justify-between gap-3 text-xs text-slate-600">
+                <div>更多信息</div>
+                <div v-if="activeBlock.items[0].source" class="rounded-full bg-white/60 px-2 py-0.5 text-[11px] text-slate-700">
+                  {{ activeBlock.items[0].source }}
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-800">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs text-slate-600">教师</div>
+                  <div class="text-right">{{ activeBlock.items[0].teachers || '-' }}</div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs text-slate-600">教学班</div>
+                  <div class="text-right">{{ activeBlock.items[0].teachClassName || '-' }}</div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs text-slate-600">课程序号</div>
+                  <div class="text-right">{{ activeBlock.items[0].no || '-' }}</div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs text-slate-600">时长</div>
+                  <div class="text-right tabular-nums">{{ activeBlock.items[0].duration }} 节</div>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <template v-else>
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <div class="text-base font-semibold leading-snug">{{ activeBlock.title }}</div>
+              <div class="text-base font-semibold leading-snug">同一时段的 {{ activeBlock.items.length }} 门课程</div>
               <div class="mt-1 text-xs text-slate-600 leading-relaxed">
-                {{ activeBlock.subtitle || '-' }}
+                {{ activeBlock.dayLabel }} · {{ activeBlock.rangeLabel }}
               </div>
             </div>
             <n-button secondary size="small" @click="courseDetailOpen = false">关闭</n-button>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div class="rounded-2xl bg-black/5 px-3 py-2">
-              <div class="text-[11px] text-slate-600">方案</div>
-              <div class="mt-0.5 text-sm font-semibold tabular-nums">
-                {{ activeRow ? `方案 ${activeRow._idx + 1}` : '-' }}
-              </div>
-            </div>
-            <div class="rounded-2xl bg-black/5 px-3 py-2">
-              <div class="text-[11px] text-slate-600">周次</div>
-              <div class="mt-0.5 text-sm font-semibold tabular-nums">{{ activeBlock.weekLabel || '总体' }}</div>
-            </div>
-            <div class="rounded-2xl bg-black/5 px-3 py-2">
-              <div class="text-[11px] text-slate-600">星期</div>
-              <div class="mt-0.5 text-sm font-semibold">{{ activeBlock.dayLabel }}</div>
-            </div>
-            <div class="rounded-2xl bg-black/5 px-3 py-2">
-              <div class="text-[11px] text-slate-600">节次</div>
-              <div class="mt-0.5 text-sm font-semibold tabular-nums">{{ activeBlock.start }}-{{ activeBlock.end }}</div>
-            </div>
-          </div>
+          <n-scrollbar class="max-h-[62vh]">
+            <div class="space-y-3 pr-2">
+              <div
+                v-for="(item, idx) in activeBlock.items"
+                :key="`${item.id}-${idx}`"
+                class="border-b border-black/10 pb-3 last:border-b-0 last:pb-0"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0 flex items-start gap-2">
+                    <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full" :style="{ background: item.color.border }" />
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold text-slate-950">{{ item.title }}</div>
+                      <div class="mt-0.5 text-xs text-slate-500">课程 {{ idx + 1 }} · {{ item.weekLabel }}</div>
+                    </div>
+                  </div>
+                  <n-tag size="small" :bordered="false" type="info">{{ item.source }}</n-tag>
+                </div>
 
-          <div class="rounded-2xl bg-black/5 px-3 py-3 space-y-2">
-            <div class="flex items-center justify-between gap-3 text-xs text-slate-600">
-              <div>更多信息</div>
-              <div v-if="activeBlock.source" class="rounded-full bg-white/60 px-2 py-0.5 text-[11px] text-slate-700">
-                {{ activeBlock.source }}
+                <div class="mt-3 grid grid-cols-1 gap-x-5 gap-y-2 text-sm sm:grid-cols-2">
+                  <div class="flex items-start justify-between gap-3">
+                    <span class="shrink-0 text-xs text-slate-500">教师</span>
+                    <span class="text-right text-slate-800">{{ item.teachers || '-' }}</span>
+                  </div>
+                  <div class="flex items-start justify-between gap-3">
+                    <span class="shrink-0 text-xs text-slate-500">教学班</span>
+                    <span class="text-right text-slate-800">{{ item.teachClassName || '-' }}</span>
+                  </div>
+                  <div class="flex items-start justify-between gap-3">
+                    <span class="shrink-0 text-xs text-slate-500">课程序号</span>
+                    <span class="text-right text-slate-800">{{ item.no || '-' }}</span>
+                  </div>
+                  <div class="flex items-start justify-between gap-3">
+                    <span class="shrink-0 text-xs text-slate-500">上课节次</span>
+                    <span class="text-right text-slate-800 tabular-nums">{{ item.rangeLabel }}</span>
+                  </div>
+                  <div class="flex items-start justify-between gap-3 sm:col-span-2">
+                    <span class="shrink-0 text-xs text-slate-500">周次</span>
+                    <span class="text-right text-slate-800">{{ item.weekLabel }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-800">
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-xs text-slate-600">教师</div>
-                <div class="text-right">{{ activeBlock.teachers || '-' }}</div>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-xs text-slate-600">教学班</div>
-                <div class="text-right">{{ activeBlock.teachClassName || '-' }}</div>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-xs text-slate-600">课程序号</div>
-                <div class="text-right">{{ activeBlock.no || '-' }}</div>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <div class="text-xs text-slate-600">时长</div>
-                <div class="text-right tabular-nums">{{ activeBlock.duration }} 节</div>
-              </div>
-            </div>
-          </div>
+          </n-scrollbar>
+          </template>
         </div>
       </n-card>
     </n-modal>
@@ -450,6 +530,7 @@ import {
 import { usePersistedStore } from '@/stores/persisted'
 import { useScheduleStore } from '@/stores/schedule'
 import { useWsStore } from '@/stores/ws'
+import { buildCourseLabelIndex } from '@/shared/utils'
 
 const persisted = usePersistedStore()
 const ws = useWsStore()
@@ -464,6 +545,8 @@ const courseDetailOpen = ref(false)
 const activeBlock = ref(null)
 const lessonCodeConfigOpen = ref(false)
 const yixuanConfigOpen = ref(false)
+
+const courseLabelIndex = computed(() => buildCourseLabelIndex(persisted.cache.lessonJSONsCache))
 
 const lessonCodePreview = computed(() => {
   const list = Array.isArray(persisted.scheduleInput.lessonCodes) ? persisted.scheduleInput.lessonCodes : []
@@ -482,6 +565,14 @@ const yixuanPreview = computed(() => {
     .slice(0, 10)
   return items.length > 0 ? items.join('、') : '未配置'
 })
+
+function courseNameByCode(code) {
+  return courseLabelIndex.value.byCode.get(String(code || '').trim()) || ''
+}
+
+function courseNameByNo(no) {
+  return courseLabelIndex.value.byNo.get(String(no || '').trim()) || ''
+}
 
 const profileOptions = computed(() => {
   const list = Array.isArray(persisted.cache.electionProfiles) ? persisted.cache.electionProfiles : []
@@ -604,6 +695,13 @@ function weekStateLabel(weekState) {
   return `第 ${weeks.join('、')} 周`
 }
 
+function compactWeeksLabel(weeks) {
+  if (weeks.length === 0) return '-'
+  const contiguous = weeks.every((week, idx) => idx === 0 || week === weeks[idx - 1] + 1)
+  if (contiguous && weeks.length > 1) return `${weeks[0]}-${weeks[weeks.length - 1]}周`
+  return `${weeks.slice(0, 3).join('/')}周${weeks.length > 3 ? '+' : ''}`
+}
+
 function stringHash(input) {
   let h = 2166136261
   const s = String(input || '')
@@ -676,10 +774,12 @@ const blocks = computed(() => {
 
       const c = colorFromKey(lesson.key)
       const duration = endUnit - startUnit + 1
+      const weeks = weekStateWeeks(weekState)
       res.push({
         id: `${lesson.key}-${weekDay}-${startUnit}-${endUnit}-${String(weekState || '')}`,
         weekLabel: weekStateLabel(weekState),
-        weeks: weekStateWeeks(weekState),
+        compactWeekLabel: compactWeeksLabel(weeks),
+        weeks,
         day: weekDay,
         start: startUnit,
         end: endUnit,
@@ -701,9 +801,34 @@ const blocks = computed(() => {
 
 const blocksByDay = computed(() => {
   const m = {}
-  for (let i = 1; i <= 7; i++) m[i] = []
-  for (const b of blocks.value) {
-    m[b.day].push(b)
+  for (let day = 1; day <= 7; day++) {
+    const dayBlocks = blocks.value
+      .filter((b) => b.day === day)
+      .sort((a, b) => a.start - b.start || a.end - b.end)
+    const groups = []
+
+    for (const block of dayBlocks) {
+      const group = groups[groups.length - 1]
+      if (group && block.start <= group.end) {
+        group.end = Math.max(group.end, block.end)
+        group.items.push(block)
+      } else {
+        groups.push({
+          day,
+          start: block.start,
+          end: block.end,
+          items: [block],
+        })
+      }
+    }
+
+    m[day] = groups.map((group) => ({
+      ...group,
+      id: `group-${day}-${group.items.map((item) => item.id).join('|')}`,
+      duration: group.end - group.start + 1,
+      dayLabel: days[day - 1] || `周${day}`,
+      rangeLabel: `第 ${group.start}-${group.end} 节`,
+    }))
   }
   return m
 })
@@ -730,9 +855,18 @@ function blockStyle(b) {
 }
 
 function blockCardStyle(b) {
-  const hue = typeof b?.color?.hue === 'number' ? b.color.hue : 210
-  const border = b?.color?.border || 'rgba(15, 23, 42, 0.16)'
-  const glow = b?.color?.glow || 'rgba(15, 23, 42, 0.14)'
+  if (b.items.length > 1) {
+    return {
+      background: 'rgba(255, 255, 255, 0.9)',
+      borderColor: 'rgba(15, 23, 42, 0.18)',
+      boxShadow: '0 10px 24px rgba(15, 23, 42, 0.1)',
+    }
+  }
+
+  const color = b.items[0]?.color
+  const hue = typeof color?.hue === 'number' ? color.hue : 210
+  const border = color?.border || 'rgba(15, 23, 42, 0.16)'
+  const glow = color?.glow || 'rgba(15, 23, 42, 0.14)'
   return {
     background: `linear-gradient(180deg, hsl(${hue}, 92%, 92%), hsl(${hue}, 92%, 86%))`,
     borderColor: border,

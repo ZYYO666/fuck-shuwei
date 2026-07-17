@@ -33,10 +33,14 @@ module.exports = async function getProfileId(config) {
       const openTimeMatch = timeInfo.match(/选课开放时间:\s*([^<]+)/)
       const closeTimeMatch = timeInfo.match(/退课开放时间:\s*([^<]+)/)
 
-      // 提取profileId
-      const linkElement = $element.find('a[href*="electionProfile.id"]')
+      // 提取profileId。不同学校页面可能放在 href、onclick 或隐藏表单里。
+      const linkElement = $element.find('a[href*="electionProfile.id"], a[onclick*="checkPaymentBeforeElect"]').first()
       const href = linkElement.attr('href') || ''
-      const profileIdMatch = href.match(/electionProfile\.id=(\d+)/)
+      const onclick = linkElement.attr('onclick') || ''
+      const profileIdMatch =
+        href.match(/electionProfile\.id=(\d+)/) ||
+        onclick.match(/checkPaymentBeforeElect\((\d+)/) ||
+        $('input[name="electionProfile.id"]').first().attr('value')?.match(/^(\d+)$/)
       const profileId = profileIdMatch ? profileIdMatch[1] : ''
 
       // 提取注意事项
