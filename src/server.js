@@ -14,12 +14,13 @@ const WS_PORT = Number(process.env.WS_PORT || 8080)
 
 const app = express()
 app.use(express.static(path.join(__dirname, '../public')))
-app.listen(HTTP_PORT, () => { })
+app.listen(HTTP_PORT, '127.0.0.1', () => { })
 
 
 
 
-const wss = new WebSocketServer({ port: WS_PORT })
+// 无鉴权机制，仅允许本机连接，避免未授权的远程客户端触发操作
+const wss = new WebSocketServer({ port: WS_PORT, host: '127.0.0.1' })
 const clients = new Map()
 
 
